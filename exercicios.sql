@@ -5,14 +5,17 @@ SELECT * FROM payment
 WHERE value > 1000;
 
 /* SCRIPT 2 */
-SELECT SUM(value), billing_type, YEAR(date_created) FROM payment 
+SELECT SUM(value) as received, billing_type, YEAR(date_created) as date FROM payment 
 WHERE YEAR(date_created) >= 2020 
-GROUP BY billing_type, YEAR(date_created);
+GROUP BY billing_type, YEAR(date_created)
+HAVING SUM(value) > 0;
 
 /* SCRIPT 3 */
-SELECT customer_account.name, payment.value FROM payment 
+SELECT customer_account.name, SUM(payment.value) as received FROM payment 
 INNER JOIN customer_account ON payment.customer_account_id = customer_account.id 
-WHERE payment.value > 1000 LIMIT 20;
+GROUP BY customer_account.name
+HAVING SUM(payment.value) > 1000
+LIMIT 20;
 
 /* SCRIPT 4 */
 SELECT LEFT(customer.name, POSITION(' ' IN customer.name) - 1) AS name, status.last_general_status_change as date FROM customer
