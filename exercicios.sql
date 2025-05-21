@@ -6,14 +6,14 @@ WHERE value > 1000;
 
 /* SCRIPT 2 */
 SELECT SUM(value) as received, billing_type FROM payment 
-WHERE YEAR(date_created) >= 2020 AND status = 'RECEIVED'
+WHERE YEAR(date_created) > 2020 AND status = 'RECEIVED'
 GROUP BY billing_type;
 
 /* SCRIPT 3 */
-SELECT customer_account.name, SUM(payment.value) as received FROM payment 
+SELECT customer_account.id, customer_account.name, SUM(payment.value) as received FROM payment 
 INNER JOIN customer_account ON payment.customer_account_id = customer_account.id 
 WHERE payment.status = 'RECEIVED'
-GROUP BY customer_account.name
+GROUP BY customer_account.id
 HAVING SUM(payment.value) > 1000
 LIMIT 20;
 
