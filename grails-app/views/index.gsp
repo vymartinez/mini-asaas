@@ -1,12 +1,7 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <asset:stylesheet src="bootstrap.css"/>
-    <asset:stylesheet src="register.css"/>
+    <meta name="layout" content="external"/>
     <title>Mini Asaas</title>
 </head>
 
@@ -16,53 +11,61 @@
             <h2 class="h2 text-center">
                 Cadastro de Usuários
             </h2>
-            <form class="flex flex-column">
-                <label for="nome" class="col-form-label">
+            <form action="/customer/save" class="flex flex-column">
+                <label for="name" class="col-form-label">
                     Nome
-                    <input id="nome" name="nome" type="text" placeholder="Nome" class="form-control">
+                    <input id="name" name="name" type="text" placeholder="Nome" class="form-control">
+                </label>
+                <label for="email" class="col-form-label">
+                    Email
+                    <input id="email" name="email" type="text" placeholder="Email" class="form-control">
                 </label>
                 <div class="flex inline">
-                    <label for="cpf" class="col-form-label w-100">
-                        CPF
-                        <input id="cpf" name="cpf" type="text" placeholder="CPF" class="form-control">
+                    <label for="cpfCnpj" class="col-form-label w-100">
+                        CPF/CNPJ
+                        <input id="cpfCnpj" name="cpfCnpj" type="text" placeholder="CPF/CNPJ" class="form-control">
                     </label>
-                    <label for="telefone" class="col-form-label w-100">
+                    <label for="cellphone" class="col-form-label w-100">
                         Telefone
-                        <input id="telefone" name="telefone" type="text" placeholder="Telefone" class="form-control">
+                        <input id="cellphone" name="cellphone" type="text" placeholder="Telefone" class="form-control">
                     </label>
                 </div>
                 <div class="flex inline">
-                    <label for="cep" class="col-form-label w-100">
+                    <label for="zipCode" class="col-form-label w-100">
                         CEP
-                        <input id="cep" maxlength="8" name="cep" type="text" placeholder="CEP" class="form-control" onclose="getCep(cep)">
+                        <input id="zipCode" maxlength="9" name="zipCode" type="text" placeholder="CEP" class="form-control" onclose="getCep(cep)">
                     </label>
-                    <label for="bairro" class="col-form-label w-100">
+                    <label for="city" class="col-form-label w-100">
                         Bairro
-                        <input id="bairro" name="bairro" type="text" disabled placeholder="Bairro" class="form-control">
+                        <input id="city" name="city" type="text" placeholder="Bairro" class="form-control">
                     </label>
                 </div>
                 <div class="flex inline">
-                    <label for="logradouro" class="col-form-label w-100">
+                    <label for="address" class="col-form-label w-100">
                         Logradouro
-                        <input id="logradouro" name="logradouro" type="text" placeholder="Logradouro" disabled class="form-control">
+                        <input id="address" name="address" type="text" placeholder="Logradouro" class="form-control">
                     </label>
-                    <label for="uf" class="col-form-label">
+                    <label for="province" class="col-form-label">
                         UF
-                        <input id="uf" name="uf" type="text" placeholder="UF" disabled class="form-control">
+                        <input id="province" name="province" type="text" placeholder="UF" class="form-control">
                     </label>
                 </div>
-                <label for="complemento" class="col-form-label w-100 mb-3">
-                    Complemento (Opcional)
-                    <input id="complemento" name="complemento" type="text" disabled placeholder="Complemento" class="form-control">
-                </label>
-                <button class="btn text-white bg-asaas mb-5">
-                    Fazer login
+                <div class="flex inline mb-3">
+                    <label for="complement" class="col-form-label w-100">
+                        Complemento (Opcional)
+                        <input id="complement" name="complement" type="text" placeholder="Complemento" class="form-control">
+                    </label>
+                    <label for="addressNumber" class="col-form-label w-100">
+                        Número
+                        <input id="addressNumber" name="addressNumber" type="text" placeholder="Complemento" class="form-control">
+                    </label>
+                </div>
+                <button type="submit" class="btn text-white bg-asaas mb-5">
+                    Cadastrar
                 </button>
             </form>
         </section>
     </main>
+    <asset:javascript src="script.js"/>
 </body>
-
-<asset:javascript src="script.js"/>
-
 </html>

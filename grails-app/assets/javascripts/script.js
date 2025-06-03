@@ -1,53 +1,52 @@
 let formElements = {
-    nome: null,
-    cpf: null,
-    telefone: null,
-    cep: null,
-    logradouro: null,
-    bairro: null,
-    uf: null,
-    complemento: null
+    name: null,
+    email: null,
+    cpfCnpj: null,
+    cellphone: null,
+    zipCode: null,
+    address: null,
+    city: null,
+    province: null,
+    complement: null
 };
+
+const portugueseKeys = {
+    name: "nome",
+    email: "email",
+    cpfCnpj: "cpfCnpj",
+    cellphone: "telefone",
+    zipCode: "cep",
+    address: "logradouro",
+    city: "bairro",
+    province: "uf",
+    addressNumber: "addressNumber"
+}
 
 for (const key in formElements) {
     let element = document.querySelector(`#${key}`);
     if (element) formElements[key] = element;
-    if (key === "cep") {
+    if (key === "zipCode") {
         element.addEventListener('input', () => {
-            if (isValidCep(formElements.cep.value)) getCep(formElements.cep.value);
+            if (isValidCep(formElements.zipCode.value)) getZipCode(formElements.zipCode.value);
         });
     }
 }
 
-let button = document.querySelector("button");
-button.addEventListener('click', (event) => {
-    event.preventDefault();
-    for (const key in formElements) {
-        if (!formElements[key].value && key !== "complemento") return alert("Preencha todos os dados corretamente, por favor.");
-    }
-    for (const key in formElements) {
-        console.log(formElements[key].value);
-    }
-    alert("Cadastro realizado com sucesso!");
-})
-
-function getCep(cep) {
+function getZipCode(zipCode) {
     try {
-        const data = fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        const data = fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
             .then(res => res.json())
             .then(data => {
                 for (const key in formElements) {
-                    if (data[key]) formElements[key].value = data[key];
+                    if (data[portugueseKeys[key]]) formElements[key].value = data[portugueseKeys[key]];
                 }
-                formElements.complemento.disabled = false;
             })
     } catch (err) {
-        formElements.complemento.disabled = true;
         alert("CEP não encontrado. Tente novamente.");
     }
 }
 
-function isValidCep(cep) {
-    const newCep = cep.replace(/\D/g, '');
-    return newCep.length === 8;
+function isValidCep(zipCode) {
+    const newZipCode = zipCode.replace(/\D/g, '');
+    return newZipCode.length === 8;
 }
