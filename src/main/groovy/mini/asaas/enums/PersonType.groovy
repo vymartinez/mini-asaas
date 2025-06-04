@@ -12,12 +12,4 @@ enum PersonType {
             return null
         }
     }
-
-    Boolean isNatural() {
-        return this == PersonType.NATURAL
-    }
-
-    Boolean isLegal() {
-        return this == PersonType.LEGAL
-    }
 }
