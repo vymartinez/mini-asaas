@@ -13,7 +13,7 @@ class Payment extends BaseEntity {
 
     BigDecimal value
 
-    PaymentStatus paymentStatus
+    PaymentStatus status
 
     LocalDate dueDate
 
@@ -22,7 +22,7 @@ class Payment extends BaseEntity {
         payer nullable: false
         billingType nullable: false
         value nullable: false, min: 0.01G
-        paymentStatus nullable: false
+        status nullable: false
         dueDate nullable: false
     }
 
@@ -32,7 +32,7 @@ class Payment extends BaseEntity {
 
     @Override
     String toString() {
-        return "Pagamento de ${valor} reais para ${payer?.name} - ${status}"
+        return "Pagamento de ${value} reais para ${payer?.name} - ${status}"
     }
 
 }
