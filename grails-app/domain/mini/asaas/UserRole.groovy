@@ -13,6 +13,7 @@ class UserRole implements Serializable {
 	private static final long serialVersionUID = 1
 
 	User user
+
 	Role role
 
 	@Override
@@ -24,7 +25,9 @@ class UserRole implements Serializable {
 
     @Override
 	int hashCode() {
+
 	    int hashCode = HashCodeHelper.initHash()
+
         if (user) {
             hashCode = HashCodeHelper.updateHash(hashCode, user.id)
 		}
