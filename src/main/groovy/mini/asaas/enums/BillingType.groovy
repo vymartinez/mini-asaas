@@ -2,8 +2,8 @@ package mini.asaas.enums
 
 enum BillingType {
 
-    BOLETO,
-    CARTAO,
+    BANK_SLIP,
+    CREDIT_CARD,
     PIX
 
 }
