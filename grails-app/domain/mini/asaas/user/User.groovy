@@ -1,8 +1,10 @@
-package mini.asaas
+package mini.asaas.user
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import grails.compiler.GrailsCompileStatic
+import mini.asaas.userrole.UserRole
+import mini.asaas.role.Role
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
@@ -33,6 +35,6 @@ class User implements Serializable {
     }
 
     static mapping = {
-        password column: '`password`'
+        password column: 'password'
     }
 }
