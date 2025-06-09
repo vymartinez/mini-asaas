@@ -3,7 +3,7 @@ package mini.asaas.user
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import grails.compiler.GrailsCompileStatic
-import mini.asaas.userrole.UserRole
+import mini.asaas.auth.UserRole
 import mini.asaas.role.Role
 
 @GrailsCompileStatic
