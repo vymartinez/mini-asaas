@@ -1,4 +1,4 @@
-import mini.asaas.UserPasswordEncoderListener
+import mini.asaas.security.UserPasswordEncoderListener
 // Place your Spring DSL code here
 beans = {
     userPasswordEncoderListener(UserPasswordEncoderListener)
