@@ -1,10 +1,10 @@
-package mini.asaas.peyment
+package mini.asaas.payment
 
 import mini.asaas.Payer
 import mini.asaas.enums.BillingType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.utils.BaseEntity
-import java.time.LocalDate
+
 
 class Payment extends BaseEntity {
 
@@ -16,7 +16,7 @@ class Payment extends BaseEntity {
 
     PaymentStatus status
 
-    LocalDate dueDate
+    Date dueDate
 
     static constraints = {
         value min: BigDecimal("0.01")
