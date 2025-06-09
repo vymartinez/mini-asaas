@@ -12,7 +12,7 @@ class CpfCnpjUtils {
                                                      "44444444444", "55555555555", "66666666666", "77777777777",
                                                      "88888888888", "99999999999"]
 
-    static Boolean validate(String cpfCnpj) {
+    public static Boolean validate(String cpfCnpj) {
         cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
 
         if (cpfCnpj == null || (cpfCnpj.length() != CPF_LENGTH && cpfCnpj.length() != CNPJ_LENGTH)) return false
@@ -24,7 +24,7 @@ class CpfCnpjUtils {
         }
     }
 
-    static Boolean isCnpj(String cpfCnpj) {
+    public static Boolean isCnpj(String cpfCnpj) {
         if (!cpfCnpj) return false
 
         cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
@@ -32,7 +32,7 @@ class CpfCnpjUtils {
         return cpfCnpj.length() == CNPJ_LENGTH
     }
 
-    static Boolean isCpf(String cpfCnpj) {
+    public static Boolean isCpf(String cpfCnpj) {
         if (!cpfCnpj) return false
 
         cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
@@ -40,7 +40,7 @@ class CpfCnpjUtils {
         return cpfCnpj.length() == CPF_LENGTH
     }
 
-    static getPersonType(String cpfCnpj) {
+    public static getPersonType(String cpfCnpj) {
         if (isCnpj(cpfCnpj)) {
             return PersonType.LEGAL
         } else if (isCpf(cpfCnpj)) {
@@ -50,7 +50,7 @@ class CpfCnpjUtils {
         }
     }
 
-    static Boolean validateCpf(String strCpf) {
+    public static Boolean validateCpf(String strCpf) {
         Integer iDigito1Aux = 0, iDigito2Aux = 0, iDigitoCPF
         Integer iDigito1 = 0, iDigito2 = 0, iRestoDivisao = 0
         String strDigitoVerificador, strDigitoResultado
@@ -94,7 +94,7 @@ class CpfCnpjUtils {
         }
     }
 
-    static Boolean validateCnpj(String strCNPJ) {
+    public static Boolean validateCnpj(String strCNPJ) {
         Integer iSoma = 0, iDigito
         char[] chCaracteresCNPJ
         String strCNPJ_Calculado

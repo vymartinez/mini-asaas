@@ -10,7 +10,7 @@ class CustomerAdapter {
 
     AddressAdapter address
 
-    CustomerAdapter(Map params) {
+    public CustomerAdapter(Map params) {
         this.name = params.name
         this.email = params.email
         this.cpfCnpj = params.cpfCnpj

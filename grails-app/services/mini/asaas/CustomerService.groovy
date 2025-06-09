@@ -10,7 +10,7 @@ import mini.asaas.utils.Utils
 @Transactional
 class CustomerService {
 
-    Customer create(CustomerAdapter customerAdapter) {
+    public Customer create(CustomerAdapter customerAdapter) {
 
         Customer customer = validateBeforeSave(customerAdapter)
         if (customer.hasErrors()) {

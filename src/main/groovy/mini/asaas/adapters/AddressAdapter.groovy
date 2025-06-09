@@ -14,7 +14,7 @@ class AddressAdapter {
 
     String complement
 
-    AddressAdapter(Map params) {
+    public AddressAdapter(Map params) {
         this.address = params.address
         this.addressNumber = params.addressNumber as Integer
         this.cityId = params.cityId as Long

@@ -4,13 +4,13 @@ import mini.asaas.adapters.AddressAdapter
 
 class Utils {
 
-    static Boolean emailIsValid(String email) {
+    public static Boolean emailIsValid(String email) {
         if (email.empty) return false
 
         return email ==~ /[A-Za-z0-9_\%\+-]+(\.[A-Za-z0-9_\%\+-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,15})/
     }
 
-    static Object validateAddress(AddressAdapter addressAdapter, Object entity) {
+    public static Object validateAddress(AddressAdapter addressAdapter, Object entity) {
 
         if (!addressAdapter.address) {
             DomainUtils.addError(entity, "O logradouro é obrigatório")
@@ -35,7 +35,7 @@ class Utils {
         return entity
     }
 
-    static String removeNonNumeric(String text) {
+    public static String removeNonNumeric(String text) {
         if (text == null) return null
 
         return text?.replaceAll("\\D+","")
