@@ -1,5 +1,6 @@
-package mini.asaas
+package mini.asaas.peyment
 
+import mini.asaas.Payer
 import mini.asaas.enums.BillingType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.utils.BaseEntity
@@ -17,22 +18,8 @@ class Payment extends BaseEntity {
 
     LocalDate dueDate
 
-
     static constraints = {
-        payer nullable: false
-        billingType nullable: false
-        value nullable: false, min: 0.01G
-        status nullable: false
-        dueDate nullable: false
-    }
-
-    static mapping = {
-        version false
-    }
-
-    @Override
-    String toString() {
-        return "Pagamento de ${value} reais para ${payer?.name} - ${status}"
+        value min: BigDecimal("0.01")
     }
 
 }
