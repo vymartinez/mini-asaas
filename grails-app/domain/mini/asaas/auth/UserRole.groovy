@@ -28,7 +28,6 @@ class UserRole implements Serializable {
 
     @Override
     public int hashCode() {
-
         int hashCode = HashCodeHelper.initHash()
 
         if (user) {
