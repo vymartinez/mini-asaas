@@ -1,6 +1,6 @@
 package mini.asaas
 
-import mini.asaas.adapters.saveCustomerAdapter
+import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.enums.MessageType
 
 import grails.validation.ValidationException
@@ -11,7 +11,7 @@ class CustomerController {
 
     def create() {
         try {
-            saveCustomerAdapter saveCustomerAdapter = new saveCustomerAdapter(params)
+            SaveCustomerAdapter saveCustomerAdapter = new SaveCustomerAdapter(params)
 
             Customer customer = customerService.create(saveCustomerAdapter)
 

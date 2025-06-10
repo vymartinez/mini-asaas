@@ -1,6 +1,6 @@
 package mini.asaas.adapters
 
-class saveCustomerAdapter {
+class SaveCustomerAdapter {
 
     String name
 
@@ -10,7 +10,7 @@ class saveCustomerAdapter {
 
     AddressAdapter address
 
-    public saveCustomerAdapter(Map params) {
+    public SaveCustomerAdapter(Map params) {
         this.name = params.name
         this.email = params.email
         this.cpfCnpj = params.cpfCnpj

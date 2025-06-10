@@ -1,6 +1,6 @@
 package mini.asaas
 
-import mini.asaas.adapters.saveCustomerAdapter
+import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.Utils
@@ -11,7 +11,7 @@ import grails.validation.ValidationException
 @Transactional
 class CustomerService {
 
-    public Customer create(saveCustomerAdapter saveCustomerAdapter) {
+    public Customer create(SaveCustomerAdapter saveCustomerAdapter) {
 
         Customer customer = validate(saveCustomerAdapter)
         if (customer.hasErrors()) {
@@ -39,7 +39,7 @@ class CustomerService {
         return validatedCustomer
     }
 
-    private Customer validate(saveCustomerAdapter saveCustomerAdapter) {
+    private Customer validate(SaveCustomerAdapter saveCustomerAdapter) {
         Customer customer = new Customer()
 
         if (!saveCustomerAdapter.name) DomainUtils.addError(customer, "O nome é obrigatório")
