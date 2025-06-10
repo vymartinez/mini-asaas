@@ -1,10 +1,11 @@
 package mini.asaas.user
 
-import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
-import grails.compiler.GrailsCompileStatic
 import mini.asaas.auth.UserRole
 import mini.asaas.role.Role
+
+import grails.compiler.GrailsCompileStatic
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')

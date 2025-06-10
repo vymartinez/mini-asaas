@@ -1,11 +1,12 @@
 package mini.asaas.auth
 
-import grails.gorm.DetachedCriteria
-import groovy.transform.ToString
 import mini.asaas.role.Role
 import mini.asaas.user.User
-import org.codehaus.groovy.util.HashCodeHelper
+
 import grails.compiler.GrailsCompileStatic
+import grails.gorm.DetachedCriteria
+import groovy.transform.ToString
+import org.codehaus.groovy.util.HashCodeHelper
 
 @GrailsCompileStatic
 @ToString(cache=true, includeNames=true, includePackage=false)
