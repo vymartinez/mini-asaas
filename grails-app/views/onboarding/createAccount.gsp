@@ -8,7 +8,7 @@
 
 <body>
 <atlas-panel>
-    <atlas-form action="#" method="post">
+    <atlas-form action="/customer/create">
         <atlas-heading>Cadastro de Usuários</atlas-heading>
         <atlas-grid>
             <atlas-row>
@@ -48,10 +48,9 @@
             </atlas-row>
         </atlas-grid>
         <atlas-button
-                description="Cadastrar" block
+                description="Cadastrar" submit block
         ></atlas-button>
     </atlas-form>
 </atlas-panel>
-<asset:javascript src="zipCode.js"/>
 </body>
 </html>
