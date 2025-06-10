@@ -19,7 +19,27 @@ class CustomerController {
         } catch (ValidationException e) {
             flash.message = message(success: false, error: "Atenção: " + e.errors.allErrors.defaultMessage.join(", "))
             flash.type = MessageType.ERROR
-            redirect(url: '/', model: [params: params])
+            redirect(url: '/onboarding/createAccount', model: [params: params])
+        }
+    }
+
+    def update() {
+        try {
+            SaveCustomerAdapter saveCustomerAdapter = new SaveCustomerAdapter(params)
+
+            Customer customer = customerService.update(saveCustomerAdapter)
+
+            flash.message = message(success: true, message: "Dados alterados com sucesso!")
+            flash.type = MessageType.SUCCESS
+            redirect(url: '/dashboard', model: [customer: customer])
+        } catch (ValidationException e) {
+            flash.message = message(success: false, error: "Atenção: " + e.errors.allErrors.defaultMessage.join(", "))
+            flash.type = MessageType.ERROR
+            redirect(url: '/dashboard/profile', model: [params: params])
+        } catch (RuntimeException e) {
+            flash.message = message(success: false, error: e.getMessage())
+            flash.type = MessageType.ERROR
+            redirect(url: '/dashboard')
         }
     }
 }

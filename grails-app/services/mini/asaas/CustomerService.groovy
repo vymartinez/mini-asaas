@@ -39,6 +39,40 @@ class CustomerService {
         return validatedCustomer
     }
 
+    public Customer findById(Long customerId) {
+        Customer customer = Customer.get(customerId)
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado!")
+
+        return customer
+    }
+
+    public Customer update(SaveCustomerAdapter saveCustomerAdapter, Long customerId) {
+        Customer toValidateCustomer = validate(saveCustomerAdapter)
+
+        if (toValidateCustomer.hasErrors()) throw new ValidationException("Erro ao atualizar a conta do usuário", toValidateCustomer.errors)
+
+        Customer customer = findById(customerId)
+
+        Address address = new Address(
+            address: saveCustomerAdapter.address.address,
+            addressNumber: saveCustomerAdapter.address.addressNumber,
+            city: City.get(saveCustomerAdapter.address.cityId),
+            zipCode: saveCustomerAdapter.address.zipCode,
+            province: saveCustomerAdapter.address.province,
+            complement: saveCustomerAdapter.address.complement
+        )
+
+        customer.name = saveCustomerAdapter.name
+        customer.email = saveCustomerAdapter.email
+        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
+        customer.address = address
+
+        customer.save(flush: true, failOnError: true)
+        return customer
+    }
+
     private Customer validate(SaveCustomerAdapter saveCustomerAdapter) {
         Customer customer = new Customer()
 
