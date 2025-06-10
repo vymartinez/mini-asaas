@@ -1,8 +1,8 @@
 package mini.asaas
 
-import grails.gorm.transactions.Transactional
 import mini.asaas.adapters.AddressAdapter
 import mini.asaas.utils.DomainUtils
+import grails.gorm.transactions.Transactional
 
 @Transactional
 class AddressService {
