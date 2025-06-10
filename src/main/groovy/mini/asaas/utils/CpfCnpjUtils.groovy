@@ -13,21 +13,20 @@ class CpfCnpjUtils {
                                                      "88888888888", "99999999999"]
 
     public static Boolean validate(String cpfCnpj) {
-        cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
+        cpfCnpj = StringUtils.removeNonNumeric(cpfCnpj)
 
         if (cpfCnpj == null || (cpfCnpj.length() != CPF_LENGTH && cpfCnpj.length() != CNPJ_LENGTH)) return false
 
-        if (isCpf(cpfCnpj))
-            return validateCpf(cpfCnpj)
-        else if (isCnpj(cpfCnpj)) {
-            return validateCnpj(cpfCnpj)
-        }
+        if (isCpf(cpfCnpj)) return validateCpf(cpfCnpj)
+        if (isCnpj(cpfCnpj)) return validateCnpj(cpfCnpj)
+
+        return null
     }
 
     public static Boolean isCnpj(String cpfCnpj) {
         if (!cpfCnpj) return false
 
-        cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
+        cpfCnpj = StringUtils.removeNonNumeric(cpfCnpj)
 
         return cpfCnpj.length() == CNPJ_LENGTH
     }
@@ -35,19 +34,16 @@ class CpfCnpjUtils {
     public static Boolean isCpf(String cpfCnpj) {
         if (!cpfCnpj) return false
 
-        cpfCnpj = Utils.removeNonNumeric(cpfCnpj)
+        cpfCnpj = StringUtils.removeNonNumeric(cpfCnpj)
 
         return cpfCnpj.length() == CPF_LENGTH
     }
 
     public static getPersonType(String cpfCnpj) {
-        if (isCnpj(cpfCnpj)) {
-            return PersonType.LEGAL
-        } else if (isCpf(cpfCnpj)) {
-            return PersonType.NATURAL
-        } else {
-            return null
-        }
+        if (isCnpj(cpfCnpj)) return PersonType.LEGAL
+        if (isCpf(cpfCnpj)) return PersonType.NATURAL
+
+        return null
     }
 
     public static Boolean validateCpf(String strCpf) {

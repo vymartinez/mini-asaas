@@ -1,16 +1,13 @@
-package mini.asaas.utils
+package mini.asaas
 
+import grails.gorm.transactions.Transactional
 import mini.asaas.adapters.AddressAdapter
+import mini.asaas.utils.DomainUtils
 
-class Utils {
+@Transactional
+class AddressService {
 
-    public static Boolean emailIsValid(String email) {
-        if (email.empty) return false
-
-        return email ==~ /[A-Za-z0-9_\%\+-]+(\.[A-Za-z0-9_\%\+-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,15})/
-    }
-
-    public static Object validateAddress(AddressAdapter addressAdapter, Object entity) {
+    public Object validate(AddressAdapter addressAdapter, Object entity) {
 
         if (!addressAdapter.address) DomainUtils.addError(entity, "O logradouro é obrigatório")
 
@@ -23,11 +20,5 @@ class Utils {
         if (!addressAdapter.cityId) DomainUtils.addError(entity, "Os dados de cidade são obrigatórios")
 
         return entity
-    }
-
-    public static String removeNonNumeric(String text) {
-        if (text == null) return null
-
-        return text?.replaceAll("\\D+","")
     }
 }
