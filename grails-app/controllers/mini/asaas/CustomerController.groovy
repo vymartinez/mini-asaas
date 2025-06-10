@@ -1,18 +1,19 @@
 package mini.asaas
 
-import grails.validation.ValidationException
-import mini.asaas.adapters.CustomerAdapter
+import mini.asaas.adapters.saveCustomerAdapter
 import mini.asaas.enums.MessageType
+
+import grails.validation.ValidationException
 
 class CustomerController {
 
-    def customerService
+    CustomerService customerService
 
     def create() {
         try {
-            CustomerAdapter customerAdapter = new CustomerAdapter(params)
+            saveCustomerAdapter saveCustomerAdapter = new saveCustomerAdapter(params)
 
-            Customer customer = customerService.create(customerAdapter)
+            Customer customer = customerService.create(saveCustomerAdapter)
 
             redirect(view: 'dashboard', model: [customer: customer])
         } catch (ValidationException e) {
