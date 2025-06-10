@@ -1,9 +1,9 @@
 package mini.asaas.payment
 
-import mini.asaas.utils.BaseEntity
 import mini.asaas.enums.BillingType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.Payer
+import mini.asaas.utils.BaseEntity
 
 class Payment extends BaseEntity {
 
