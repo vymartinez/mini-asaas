@@ -1,13 +1,17 @@
 package mini.asaas.security
 
-import grails.plugin.springsecurity.SpringSecurityService
+
 import mini.asaas.user.User
+
+import grails.plugin.springsecurity.SpringSecurityService
+import grails.events.annotation.gorm.Listener
+import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.engine.event.AbstractPersistenceEvent
 import org.grails.datastore.mapping.engine.event.PreInsertEvent
 import org.grails.datastore.mapping.engine.event.PreUpdateEvent
 import org.springframework.beans.factory.annotation.Autowired
-import grails.events.annotation.gorm.Listener
-import groovy.transform.CompileStatic
+
+
 
 @CompileStatic
 class UserPasswordEncoderListener {
