@@ -19,13 +19,13 @@ class ViaCepDTO {
 
     String localidade
 
-    public ViaCepDTO(Map body) {
-        this.cep = body.'cep'
-        this.logradouro = body.'logradouro'
-        this.complemento = body.'complemento'
-        this.bairro = body.'bairro'
-        this.uf = body.'uf'
-        this.ibge = body.'ibge'
-        this.localidade = body.'localidade'
+    public ViaCepDTO(Map responseBody) {
+        this.cep = responseBody.cep
+        this.logradouro = responseBody.logradouro
+        this.complemento = responseBody.complemento
+        this.bairro = responseBody.bairro
+        this.uf = responseBody.uf
+        this.ibge = responseBody.ibge
+        this.localidade = responseBody.localidade
     }
 }
