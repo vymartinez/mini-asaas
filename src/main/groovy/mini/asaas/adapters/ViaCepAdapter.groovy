@@ -1,9 +1,9 @@
 package mini.asaas.adapters
 
-import groovy.transform.CompileStatic
 import mini.asaas.City
 import mini.asaas.dtos.ViaCepDTO
 import mini.asaas.enums.State
+import groovy.transform.CompileStatic
 
 @CompileStatic
 class ViaCepAdapter {

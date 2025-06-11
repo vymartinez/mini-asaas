@@ -1,7 +1,7 @@
 package mini.asaas
 
-import groovy.transform.CompileStatic
 import mini.asaas.adapters.ViaCepAdapter
+import groovy.transform.CompileStatic
 
 @CompileStatic
 class CityController {

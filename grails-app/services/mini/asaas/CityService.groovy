@@ -1,8 +1,8 @@
 package mini.asaas
 
+import mini.asaas.adapters.ViaCepAdapter
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileStatic
-import mini.asaas.adapters.ViaCepAdapter
 
 @Transactional
 @CompileStatic

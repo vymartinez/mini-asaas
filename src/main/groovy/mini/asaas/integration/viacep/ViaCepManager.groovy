@@ -1,8 +1,8 @@
 package mini.asaas.integration.viacep
 
-import groovy.transform.CompileStatic
 import mini.asaas.http.HttpRequestManager
 import mini.asaas.integration.HttpBaseManager
+import groovy.transform.CompileStatic
 import org.springframework.http.HttpStatus
 
 @CompileStatic

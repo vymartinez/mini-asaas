@@ -1,12 +1,12 @@
 package mini.asaas
 
-import grails.converters.JSON
-import grails.gorm.transactions.Transactional
-import groovy.transform.CompileStatic
 import mini.asaas.adapters.ViaCepAdapter
 import mini.asaas.dtos.ViaCepDTO
 import mini.asaas.integration.viacep.ViaCepManager
 import mini.asaas.utils.GsonBuilderUtils
+import grails.converters.JSON
+import grails.gorm.transactions.Transactional
+import groovy.transform.CompileStatic
 
 @CompileStatic
 @Transactional
