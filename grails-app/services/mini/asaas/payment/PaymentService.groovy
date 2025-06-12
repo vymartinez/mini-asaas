@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User
 @CompileStatic
 @Transactional
 class PaymentService {
+
     EmailNotificationService emailNotificationService
 
     SpringSecurityService springSecurityService
