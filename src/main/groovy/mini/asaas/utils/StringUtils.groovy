@@ -1,5 +1,8 @@
 package mini.asaas.utils
 
+import grails.compiler.GrailsCompileStatic
+
+@GrailsCompileStatic
 class StringUtils {
 
     public static String removeNonNumeric(String text) {

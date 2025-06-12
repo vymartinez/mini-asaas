@@ -1,5 +1,8 @@
 package mini.asaas.adapters
 
+import grails.compiler.GrailsCompileStatic
+
+@GrailsCompileStatic
 class AddressAdapter {
 
     String address

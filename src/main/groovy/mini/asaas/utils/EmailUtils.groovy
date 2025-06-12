@@ -1,5 +1,8 @@
 package mini.asaas.utils
 
+import grails.compiler.GrailsCompileStatic
+
+@GrailsCompileStatic
 class EmailUtils {
 
     public static Boolean isValid(String email) {

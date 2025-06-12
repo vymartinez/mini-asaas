@@ -1,14 +1,16 @@
 package mini.asaas.utils
 
 import mini.asaas.enums.PersonType
+import grails.compiler.GrailsCompileStatic
 
+@GrailsCompileStatic
 class CpfCnpjUtils {
 
     public static final int CNPJ_LENGTH = 14
 
     public static final int CPF_LENGTH = 11
 
-    public static final INVALID_CPF_SEQUENCES = [	"00000000000", "11111111111", "22222222222", "33333333333",
+    public static final String[] INVALID_CPF_SEQUENCES = [	"00000000000", "11111111111", "22222222222", "33333333333",
                                                      "44444444444", "55555555555", "66666666666", "77777777777",
                                                      "88888888888", "99999999999"]
 

@@ -5,39 +5,31 @@ import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
 
+import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
 import grails.validation.ValidationException
 
+@GrailsCompileStatic
 @Transactional
 class CustomerService {
 
     AddressService addressService
 
     public Customer create(SaveCustomerAdapter saveCustomerAdapter) {
-
         Customer customer = validate(saveCustomerAdapter)
 
         if (customer.hasErrors()) throw new ValidationException("Erro ao criar conta do usuário", customer.errors)
 
-        Address address = new Address(
-            address: saveCustomerAdapter.address.address,
-            addressNumber: saveCustomerAdapter.address.addressNumber,
-            city: City.get(saveCustomerAdapter.address.cityId),
-            zipCode: saveCustomerAdapter.address.zipCode,
-            province: saveCustomerAdapter.address.province,
-            complement: saveCustomerAdapter.address.complement
-        )
+        Address address = addressService.create(saveCustomerAdapter.address)
+        
+        customer.name = saveCustomerAdapter.name
+        customer.email = saveCustomerAdapter.email
+        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
+        customer.address = address
 
-        Customer validatedCustomer = new Customer(
-            name: saveCustomerAdapter.name,
-            email: saveCustomerAdapter.email,
-            cpfCnpj: saveCustomerAdapter.cpfCnpj,
-            personType: CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj),
-            address: address
-        )
-
-        validatedCustomer.save(failOnError: true)
-        return validatedCustomer
+        customer.save(failOnError: true)
+        return customer
     }
 
     private Customer validate(SaveCustomerAdapter saveCustomerAdapter) {
@@ -53,6 +45,6 @@ class CustomerService {
 
         if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado não é válido")
 
-        return addressService.validate(saveCustomerAdapter.address, customer)
+        return customer
     }
 }
