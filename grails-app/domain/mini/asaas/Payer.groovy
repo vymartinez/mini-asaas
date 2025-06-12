@@ -10,7 +10,7 @@ class Payer extends BaseEntity {
 
     String cpfCnpj
 
-    String cellphone
+    String cellPhone
 
     Address address
 
