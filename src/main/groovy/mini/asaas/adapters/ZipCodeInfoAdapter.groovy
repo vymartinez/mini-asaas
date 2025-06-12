@@ -3,10 +3,10 @@ package mini.asaas.adapters
 import mini.asaas.City
 import mini.asaas.dtos.ViaCepDTO
 import mini.asaas.enums.State
-import groovy.transform.CompileStatic
+import grails.compiler.GrailsCompileStatic
 
-@CompileStatic
-class ViaCepAdapter {
+@GrailsCompileStatic
+class ZipCodeInfoAdapter {
 
     String zipCode
 
@@ -20,18 +20,17 @@ class ViaCepAdapter {
 
     String ibgeCode
 
-    String district
+    String name
 
-    List<City> cities
+    City city
 
-    public ViaCepAdapter(ViaCepDTO viaCepDto) {
+    public ZipCodeInfoAdapter(ViaCepDTO viaCepDto) {
         this.zipCode = viaCepDto.cep
         this.address = viaCepDto.logradouro
         this.complement = viaCepDto.complemento
         this.province = viaCepDto.bairro
         this.state = State.valueOf(viaCepDto.uf.toUpperCase())
         this.ibgeCode = viaCepDto.ibge
-        this.district = viaCepDto.localidade
-        this.cities = []
+        this.name = viaCepDto.localidade
     }
 }

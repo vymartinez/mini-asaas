@@ -3,7 +3,6 @@ package mini.asaas.utils
 import com.google.gson.GsonBuilder
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovy.transform.CompileStatic
 
 class GsonBuilderUtils {
 

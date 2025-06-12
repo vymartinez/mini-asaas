@@ -1,8 +1,8 @@
 package mini.asaas.dtos
 
-import groovy.transform.CompileStatic
+import grails.compiler.GrailsCompileStatic
 
-@CompileStatic
+@GrailsCompileStatic
 class ViaCepDTO {
 
     String cep

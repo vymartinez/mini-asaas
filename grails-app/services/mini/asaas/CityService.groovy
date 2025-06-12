@@ -1,25 +1,19 @@
 package mini.asaas
 
-import mini.asaas.adapters.ViaCepAdapter
+import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
-import groovy.transform.CompileStatic
+import mini.asaas.enums.State
 
 @Transactional
-@CompileStatic
+@GrailsCompileStatic
 class CityService {
 
-    ViaCepManagerService viaCepManagerService
+    public City search(String name, State state, String ibgeCode) {
+        City city = new City()
+        city.name = name
+        city.ibgeCode = ibgeCode
+        city.state = state
 
-    ViaCepAdapter findAllByZipCode(String zipCode) {
-
-        ViaCepAdapter viaCepAdapter = viaCepManagerService.get(zipCode)
-
-        viaCepAdapter.cities = findAllByIbgeCode(viaCepAdapter.ibgeCode)
-
-        return viaCepAdapter
-    }
-
-    private List<City> findAllByIbgeCode(String ibgeCode) {
-        return City.executeQuery("from City where ibgeCode = :ibgeCode", [ibgeCode: ibgeCode])
+        return City.find(city)
     }
 }
