@@ -41,7 +41,7 @@ class CpfCnpjUtils {
         return cpfCnpj.length() == CPF_LENGTH
     }
 
-    public static getPersonType(String cpfCnpj) {
+    public static PersonType getPersonType(String cpfCnpj) {
         if (isCnpj(cpfCnpj)) return PersonType.LEGAL
         if (isCpf(cpfCnpj)) return PersonType.NATURAL
 

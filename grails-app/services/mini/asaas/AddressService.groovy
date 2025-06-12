@@ -11,7 +11,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class AddressService {
 
-    public create(AddressAdapter addressAdapter) {
+    public Address create(AddressAdapter addressAdapter) {
         Address address = validate(addressAdapter)
 
         if (address.hasErrors()) throw new ValidationException("Erro ao criar endereço", address.errors)

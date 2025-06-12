@@ -19,11 +19,13 @@ class CustomerController {
 
             redirect(view: 'dashboard', model: [customer: customer])
         } catch (ValidationException e) {
-            flash.message = message(success: false, error: "Atenção: " + e.errors.allErrors.defaultMessage.join(", "))
+            flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
+            flash.success = false
             flash.type = MessageType.ERROR
             redirect(url: '/onboarding/createCustomer', model: [params: params])
         } catch (Exception e) {
-            flash.message = message(success: false, error: "Ocorreu um erro interno. Por favor, tente novamente mais tarde.")
+            flash.message = "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
+            flash.success = false
             flash.type = MessageType.ERROR
             redirect(url: '/onboarding/createCustomer', model: [params: params])
         }
