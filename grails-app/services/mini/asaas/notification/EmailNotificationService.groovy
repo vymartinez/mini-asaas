@@ -1,6 +1,7 @@
 package mini.asaas.notification
 
 import mini.asaas.payment.Payment
+import mini.asaas.utils.BigDecimalUtils
 
 import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
@@ -13,12 +14,12 @@ class EmailNotificationService {
 
     MessageSource messageSource
 
-    CurrencyFormatterService currencyFormatterService
+    BigDecimalUtils bigDecimalUtils
 
     MailService mailService
 
     public void notifyCreated(Payment payment) {
-        String amount = currencyFormatterService.format(payment.value)
+        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
 
         String subject = messageSource.getMessage(
                 'payment.notify.created.subject',
@@ -36,7 +37,7 @@ class EmailNotificationService {
     }
 
     public void notifyPaid(Payment payment) {
-        String amount = currencyFormatterService.format(payment.value)
+        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
 
         String subject = messageSource.getMessage(
                 'payment.notify.paid.subject',
@@ -54,7 +55,7 @@ class EmailNotificationService {
     }
 
     public void notifyExpired(Payment payment) {
-        String amount = currencyFormatterService.format(payment.value)
+        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
 
         String subject = messageSource.getMessage(
                 'payment.notify.expired.subject',
@@ -72,7 +73,7 @@ class EmailNotificationService {
     }
 
     public void notifyDeleted(Payment payment) {
-        String amount = currencyFormatterService.format(payment.value)
+        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
 
         String subject = messageSource.getMessage(
                 'payment.notify.deleted.subject',
