@@ -11,17 +11,13 @@ class PaymentController {
         respond paymentService.get(id)
     }
 
-    def create() {
-        respond new Payment()
-    }
-
     def save() {
         try {
             paymentService.create(params)
             flash.message = "Cobrança criada com sucesso."
             redirect action: 'index'
-        } catch (Exception e) {
-            flash.message = "Erro ao criar cobrança: ${e.message}"
+        } catch (Exception exception) {
+            flash.message = "Erro ao criar cobrança: ${exception.message}"
             redirect action: 'create'
         }
     }
@@ -35,8 +31,8 @@ class PaymentController {
             paymentService.update(id, params)
             flash.message = "Cobrança atualizada com sucesso."
             redirect action: 'show', id: id
-        } catch (Exception e) {
-            flash.message = "Erro ao atualizar cobrança: ${e.message}"
+        } catch (Exception exception) {
+            flash.message = "Erro ao atualizar cobrança: ${exception.message}"
             redirect action: 'edit', id: id
         }
     }
@@ -45,8 +41,8 @@ class PaymentController {
         try {
             paymentService.softDelete(id)
             flash.message = "Cobrança removida com sucesso."
-        } catch (Exception e) {
-            flash.message = "Erro ao remover cobrança: ${e.message}"
+        } catch (Exception exception) {
+            flash.message = "Erro ao remover cobrança: ${exception.message}"
         }
 
         redirect action: 'index'
@@ -56,8 +52,8 @@ class PaymentController {
         try {
             paymentService.restore(id)
             flash.message = "Cobrança restaurada com sucesso."
-        } catch (Exception e) {
-            flash.message = "Erro ao restaurar cobrança: ${e.message}"
+        } catch (Exception exception) {
+            flash.message = "Erro ao restaurar cobrança: ${exception.message}"
         }
 
         redirect action: 'show', id: id
@@ -67,8 +63,8 @@ class PaymentController {
         try {
             paymentService.confirm(id)
             flash.message = "Pagamento confirmado com sucesso."
-        } catch (Exception e) {
-            flash.message = "Erro ao confirmar pagamento: ${e.message}"
+        } catch (Exception exception) {
+            flash.message = "Erro ao confirmar pagamento: ${exception.message}"
         }
 
         redirect action: 'show', id: id
