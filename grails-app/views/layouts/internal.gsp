@@ -31,9 +31,6 @@
             <g:render template="/templates/header" />
         </atlas-page-header>
         <atlas-page-content slot="content" class="js-atlas-content">
-            <atlas-breadcrumb slot="breadcrumb">
-                <atlas-breadcrumb-item text="${pageProperty(name: "body.page-title")}" icon="home"/>
-            </atlas-breadcrumb>
             <g:layoutBody />
         </atlas-page-content>
     </atlas-page>
