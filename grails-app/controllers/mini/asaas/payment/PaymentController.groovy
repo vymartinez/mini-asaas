@@ -1,11 +1,9 @@
 package mini.asaas.payment
 
-import grails.compiler.GrailsCompileStatic
 import mini.asaas.adapters.SavePaymentAdapter
 import mini.asaas.adapters.UpdatePaymentAdapter
 
 import grails.gorm.transactions.Transactional
-import grails.plugin.springsecurity.SpringSecurityService
 
 @Transactional(readOnly = true)
 class PaymentController {
@@ -39,18 +37,20 @@ class PaymentController {
             render view: 'create', model: [adapter: adapter]
             return
         }
+
         try {
             def payment = paymentService.create(adapter)
             flash.message = "Cobrança criada com sucesso."
             redirect action: 'show', id: payment.id
-        } catch (RuntimeException e) {
-            flash.message = e.message
+        } catch (RuntimeException exception) {
+            flash.message = exception.message
             render view: 'create', model: [adapter: adapter]
         }
     }
 
     def edit(Long id) {
         def payment = paymentService.get(id)
+
         if (!payment) {
             flash.message = "Pagamento não encontrado para ID $id"
             redirect action: 'index'
@@ -66,12 +66,13 @@ class PaymentController {
             render view: 'edit', model: [adapter: adapter]
             return
         }
+
         try {
             def payment = paymentService.update(id, adapter)
             flash.message = "Cobrança atualizada com sucesso."
             redirect action: 'show', id: payment.id
-        } catch (RuntimeException e) {
-            flash.message = e.message
+        } catch (RuntimeException exception) {
+            flash.message = exception.message
             render view: 'edit', model: [adapter: adapter]
         }
     }
@@ -82,8 +83,8 @@ class PaymentController {
             paymentService.softDelete(id)
             flash.message = "Cobrança removida com sucesso."
             redirect action: 'index'
-        } catch (RuntimeException e) {
-            flash.message = e.message
+        } catch (RuntimeException exception) {
+            flash.message = exception.message
             redirect action: 'show', id: id
         }
     }
