@@ -1,72 +1,90 @@
 package mini.asaas.payment
 
+import grails.compiler.GrailsCompileStatic
+import mini.asaas.adapters.SavePaymentAdapter
+import mini.asaas.adapters.UpdatePaymentAdapter
+
+import grails.gorm.transactions.Transactional
+import grails.plugin.springsecurity.SpringSecurityService
+
+@Transactional(readOnly = true)
 class PaymentController {
+
     PaymentService paymentService
 
-    def index() {
-        respond paymentService.list()
+    def index(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        def payments = Payment.list(params)
+        def paymentCount = Payment.count()
+        render view: 'index', model: [payments: payments, paymentCount: paymentCount]
     }
 
     def show(Long id) {
-        respond paymentService.get(id)
+        def payment = paymentService.get(id)
+        if (!payment) {
+            flash.message = "Pagamento não encontrado para ID $id"
+            redirect action: 'index'
+            return
+        }
+        render view: 'show', model: [payment: payment]
     }
 
-    def save() {
+    def create() {
+        render view: 'create', model: [adapter: new SavePaymentAdapter()]
+    }
+
+    @Transactional
+    def save(SavePaymentAdapter adapter) {
+        if (adapter.hasErrors()) {
+            render view: 'create', model: [adapter: adapter]
+            return
+        }
         try {
-            paymentService.create(params)
+            def payment = paymentService.create(adapter)
             flash.message = "Cobrança criada com sucesso."
-            redirect action: 'index'
-        } catch (Exception exception) {
-            flash.message = "Erro ao criar cobrança: ${exception.message}"
-            redirect action: 'create'
+            redirect action: 'show', id: payment.id
+        } catch (RuntimeException e) {
+            flash.message = e.message
+            render view: 'create', model: [adapter: adapter]
         }
     }
 
     def edit(Long id) {
-        respond paymentService.get(id)
+        def payment = paymentService.get(id)
+        if (!payment) {
+            flash.message = "Pagamento não encontrado para ID $id"
+            redirect action: 'index'
+            return
+        }
+
+        render view: 'edit', model: [adapter: new UpdatePaymentAdapter(payment)]
     }
 
-    def update(Long id) {
+    @Transactional
+    def update(Long id, UpdatePaymentAdapter adapter) {
+        if (adapter.hasErrors()) {
+            render view: 'edit', model: [adapter: adapter]
+            return
+        }
         try {
-            paymentService.update(id, params)
+            def payment = paymentService.update(id, adapter)
             flash.message = "Cobrança atualizada com sucesso."
-            redirect action: 'show', id: id
-        } catch (Exception exception) {
-            flash.message = "Erro ao atualizar cobrança: ${exception.message}"
-            redirect action: 'edit', id: id
+            redirect action: 'show', id: payment.id
+        } catch (RuntimeException e) {
+            flash.message = e.message
+            render view: 'edit', model: [adapter: adapter]
         }
     }
 
+    @Transactional
     def delete(Long id) {
         try {
             paymentService.softDelete(id)
             flash.message = "Cobrança removida com sucesso."
-        } catch (Exception exception) {
-            flash.message = "Erro ao remover cobrança: ${exception.message}"
+            redirect action: 'index'
+        } catch (RuntimeException e) {
+            flash.message = e.message
+            redirect action: 'show', id: id
         }
-
-        redirect action: 'index'
-    }
-
-    def restore(Long id) {
-        try {
-            paymentService.restore(id)
-            flash.message = "Cobrança restaurada com sucesso."
-        } catch (Exception exception) {
-            flash.message = "Erro ao restaurar cobrança: ${exception.message}"
-        }
-
-        redirect action: 'show', id: id
-    }
-
-    def confirm(Long id) {
-        try {
-            paymentService.confirm(id)
-            flash.message = "Pagamento confirmado com sucesso."
-        } catch (Exception exception) {
-            flash.message = "Erro ao confirmar pagamento: ${exception.message}"
-        }
-
-        redirect action: 'show', id: id
     }
 }
