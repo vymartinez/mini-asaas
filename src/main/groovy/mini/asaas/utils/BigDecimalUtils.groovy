@@ -5,7 +5,7 @@ import java.math.RoundingMode
 import grails.compiler.GrailsCompileStatic
 
 @GrailsCompileStatic
-class BigDecimalUtils {
+abstract class BigDecimalUtils {
 
     private BigDecimalUtils() {}
 
