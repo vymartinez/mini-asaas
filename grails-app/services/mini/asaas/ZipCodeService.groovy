@@ -8,13 +8,13 @@ import grails.gorm.transactions.Transactional
 @GrailsCompileStatic
 class ZipCodeService {
 
-    ViaCepManagerService viaCepManagerService
     CityService cityService
+    ViaCepManagerService viaCepManagerService
 
     public ZipCodeInfoAdapter find(String zipCode) {
         ZipCodeInfoAdapter zipCodeInfoAdapter = viaCepManagerService.get(zipCode)
 
-        zipCodeInfoAdapter.city = cityService.search(zipCodeInfoAdapter.name, zipCodeInfoAdapter.state, zipCodeInfoAdapter.ibgeCode)
+        zipCodeInfoAdapter.city = cityService.find(zipCodeInfoAdapter.name, zipCodeInfoAdapter.state, zipCodeInfoAdapter.ibgeCode)
 
         return zipCodeInfoAdapter
     }
