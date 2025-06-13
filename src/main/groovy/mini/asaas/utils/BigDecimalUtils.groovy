@@ -2,15 +2,18 @@ package mini.asaas.utils
 
 import java.math.RoundingMode
 
+import grails.compiler.GrailsCompileStatic
+
+@GrailsCompileStatic
 class BigDecimalUtils {
 
     private BigDecimalUtils() {}
 
-    public static String formatTwoDecimals(BigDecimal value) {
+    public static BigDecimal round(BigDecimal value, int scale, RoundingMode roundingMode) {
         if (value == null) {
-            return "0.00"
+            return BigDecimal.ZERO.setScale(scale, roundingMode)
         }
 
-        return value.setScale(2, RoundingMode.HALF_UP).toString()
+        return value.setScale(scale, roundingMode)
     }
 }

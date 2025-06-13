@@ -2,24 +2,24 @@ package mini.asaas.notification
 
 import mini.asaas.payment.Payment
 import mini.asaas.utils.BigDecimalUtils
+import java.math.RoundingMode
 
+import grails.compiler.GrailsCompileStatic
 import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
-import groovy.transform.CompileStatic
 import org.springframework.context.MessageSource
 
-@CompileStatic
+@GrailsCompileStatic
 @Transactional
 class EmailNotificationService {
 
     MessageSource messageSource
 
-    BigDecimalUtils bigDecimalUtils
-
     MailService mailService
 
     public void notifyCreated(Payment payment) {
-        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
+
+        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.created.subject',
@@ -37,7 +37,7 @@ class EmailNotificationService {
     }
 
     public void notifyPaid(Payment payment) {
-        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
+        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.paid.subject',
@@ -55,7 +55,7 @@ class EmailNotificationService {
     }
 
     public void notifyExpired(Payment payment) {
-        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
+        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.expired.subject',
@@ -73,7 +73,7 @@ class EmailNotificationService {
     }
 
     public void notifyDeleted(Payment payment) {
-        String amount = bigDecimalUtils.formatTwoDecimals(payment.value)
+        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.deleted.subject',
