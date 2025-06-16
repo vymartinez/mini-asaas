@@ -1,6 +1,5 @@
 package mini.asaas
 
-import grails.plugin.springsecurity.annotation.Secured
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
@@ -12,7 +11,6 @@ class PayerController {
 
     PayerService payerService
 
-    @Secured("permitAll")
     def create() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
@@ -39,7 +37,6 @@ class PayerController {
         }
     }
 
-    @Secured("permitAll")
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
