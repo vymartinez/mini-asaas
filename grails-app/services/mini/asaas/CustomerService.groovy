@@ -20,32 +20,30 @@ class CustomerService {
 
         if (customer.hasErrors()) throw new ValidationException("Erro ao criar conta do usuário", customer.errors)
 
-        Address address = addressService.save(saveCustomerAdapter.address)
-        
-        customer.name = saveCustomerAdapter.name
-        customer.email = saveCustomerAdapter.email
-        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
-        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
-        customer.address = address
+        Address address = addressService.create(saveCustomerAdapter.address)
+        buildCustomer(customer, saveCustomerAdapter, address)
 
         customer.save(failOnError: true)
         return customer
     }
 
-    public Customer update(SaveCustomerAdapter saveCustomerAdapter) {
+    public Customer findById(Long customerId) {
+        Customer customer = Customer.get(customerId)
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado")
+
+        return customer
+    }
+
+    public Customer update(SaveCustomerAdapter saveCustomerAdapter, Long customerId) {
         Customer customer = validate(saveCustomerAdapter)
 
         if (customer.hasErrors()) throw new ValidationException("Erro ao atualizar a conta do usuário", customer.errors)
 
-        customer = Customer.get(1) // Será alterado para customer do usuário logado
+        customer = findById(customerId)
 
-        Address address = addressService.save(saveCustomerAdapter.address)
-
-        customer.name = saveCustomerAdapter.name
-        customer.email = saveCustomerAdapter.email
-        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
-        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
-        customer.address = address
+        Address address = addressService.update(saveCustomerAdapter.address, customer.address.id)
+        buildCustomer(customer, saveCustomerAdapter, address)
 
         customer.save(failOnError: true)
         return customer
@@ -65,5 +63,13 @@ class CustomerService {
         if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado não é válido")
 
         return customer
+    }
+
+    private buildCustomer(Customer customer, SaveCustomerAdapter saveCustomerAdapter, Address address) {
+        customer.name = saveCustomerAdapter.name
+        customer.email = saveCustomerAdapter.email
+        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
+        customer.address = address
     }
 }

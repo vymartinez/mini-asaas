@@ -1,33 +1,49 @@
 package mini.asaas
 
-import grails.validation.ValidationException
 import mini.asaas.adapters.AddressAdapter
 import mini.asaas.utils.DomainUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
+import grails.validation.ValidationException
 
 @GrailsCompileStatic
 @Transactional
 class AddressService {
 
-    public Address save(AddressAdapter addressAdapter) {
+    public Address create(AddressAdapter addressAdapter) {
         Address address = validate(addressAdapter)
 
         if (address.hasErrors()) throw new ValidationException("Erro ao criar endereço", address.errors)
 
-        address.address = addressAdapter.address
-        address.addressNumber = addressAdapter.addressNumber
-        address.city = City.get(addressAdapter.cityId)
-        address.zipCode = addressAdapter.zipCode
-        address.province = addressAdapter.province
-        address.complement = addressAdapter.complement
+        buildAddress(address, addressAdapter)
 
         address.save(failOnError: true)
         return address
     }
 
-    public Address validate(AddressAdapter addressAdapter) {
+    public Address findById(Long addressId) {
+        Address address = Address.get(addressId)
+
+        if (!address) throw new RuntimeException("Endereço não encontrado")
+
+        return address
+    }
+
+    public Address update(AddressAdapter addressAdapter, Long addressId) {
+        Address address = validate(addressAdapter)
+
+        if (address.hasErrors()) throw new ValidationException("Erro ao atualizar endereço", address.errors)
+
+        address = findById(addressId)
+
+        buildAddress(address, addressAdapter)
+
+        address.save(failOnError: true)
+        return address
+    }
+
+    private Address validate(AddressAdapter addressAdapter) {
         Address address = new Address()
 
         if (!addressAdapter.address) DomainUtils.addError(address, "O logradouro é obrigatório")
@@ -41,5 +57,14 @@ class AddressService {
         if (!addressAdapter.cityId) DomainUtils.addError(address, "Os dados de cidade são obrigatórios")
 
         return address
+    }
+
+    private buildAddress(Address address, AddressAdapter addressAdapter) {
+        address.address = addressAdapter.address
+        address.addressNumber = addressAdapter.addressNumber
+        address.city = City.get(addressAdapter.cityId)
+        address.zipCode = addressAdapter.zipCode
+        address.province = addressAdapter.province
+        address.complement = addressAdapter.complement
     }
 }

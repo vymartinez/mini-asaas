@@ -35,7 +35,8 @@ class CustomerController {
         try {
             SaveCustomerAdapter saveCustomerAdapter = new SaveCustomerAdapter(params)
 
-            Customer customer = customerService.update(saveCustomerAdapter)
+            Long currentCustomerId = 1
+            Customer customer = customerService.update(saveCustomerAdapter, currentCustomerId)
 
             flash.message = "Dados alterados com sucesso!"
             flash.success = true
@@ -43,6 +44,11 @@ class CustomerController {
             redirect(url: '/dashboard', model: [customer: customer])
         } catch (ValidationException e) {
             flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
+            flash.success = false
+            flash.type = MessageType.ERROR
+            redirect(url: '/dashboard/profile', model: [params: params])
+        } catch (RuntimeException e) {
+            flash.message = e.getMessage()
             flash.success = false
             flash.type = MessageType.ERROR
             redirect(url: '/dashboard/profile', model: [params: params])
