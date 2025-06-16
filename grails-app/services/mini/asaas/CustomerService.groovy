@@ -20,8 +20,27 @@ class CustomerService {
 
         if (customer.hasErrors()) throw new ValidationException("Erro ao criar conta do usuário", customer.errors)
 
-        Address address = addressService.create(saveCustomerAdapter.address)
+        Address address = addressService.save(saveCustomerAdapter.address)
         
+        customer.name = saveCustomerAdapter.name
+        customer.email = saveCustomerAdapter.email
+        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
+        customer.address = address
+
+        customer.save(failOnError: true)
+        return customer
+    }
+
+    public Customer update(SaveCustomerAdapter saveCustomerAdapter) {
+        Customer customer = validate(saveCustomerAdapter)
+
+        if (customer.hasErrors()) throw new ValidationException("Erro ao atualizar a conta do usuário", customer.errors)
+
+        customer = Customer.get(1) // Será alterado para customer do usuário logado
+
+        Address address = addressService.save(saveCustomerAdapter.address)
+
         customer.name = saveCustomerAdapter.name
         customer.email = saveCustomerAdapter.email
         customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
