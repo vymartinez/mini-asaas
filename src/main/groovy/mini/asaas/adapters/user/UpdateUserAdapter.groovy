@@ -1,44 +1,32 @@
-package mini.asaas.adapters
+package mini.asaas.adapters.user
 
 import grails.compiler.GrailsCompileStatic
 
 @GrailsCompileStatic
 class UpdateUserAdapter {
 
-    Boolean updateUsername = false
-
     String username
-
-    Boolean updatePassword = false
 
     String password
 
-    Boolean updateEnable = false
-
     Boolean enable
-
-    Boolean updateRoles = false
 
     List<String> roles = []
 
     public UpdateUserAdapter(Map params) {
-        this.updateUsername = params.updateUsername?.toString().toBoolean() ?: false
+
         this.username = params.username as String
 
-        this.updatePassword = params.updatePassword?.toString().toBoolean() ?: false
         this.password = params.password as String
 
-        this.updateEnable = params.updateEnable?.toString().toBoolean() ?: false
         this.enable = params.enable != null ? params.enable.toString().toBoolean() : null
 
-        this.updateRoles = params.updateRoles?.toString().toBoolean() ?: false
+        def rawParam = params.roles
 
-        def rolesParam = params.roles
-
-        if (rolesParam instanceof List) {
-            this.roles = rolesParam*.toString()
-        } else if (rolesParam) {
-            this.roles = rolesParam.toString().split(',')*.trim()
+        if (rawParam instanceof List) {
+            this.roles = rawParam*.toString()
+        } else if (rawParam) {
+            this.roles = rawParam.toString().split(',')*.trim()
         }
     }
 }
