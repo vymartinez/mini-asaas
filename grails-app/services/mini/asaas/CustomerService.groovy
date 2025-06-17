@@ -27,14 +27,6 @@ class CustomerService {
         return customer
     }
 
-    private Customer findById(Long customerId) {
-        Customer customer = Customer.get(customerId)
-
-        if (!customer) throw new RuntimeException("Usuário não encontrado")
-
-        return customer
-    }
-
     public Customer update(SaveCustomerAdapter saveCustomerAdapter, Long customerId) {
         Customer customer = validate(saveCustomerAdapter)
 
@@ -46,6 +38,14 @@ class CustomerService {
         buildCustomer(customer, saveCustomerAdapter, address)
 
         customer.save(failOnError: true)
+        return customer
+    }
+
+    private Customer findById(Long customerId) {
+        Customer customer = Customer.get(customerId)
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado")
+
         return customer
     }
 

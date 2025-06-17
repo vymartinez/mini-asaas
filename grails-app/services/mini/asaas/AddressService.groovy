@@ -22,14 +22,6 @@ class AddressService {
         return address
     }
 
-    private Address findById(Long addressId) {
-        Address address = Address.get(addressId)
-
-        if (!address) throw new RuntimeException("Endereço não encontrado")
-
-        return address
-    }
-
     public Address update(AddressAdapter addressAdapter, Long addressId) {
         Address address = validate(addressAdapter)
 
@@ -40,6 +32,14 @@ class AddressService {
         buildAddress(address, addressAdapter)
 
         address.save(failOnError: true)
+        return address
+    }
+
+    private Address findById(Long addressId) {
+        Address address = Address.get(addressId)
+
+        if (!address) throw new RuntimeException("Endereço não encontrado")
+
         return address
     }
 
