@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.SavePayerAdapter
+import mini.asaas.repositorys.PayerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
@@ -30,14 +31,6 @@ class PayerService {
         return payer
     }
 
-    public Payer findById(Long payerId) {
-        Payer payer = Payer.get(payerId)
-
-        if (!payer) throw new RuntimeException("Pagador não encontrado")
-
-        return payer
-    }
-
     public Payer update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
         Payer payer = validate(savePayerAdapter)
 
@@ -53,6 +46,14 @@ class PayerService {
         buildPayer(payer, savePayerAdapter, customer, address)
 
         payer.save(failOnError: true)
+        return payer
+    }
+
+    private Payer findById(Long payerId) {
+        Payer payer = PayerRepository.query([id: payerId]).get()
+
+        if (!payer) throw new RuntimeException("Pagador não encontrado")
+
         return payer
     }
 
