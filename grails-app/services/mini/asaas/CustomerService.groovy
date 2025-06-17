@@ -27,7 +27,7 @@ class CustomerService {
         return customer
     }
 
-    public Customer findById(Long customerId) {
+    private Customer findById(Long customerId) {
         Customer customer = Customer.get(customerId)
 
         if (!customer) throw new RuntimeException("Usuário não encontrado")

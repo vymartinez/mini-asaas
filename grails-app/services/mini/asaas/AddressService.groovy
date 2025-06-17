@@ -22,7 +22,7 @@ class AddressService {
         return address
     }
 
-    public Address findById(Long addressId) {
+    private Address findById(Long addressId) {
         Address address = Address.get(addressId)
 
         if (!address) throw new RuntimeException("Endereço não encontrado")
