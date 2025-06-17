@@ -1,20 +1,21 @@
 package mini.asaas.payment
 
+import grails.compiler.GrailsCompileStatic
 import mini.asaas.Payer
 import mini.asaas.adapters.UpdatePaymentAdapter
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.notification.EmailNotificationService
 import mini.asaas.adapters.SavePaymentAdapter
+import mini.asaas.utils.PaginationUtils
 
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.gorm.transactions.Transactional
-import groovy.transform.CompileStatic
 import org.springframework.security.core.userdetails.User
 
 
-@CompileStatic
+@GrailsCompileStatic
 @Transactional
-class PaymentService {
+class PaymentService extends PaginationUtils {
 
     EmailNotificationService emailNotificationService
 
@@ -29,7 +30,7 @@ class PaymentService {
             throw new RuntimeException("Payer não encontrado para ID ${adapter.payerId}")
         }
 
-        if (payer.email != currentUser.username) {
+        if (payer.customer?.email != currentUser.username) {
             throw new RuntimeException("Acesso negado: não é o dono do pagador.")
         }
 
@@ -86,6 +87,25 @@ class PaymentService {
         payment.save(failOnError: true)
 
         return payment
+    }
+
+    public List<Payment> listForCurrentUser(Map params) {
+        Map paged = normalizePagination(params)
+        String email = springSecurityService.authentication?.name
+        Payer payer = Payer.findByEmail(email)
+        if (!payer) {
+            return []
+        }
+        return Payment.findAllByPayer(payer, paged)
+    }
+
+    public Long countForCurrentUser() {
+        String email = springSecurityService.authentication?.name
+        Payer payer = Payer.findByEmail(email)
+        if (!payer) {
+            return 0L
+        }
+        return Payment.countByPayer(payer)
     }
 
     public void softDelete(Long id) {
