@@ -37,6 +37,20 @@ class PayerController {
         }
     }
 
+    def list() {
+        try {
+            Long currentCustomerId = 1
+            List<Payer> payers = payerService.list(params, currentCustomerId)
+
+            return payers
+        } catch (Exception e) {
+            flash.message = "Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde."
+            flash.success = false
+            flash.type = MessageType.ERROR
+            redirect(url: '/dashboard')
+        }
+    }
+
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)

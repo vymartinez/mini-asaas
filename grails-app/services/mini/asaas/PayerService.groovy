@@ -31,6 +31,12 @@ class PayerService {
         return payer
     }
 
+    public List<Payer> list(Map params, Long customerId) {
+        Map filters = getFilters(params, customerId)
+
+        return PayerRepository.query(filters).list()
+    }
+
     public Payer update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
         Payer payer = validate(savePayerAdapter)
 
@@ -82,5 +88,14 @@ class PayerService {
         payer.cellPhone = savePayerAdapter.cellPhone
         payer.address = address
         payer.customer = customer
+    }
+
+    private getFilters(Map params, customerId) {
+        Map filters = [:]
+
+        if (params.nameOrEmail) filters.nameOrEmail = params.nameOrEmail
+        filters.customerId = customerId
+
+        return filters
     }
 }
