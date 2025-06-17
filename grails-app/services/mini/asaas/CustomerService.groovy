@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
+import mini.asaas.repositorys.CustomerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
@@ -42,7 +43,7 @@ class CustomerService {
     }
 
     private Customer findById(Long customerId) {
-        Customer customer = Customer.get(customerId)
+        Customer customer = CustomerRepository.query([id: customerId]).get()
 
         if (!customer) throw new RuntimeException("Usuário não encontrado")
 

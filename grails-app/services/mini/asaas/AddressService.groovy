@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.AddressAdapter
+import mini.asaas.repositorys.AddressRepository
 import mini.asaas.utils.DomainUtils
 
 import grails.compiler.GrailsCompileStatic
@@ -36,7 +37,7 @@ class AddressService {
     }
 
     private Address findById(Long addressId) {
-        Address address = Address.get(addressId)
+        Address address = AddressRepository.query([id: addressId]).get()
 
         if (!address) throw new RuntimeException("Endereço não encontrado")
 
