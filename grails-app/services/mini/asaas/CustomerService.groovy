@@ -42,7 +42,7 @@ class CustomerService {
         return customer
     }
 
-    private Customer findById(Long customerId) {
+    public Customer findById(Long customerId) {
         Customer customer = CustomerRepository.query([id: customerId]).get()
 
         if (!customer) throw new RuntimeException("Usuário não encontrado")
