@@ -1,6 +1,7 @@
 package mini.asaas.payment
 
 import grails.compiler.GrailsCompileStatic
+import groovy.transform.CompileDynamic
 import mini.asaas.Payer
 import mini.asaas.adapters.UpdatePaymentAdapter
 import mini.asaas.enums.PaymentStatus
@@ -49,38 +50,32 @@ class PaymentService extends PaginationUtils {
         return  payment
     }
 
+    @CompileDynamic
+    @Transactional
     public Payment update(Long id, UpdatePaymentAdapter adapter) {
         User currentUser = springSecurityService.currentUser as User
 
-        Payment payment = Payment.get(id)
+        Payment payment = Payment.getOwnedOrFail(id, currentUser)
 
-        if (!payment) {
-            throw new RuntimeException("Pagamento não encontrado para ID ${id}")
-        }
-
-        if (payment.payer.email != currentUser.username) {
-            throw new RuntimeException("Acesso negado: não é o dono da cobrança.")
-        }
-
-        if (adapter.updatePayer) {
-            Payer newPayer = Payer.get(adapter.payerId)
+        if (adapter.payerId != null) {
+            Payer newPayer = Payer.FindByIdAndCustomerEmail(adapter.payerId, currentUser.username)
 
             if (!newPayer) {
-                throw new RuntimeException("Payer não encontrado para ID ${adapter.payerId}")
+                throw new RuntimeException("Acesso negado: Payer não encontrado ou não pertence ao usuário.")
             }
 
             payment.payer = newPayer
         }
 
-        if (adapter.updateBillingType) {
+        if (adapter.billingType != null) {
             payment.billingType = adapter.billingType
         }
 
-        if (adapter.updateValue) {
+        if (adapter.value != null) {
             payment.value = adapter.value
         }
 
-        if (adapter.updateDueDate) {
+        if (adapter.dueDate != null) {
             payment.dueDate = adapter.dueDate
         }
 
@@ -111,15 +106,7 @@ class PaymentService extends PaginationUtils {
     public void softDelete(Long id) {
         User currentUser = springSecurityService.currentUser as User
 
-        Payment payment = Payment.get(id)
-
-        if (!payment) {
-            throw new RuntimeException("Pagamento não encontrado para ID ${id}")
-        }
-
-        if (payment.payer.email != currentUser.username) {
-            throw new RuntimeException("Acesso negado: não é o dono da cobrança")
-        }
+        Payment payment = Payment.getOwnedOrFail(id, currentUser)
 
         payment.deleted = true
         payment.save(failOnError: true)
@@ -133,15 +120,7 @@ class PaymentService extends PaginationUtils {
     public void confirm(Long id) {
         User currentUser = springSecurityService.currentUser as User
 
-        Payment payment = Payment.get(id)
-
-        if (!payment) {
-            throw new RuntimeException("Pagamento não encontrado para ID ${id}")
-        }
-
-        if (payment.payer.email != currentUser.username) {
-            throw new RuntimeException("Acesso negado: não é o dono da cobrança")
-        }
+        Payment payment = Payment.getOwnedOrFail(id, currentUser)
 
         if (payment.status != PaymentStatus.PENDING) {
             throw new RuntimeException("Só é possível confirmar pagamentos pendentes (PENDING)")
