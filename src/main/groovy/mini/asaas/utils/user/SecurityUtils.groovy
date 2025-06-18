@@ -5,15 +5,15 @@ import grails.plugin.springsecurity.SpringSecurityService
 import mini.asaas.user.User
 
 @GrailsCompileStatic
-trait SecurityUtils {
+class SecurityUtils {
 
     SpringSecurityService sprigSecurityService
 
-    User getCurrentUser() {
+    public User getCurrentUser() {
         sprigSecurityService.currentUser as User
     }
 
-    boolean isAdmin() {
+    public boolean isAdmin() {
         currentUser?.authorities*.authority.contains('ROLE_ADMIN')
     }
 }

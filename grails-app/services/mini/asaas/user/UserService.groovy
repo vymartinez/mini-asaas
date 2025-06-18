@@ -7,28 +7,28 @@ import mini.asaas.adapters.user.SaveUserAdapter
 import mini.asaas.adapters.user.UpdateUserAdapter
 import mini.asaas.auth.UserRole
 import mini.asaas.role.Role
-import mini.asaas.utils.PaginationUtils
+
 import mini.asaas.utils.user.SecurityUtils
 
 @GrailsCompileStatic
 @Transactional
-class UserService implements SecurityUtils, PaginationUtils {
+class UserService {
 
     SpringSecurityService springSecurityService
 
+    SecurityUtils securityUtils
+
     public User create(SaveUserAdapter adapter) {
+        User currentUser = securityUtils.getCurrentUser()
 
-        User currentUser = getCurrentUser()
-
-        if (!currentUser || !isAdmin()) {
+        if (!currentUser || !securityUtils.isAdmin()) {
             throw new RuntimeException("Acesso negado: apenas administradores podem criar usuários.")
         }
 
-        User user = new User(
-                username: adapter.username,
-                password: adapter.password,
-                enabled: adapter.enable
-        )
+        User user = new User()
+        user.username = adapter.username
+        user.password = adapter.password
+        user.enabled = adapter.enable
 
         user.save(failOnError: true)
 
@@ -42,8 +42,7 @@ class UserService implements SecurityUtils, PaginationUtils {
     }
 
     public User update(Long id, UpdateUserAdapter adapter) {
-
-        User currentUser = getCurrentUser()
+        User currentUser = securityUtils.getCurrentUser()
 
         User user = User.get(id)
 
@@ -51,7 +50,7 @@ class UserService implements SecurityUtils, PaginationUtils {
             throw new RuntimeException("Usuário não encontrado para ID ${id}")
         }
 
-        if (currentUser.id != id && !isAdmin()) {
+        if (currentUser.id != id && !securityUtils.isAdmin()) {
             throw new RuntimeException("Acesso negado: apenas administradores podem atualizar outros usuários.")
         }
 
@@ -64,7 +63,7 @@ class UserService implements SecurityUtils, PaginationUtils {
 
         user.save(failOnError: true)
 
-        if (isAdmin()) {
+        if (securityUtils.isAdmin()) {
             UserRole.removeAll(user)
             adapter.roles.each { authority ->
                 Role.findByAuthority(authority)?.with { role ->
@@ -77,10 +76,9 @@ class UserService implements SecurityUtils, PaginationUtils {
     }
 
     public void softDelete(Long id) {
+        User currentUser = securityUtils.getCurrentUser()
 
-        User currentUser = getCurrentUser()
-
-        if (!currentUser || !isAdmin()) {
+        if (!currentUser || !securityUtils.isAdmin()) {
             throw new RuntimeException("Acesso negado: apenas administradores podem desabilitar usuários.")
         }
 
@@ -96,10 +94,9 @@ class UserService implements SecurityUtils, PaginationUtils {
     }
 
     public restore(Long id) {
+        User currentUser = securityUtils.getCurrentUser()
 
-        User currentUser = getCurrentUser()
-
-        if (!currentUser || !isAdmin()) {
+        if (!currentUser || !securityUtils.isAdmin()) {
             throw new RuntimeException("Acesso negado: apenas administradores podem restaurar usuários.")
         }
 
@@ -117,9 +114,8 @@ class UserService implements SecurityUtils, PaginationUtils {
         return User.get(id)
     }
 
-    public List<User> list(Map args = [:]) {
-        Map paged = normalizePagination(args)
-        return User.list(paged)
+    public List<User> list(Map params = [:]) {
+        return User.list(params)
     }
 
     public count() {
