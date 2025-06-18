@@ -6,4 +6,6 @@ beans = {
         basenames = ['classpath:messages']
         defaultEncoding = 'UTF-8'
     }
+
+    userPasswordEncoderListener(UserPasswordEncoderListener)
 }
