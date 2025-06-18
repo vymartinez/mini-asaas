@@ -7,6 +7,7 @@ postalCodeField.addEventListener("atlas-postal-code-change", async function () {
 
     document.getElementById("zipCode").value = postalCodeData.zipCode;
     document.getElementById("cityId").value = postalCodeData.city.id;
+    document.getElementById("cityName").value = postalCodeData.city.name;
     document.getElementById("address").value = postalCodeData.address;
     document.getElementById("state").value = postalCodeData.state.name;
     document.getElementById("province").value = postalCodeData.province;

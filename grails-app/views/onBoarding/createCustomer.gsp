@@ -33,9 +33,12 @@
                     <atlas-input label="Logradouro" id="address" name="address" type="text" placeholder="Logradouro" required disabled></atlas-input>
                 </atlas-col>
                 <atlas-col lg="6">
+                    <atlas-input label="Cidade" id="cityName" name="cityName" type="text" placeholder="Cidade" required disabled></atlas-input>
+                </atlas-col>
+                <atlas-col lg="3">
                     <atlas-input label="UF" id="state" name="state" type="text" placeholder="UF" required disabled></atlas-input>
                 </atlas-col>
-                <atlas-col lg="6">
+                <atlas-col lg="3">
                     <atlas-input label="Número" id="addressNumber" name="addressNumber" type="text" placeholder="Número" required></atlas-input>
                 </atlas-col>
                 <atlas-col lg="6">
