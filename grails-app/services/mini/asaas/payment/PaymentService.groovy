@@ -7,7 +7,6 @@ import mini.asaas.adapters.UpdatePaymentAdapter
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.notification.EmailNotificationService
 import mini.asaas.adapters.SavePaymentAdapter
-import mini.asaas.utils.PaginationUtils
 
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.gorm.transactions.Transactional
@@ -16,7 +15,7 @@ import org.springframework.security.core.userdetails.User
 
 @GrailsCompileStatic
 @Transactional
-class PaymentService extends PaginationUtils {
+class PaymentService {
 
     EmailNotificationService emailNotificationService
 
@@ -85,13 +84,12 @@ class PaymentService extends PaginationUtils {
     }
 
     public List<Payment> listForCurrentUser(Map params) {
-        Map paged = normalizePagination(params)
         String email = springSecurityService.authentication?.name
         Payer payer = Payer.findByEmail(email)
         if (!payer) {
             return []
         }
-        return Payment.findAllByPayer(payer, paged)
+        return Payment.findAllByPayer(payer, params)
     }
 
     public Long countForCurrentUser() {
