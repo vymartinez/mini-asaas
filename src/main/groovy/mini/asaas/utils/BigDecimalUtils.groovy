@@ -7,8 +7,6 @@ import grails.compiler.GrailsCompileStatic
 @GrailsCompileStatic
 abstract class BigDecimalUtils {
 
-    private BigDecimalUtils() {}
-
     public static BigDecimal round(BigDecimal value, int scale, RoundingMode roundingMode) {
         if (value == null) {
             return BigDecimal.ZERO.setScale(scale, roundingMode)

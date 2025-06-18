@@ -18,7 +18,6 @@ class EmailNotificationService {
     MailService mailService
 
     public void notifyCreated(Payment payment) {
-
         String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
 
         String subject = messageSource.getMessage(
