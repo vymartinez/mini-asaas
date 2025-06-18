@@ -31,6 +31,13 @@
             <g:render template="/templates/header" />
         </atlas-page-header>
         <atlas-page-content slot="content" class="js-atlas-content">
+        <g:if test="${flash.message}">
+            <atlas-alert
+                    type="${flash.success ? 'success' : 'error'}"
+                    message="${flash.message}"
+                    class="js-atlas-alert"
+            ></atlas-alert>
+        </g:if>
             <g:layoutBody />
         </atlas-page-content>
     </atlas-page>
