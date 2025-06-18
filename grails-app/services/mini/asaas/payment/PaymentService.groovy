@@ -34,13 +34,12 @@ class PaymentService {
             throw new RuntimeException("Acesso negado: não é o dono do pagador.")
         }
 
-        Payment payment = new Payment(
-                payer: payer,
-                billingType: adapter.billingType,
-                value: adapter.value,
-                dueDate: adapter.dueDate,
-                status: PaymentStatus.PENDING
-        )
+        Payment payment = new Payment()
+        payment.payer = payer
+        payment.billingType = adapter.billingType
+        payment.value = adapter.value
+        payment.dueDate = adapter.dueDate
+        payment.status = PaymentStatus.PENDING
 
         payment.save(failOnError: true)
 
