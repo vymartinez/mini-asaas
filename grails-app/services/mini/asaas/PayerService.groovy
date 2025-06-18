@@ -32,7 +32,7 @@ class PayerService {
     }
 
     public List<Payer> list(Map params, Long customerId) {
-        Map filters = getFilters(params, customerId)
+        Map filters = buildListFilters(params, customerId)
 
         return PayerRepository.query(filters).list()
     }
@@ -90,10 +90,10 @@ class PayerService {
         payer.customer = customer
     }
 
-    private getFilters(Map params, customerId) {
+    private Map buildListFilters(Map params, customerId) {
         Map filters = [:]
 
-        if (params.nameOrEmail) filters.nameOrEmail = params.nameOrEmail
+        if (params."nameOrEmail[like]") filters."nameOrEmail[like]" = params."nameOrEmail[like]"
         filters.customerId = customerId
 
         return filters

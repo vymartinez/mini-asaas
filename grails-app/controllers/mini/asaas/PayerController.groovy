@@ -43,7 +43,7 @@ class PayerController {
             List<Payer> payers = payerService.list(params, currentCustomerId)
 
             return payers
-        } catch (Exception e) {
+        } catch (Exception exception) {
             flash.message = "Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde."
             flash.success = false
             flash.type = MessageType.ERROR
