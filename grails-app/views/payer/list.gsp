@@ -15,6 +15,7 @@
                 slot="actions"
             ></atlas-button>
         </atlas-toolbar>
+        <atlas-search-input label="Pesquisar" placeholder="Pesquisar por nome ou e-mail"></atlas-search-input>
         <atlas-table has-actions>
             <atlas-table-header slot="header">
                 <atlas-table-col>
