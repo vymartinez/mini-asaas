@@ -1,6 +1,7 @@
 package mini.asaas.notification
 
 import mini.asaas.payment.Payment
+
 import mini.asaas.utils.BigDecimalUtils
 import java.math.RoundingMode
 
@@ -94,6 +95,7 @@ class EmailNotificationService {
             to args.get('to')
             subject args.get('subject')
             body args.get('body')
+
         }
     }
 }
