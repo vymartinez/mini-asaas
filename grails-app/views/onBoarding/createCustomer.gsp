@@ -3,12 +3,11 @@
 <head>
     <meta name="layout" content="external"/>
     <title>Mini Asaas</title>
-    <asset:stylesheet src="register.css"/>
 </head>
 
 <body>
 <atlas-panel>
-    <atlas-form action="/customer/create">
+    <atlas-form action="/customer/create" method="post">
         <atlas-heading>Cadastro de Usuários</atlas-heading>
         <atlas-grid>
             <atlas-row>
@@ -25,9 +24,6 @@
                     <atlas-masked-input label="CPF/CNPJ" id="cpfCnpj" name="cpfCnpj" type="text" placeholder="CPF/CNPJ" alias="cpf-cnpj" required></atlas-masked-input>
                 </atlas-col>
                 <atlas-col lg="6">
-                    <atlas-masked-input label="Telefone" id="cellphone" name="cellphone" type="text" placeholder="Telefone" alias="cell-phone" required></atlas-masked-input>
-                </atlas-col>
-                <atlas-col lg="6">
                     <atlas-postal-code label="CEP" id="zipCode" name="zipCode" type="text" placeholder="CEP" required></atlas-postal-code>
                 </atlas-col>
                 <atlas-col lg="6">
@@ -36,15 +32,16 @@
                 <atlas-col lg="6">
                     <atlas-input label="Logradouro" id="address" name="address" type="text" placeholder="Logradouro" required disabled></atlas-input>
                 </atlas-col>
-                <atlas-col lg="3">
+                <atlas-col lg="6">
                     <atlas-input label="UF" id="state" name="state" type="text" placeholder="UF" required disabled></atlas-input>
                 </atlas-col>
-                <atlas-col lg="3">
-                    <atlas-input label="Número" id="addressNumber" name="addressNumber" type="text" placeholder="Número" required disabled></atlas-input>
+                <atlas-col lg="6">
+                    <atlas-input label="Número" id="addressNumber" name="addressNumber" type="text" placeholder="Número" required></atlas-input>
                 </atlas-col>
                 <atlas-col lg="6">
-                    <atlas-input label="Complemento" id="complement" name="complement" type="text" placeholder="Complemento" disabled></atlas-input>
+                    <atlas-input label="Complemento" id="complement" name="complement" type="text" placeholder="Complemento"></atlas-input>
                 </atlas-col>
+                <atlas-input id="cityId" name="cityId" label="cityId" hidden></atlas-input>
             </atlas-row>
         </atlas-grid>
         <atlas-button
@@ -52,5 +49,6 @@
         ></atlas-button>
     </atlas-form>
 </atlas-panel>
+<asset:javascript src="zipCode.js"/>
 </body>
 </html>

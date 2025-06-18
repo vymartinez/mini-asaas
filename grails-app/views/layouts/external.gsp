@@ -24,6 +24,13 @@
     <atlas-screen fullscreen>
         <atlas-page container>
             <atlas-page-content slot="content">
+                <g:if test="${flash.message}">
+                    <atlas-alert
+                        type="${flash.success ? 'success' : 'error'}"
+                        message="${flash.message}"
+                        class="js-atlas-alert"
+                    ></atlas-alert>
+                </g:if>
                 <g:layoutBody />
             </atlas-page-content>
         </atlas-page>
