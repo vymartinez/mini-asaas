@@ -18,10 +18,10 @@ class CustomerController extends BaseController {
 
             buildFlashAlert("Cadastro realizado com sucesso!", MessageType.SUCCESS, true)
             redirect(url: '/dashboard', model: [customer: customer])
-        } catch (ValidationException e) {
-            buildFlashAlert("Atenção: " + e.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
+        } catch (ValidationException validationException) {
+            buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(url: '/onboarding/createCustomer', model: [params: params])
-        } catch (Exception e) {
+        } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/onboarding/createCustomer', model: [params: params])
         }
@@ -36,13 +36,13 @@ class CustomerController extends BaseController {
 
             buildFlashAlert("Dados alterados com sucesso!", MessageType.SUCCESS, true)
             redirect(url: '/dashboard', model: [customer: customer])
-        } catch (ValidationException e) {
-            buildFlashAlert("Atenção: " + e.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
+        } catch (ValidationException validationException) {
+            buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(url: '/dashboard/profile', model: [params: params])
-        } catch (RuntimeException e) {
-            buildFlashAlert(e.getMessage(), MessageType.ERROR, false)
+        } catch (RuntimeException runtimeException) {
+            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
             redirect(url: '/dashboard/profile', model: [params: params])
-        } catch (Exception e) {
+        } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
         }
