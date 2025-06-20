@@ -2,12 +2,11 @@ package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.enums.MessageType
-
 import grails.compiler.GrailsCompileStatic
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
-class CustomerController {
+class CustomerController extends BaseController {
 
     CustomerService customerService
 
@@ -17,16 +16,13 @@ class CustomerController {
 
             Customer customer = customerService.create(saveCustomerAdapter)
 
-            redirect(view: 'dashboard', model: [customer: customer])
+            buildFlashAlert("Cadastro realizado com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/dashboard', model: [customer: customer])
         } catch (ValidationException e) {
-            flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert("Atenção: " + e.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(url: '/onboarding/createCustomer', model: [params: params])
         } catch (Exception e) {
-            flash.message = "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/onboarding/createCustomer', model: [params: params])
         }
     }
@@ -38,24 +34,16 @@ class CustomerController {
             Long currentCustomerId = 1
             Customer customer = customerService.update(saveCustomerAdapter, currentCustomerId)
 
-            flash.message = "Dados alterados com sucesso!"
-            flash.success = true
-            flash.type = MessageType.SUCCESS
+            buildFlashAlert("Dados alterados com sucesso!", MessageType.SUCCESS, true)
             redirect(url: '/dashboard', model: [customer: customer])
         } catch (ValidationException e) {
-            flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert("Atenção: " + e.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(url: '/dashboard/profile', model: [params: params])
         } catch (RuntimeException e) {
-            flash.message = e.getMessage()
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert(e.getMessage(), MessageType.ERROR, false)
             redirect(url: '/dashboard/profile', model: [params: params])
         } catch (Exception e) {
-            flash.message = "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
         }
     }

@@ -1,12 +1,13 @@
 package mini.asaas
 
-import grails.compiler.GrailsCompileStatic
 import mini.asaas.enums.MessageType
+import grails.compiler.GrailsCompileStatic
 
 @GrailsCompileStatic
 class BaseController {
 
-    protected void buildFlashAlert(MessageType messageType, String message, Boolean success) {
+
+    protected void buildFlashAlert(String message, MessageType messageType, Boolean success) {
         flash.type = messageType
         flash.message = message
         flash.success = success
