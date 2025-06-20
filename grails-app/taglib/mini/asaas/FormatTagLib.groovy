@@ -5,10 +5,10 @@ class FormatTagLib {
     static namespace = "formatTagLib"
 
     static returnObjectForTags = [
-        "formatAnyDate"
+        "formatDate"
     ]
 
-    def formatAnyDate = { Map attrs, Closure body ->
+    def formatDate = { Map attrs, Closure body ->
         return formatDate(date: attrs.date, format: "dd/MM/yyyy")
     }
 }
