@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
+import mini.asaas.repositorys.CustomerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
@@ -27,14 +28,6 @@ class CustomerService {
         return customer
     }
 
-    public Customer findById(Long customerId) {
-        Customer customer = Customer.get(customerId)
-
-        if (!customer) throw new RuntimeException("Usuário não encontrado")
-
-        return customer
-    }
-
     public Customer update(SaveCustomerAdapter saveCustomerAdapter, Long customerId) {
         Customer customer = validate(saveCustomerAdapter)
 
@@ -49,6 +42,14 @@ class CustomerService {
         return customer
     }
 
+    public Customer findById(Long customerId) {
+        Customer customer = CustomerRepository.query([id: customerId]).get()
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado")
+
+        return customer
+    }
+
     private Customer validate(SaveCustomerAdapter saveCustomerAdapter) {
         Customer customer = new Customer()
 
@@ -60,7 +61,7 @@ class CustomerService {
 
         if (!saveCustomerAdapter.cpfCnpj) DomainUtils.addError(customer, "O CPF/CNPJ é obrigatório")
 
-        if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado não é válido")
+        if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado é inválido")
 
         return customer
     }
