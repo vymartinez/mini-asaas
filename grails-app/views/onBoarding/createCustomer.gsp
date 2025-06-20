@@ -5,9 +5,9 @@
     <title>Mini Asaas</title>
 </head>
 
-<body>
+<body class="js-create-customer">
 <atlas-panel>
-    <atlas-form action="/customer/create" method="post">
+    <atlas-form action="/customer/create" method="post" class="js-create-customer-form">
         <atlas-heading>Cadastro de Usuários</atlas-heading>
         <atlas-grid>
             <atlas-row>
@@ -52,6 +52,6 @@
         ></atlas-button>
     </atlas-form>
 </atlas-panel>
-<asset:javascript src="zipCode.js"/>
+<asset:javascript src="create-customer.js"/>
 </body>
 </html>
