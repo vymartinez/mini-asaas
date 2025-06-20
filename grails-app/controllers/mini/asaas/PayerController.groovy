@@ -31,4 +31,26 @@ class PayerController extends BaseController {
             redirect(url: '/payer/create', model: [params: params])
         }
     }
+
+    def update() {
+        try {
+            SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
+
+            Long payerId = params.payerId as Long
+            Long currentCustomerId = 1
+            Payer payer = payerService.update(savePayerAdapter, payerId, currentCustomerId)
+
+            buildFlashAlert("Pagador atualizado com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/payer/list', model: [payer: payer])
+        } catch (ValidationException validationException) {
+            buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
+            redirect(url: '/payer/list', model: [params: params])
+        } catch (RuntimeException runtimeException) {
+            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
+            redirect(url: '/payer/list', model: [params: params])
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/payer/list', model: [params: params])
+        }
+    }
 }
