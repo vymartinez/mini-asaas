@@ -32,6 +32,18 @@ class PayerController extends BaseController {
         }
     }
 
+    def list() {
+        try {
+            Long currentCustomerId = 1
+            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
+
+            return payers
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/dashboard')
+        }
+    }
+
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
