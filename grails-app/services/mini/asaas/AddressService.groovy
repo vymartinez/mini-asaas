@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.AddressAdapter
+import mini.asaas.repositorys.AddressRepository
 import mini.asaas.utils.DomainUtils
 
 import grails.compiler.GrailsCompileStatic
@@ -22,14 +23,6 @@ class AddressService {
         return address
     }
 
-    public Address findById(Long addressId) {
-        Address address = Address.get(addressId)
-
-        if (!address) throw new RuntimeException("Endereço não encontrado")
-
-        return address
-    }
-
     public Address update(AddressAdapter addressAdapter, Long addressId) {
         Address address = validate(addressAdapter)
 
@@ -40,6 +33,14 @@ class AddressService {
         buildAddress(address, addressAdapter)
 
         address.save(failOnError: true)
+        return address
+    }
+
+    private Address findById(Long addressId) {
+        Address address = AddressRepository.query([id: addressId]).get()
+
+        if (!address) throw new RuntimeException("Endereço não encontrado")
+
         return address
     }
 

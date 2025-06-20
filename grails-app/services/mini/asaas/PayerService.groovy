@@ -68,7 +68,7 @@ class PayerService {
 
         if (!savePayerAdapter.cpfCnpj) DomainUtils.addError(payer, "O CPF/CNPJ é obrigatório")
 
-        if (savePayerAdapter.cpfCnpj && !CpfCnpjUtils.validate(savePayerAdapter.cpfCnpj)) DomainUtils.addError(payer, "O CPF/CNPJ informado não é válido")
+        if (savePayerAdapter.cpfCnpj && !CpfCnpjUtils.validate(savePayerAdapter.cpfCnpj)) DomainUtils.addError(payer, "O CPF/CNPJ informado é inválido")
 
         if (!savePayerAdapter.cellPhone) DomainUtils.addError(payer, "O celular é obrigatório")
 
