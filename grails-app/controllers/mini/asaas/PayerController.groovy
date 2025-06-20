@@ -35,13 +35,11 @@ class PayerController extends BaseController {
     def list() {
         try {
             Long currentCustomerId = 1
-            List<Payer> payers = payerService.list(params, currentCustomerId)
+            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
 
             return payers
         } catch (Exception exception) {
-            flash.message = "Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde."
-            flash.success = false
-            flash.type = MessageType.ERROR
+            buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
         }
     }

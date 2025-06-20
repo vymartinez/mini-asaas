@@ -31,10 +31,10 @@ class PayerService {
         return payer
     }
 
-    public List<Payer> list(Map params, Long customerId) {
+    public List<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
         Map filters = buildListFilters(params, customerId)
 
-        return PayerRepository.query(filters).list()
+        return PayerRepository.query(filters).list([max: max, offset: offset])
     }
 
     public Payer update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
