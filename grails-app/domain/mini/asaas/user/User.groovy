@@ -1,6 +1,7 @@
 package mini.asaas.user
 
 import mini.asaas.auth.UserRole
+import mini.asaas.Customer
 import mini.asaas.role.Role
 
 import grails.compiler.GrailsCompileStatic
@@ -17,6 +18,8 @@ class User implements Serializable {
     String username
 
     String password
+
+    Customer customer
 
     boolean enabled = true
 
