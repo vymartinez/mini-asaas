@@ -20,20 +20,27 @@ class UserService {
 
     public User create(SaveUserAdapter adapter) {
         User currentUser = securityUtils.getCurrentUser()
+        boolean isAdmin = currentUser && securityUtils.isAdmin()
 
-        if (!currentUser || !securityUtils.isAdmin()) {
-            throw new RuntimeException("Acesso negado: apenas administradores podem criar usuários.")
+        if (currentUser && !isAdmin) {
+            throw new RuntimeException("Acesso negado: apenas administradores podem criar outros usuários.")
         }
 
         User user = new User()
         user.username = adapter.username
         user.password = adapter.password
-        user.enabled = adapter.enable
+        user.enabled = isAdmin ? adapter.enable : true
 
         user.save(failOnError: true)
 
-        adapter.roles.each { authority ->
-            Role.findByAuthority(authority)?.with { role ->
+        if (isAdmin) {
+            adapter.roles.each { authority ->
+                Role.findByAuthority(authority)?.with { role ->
+                    UserRole.create(user, role, true)
+                }
+            }
+        } else {
+            Role.findByAuthority('ROLE_CUSTOMER')?.with { role ->
                 UserRole.create(user, role, true)
             }
         }

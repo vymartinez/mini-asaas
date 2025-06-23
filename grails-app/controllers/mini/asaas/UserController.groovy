@@ -5,7 +5,6 @@ import mini.asaas.enums.MessageType
 import mini.asaas.adapters.user.SaveUserAdapter
 import mini.asaas.adapters.user.UpdateUserAdapter
 
-
 class UserController extends BaseController {
 
     UserService userService
@@ -21,11 +20,11 @@ class UserController extends BaseController {
     }
 
     def show() {
-        Long id   = params.long('id')
+        Long id = params.long('id')
         User user = userService.get(id)
         if (!user) {
             buildFlashAlert("Usuário não encontrado para ID ${id}", MessageType.ERROR, false)
-            redirect action: 'index'
+            redirect(action: 'index')
             return [:]
         }
 
@@ -38,15 +37,14 @@ class UserController extends BaseController {
 
     def save() {
         SaveUserAdapter adapter = new SaveUserAdapter(params)
-        bindData(adapter, params)
-
         try {
             User user = userService.create(adapter)
             buildFlashAlert("Usuário criado com sucesso: ${user.id}", MessageType.SUCCESS, true)
             redirect(action: 'show', id: user.id)
-        } catch (Exception exception) {
+        } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
-            render(view: 'create', model: [adapter: adapter])
+            render(view:  'create',
+                    model: [adapter: adapter])
         }
     }
 
@@ -58,6 +56,7 @@ class UserController extends BaseController {
             redirect(action: 'index')
             return [:]
         }
+
         UpdateUserAdapter adapter = new UpdateUserAdapter()
         adapter.username = user.username
         adapter.enable = user.enabled
@@ -69,15 +68,14 @@ class UserController extends BaseController {
     def update() {
         Long id = params.long('id')
         UpdateUserAdapter adapter = new UpdateUserAdapter(params)
-        bindData(adapter, params)
-
         try {
             User user = userService.update(id, adapter)
             buildFlashAlert("Usuário atualizado com sucesso: ${user.id}", MessageType.SUCCESS, true)
-            redirect action: 'show', id: user.id
-        } catch (Exception exception) {
+            redirect(action: 'show', id: user.id)
+        } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
-            render(view: 'edit', model: [id: id, adapter: adapter])
+            render(view:  'edit',
+                    model: [id: id, adapter: adapter])
         }
     }
 
@@ -86,7 +84,7 @@ class UserController extends BaseController {
         try {
             userService.softDelete(id)
             buildFlashAlert("Usuário desabilitado com sucesso: ${id}", MessageType.SUCCESS, true)
-        } catch (Exception exception) {
+        } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
         redirect(action: 'index')
@@ -97,9 +95,9 @@ class UserController extends BaseController {
         try {
             userService.restore(id)
             buildFlashAlert("Usuário restaurado com sucesso: ${id}", MessageType.SUCCESS, true)
-            redirect action: 'show', id: id
-        } catch (Exception e) {
-            buildFlashAlert(e.message, MessageType.ERROR, false)
+            redirect(action: 'show', id: id)
+        } catch (RuntimeException exception) {
+            buildFlashAlert(exception.message, MessageType.ERROR, false)
             redirect(action: 'show', id: id)
         }
     }
