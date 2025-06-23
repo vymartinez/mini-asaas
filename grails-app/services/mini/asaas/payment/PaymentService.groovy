@@ -1,130 +1,70 @@
 package mini.asaas.payment
 
 import grails.compiler.GrailsCompileStatic
-import groovy.transform.CompileDynamic
-import mini.asaas.Payer
-import mini.asaas.adapters.UpdatePaymentAdapter
-import mini.asaas.enums.PaymentStatus
-import mini.asaas.notification.EmailNotificationService
-import mini.asaas.adapters.SavePaymentAdapter
-
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.gorm.transactions.Transactional
-import org.springframework.security.core.userdetails.User
-
+import grails.plugin.springsecurity.SpringSecurityService
+import mini.asaas.Payer
+import mini.asaas.adapters.SavePaymentAdapter
+import mini.asaas.adapters.UpdatePaymentAdapter
 
 @GrailsCompileStatic
 @Transactional
 class PaymentService {
 
-    EmailNotificationService emailNotificationService
-
     SpringSecurityService springSecurityService
 
-    public Payment create(SavePaymentAdapter adapter) {
-        User currentUser = springSecurityService.currentUser as User
+    List<Payment> listForCurrentUser(Map params) {
+        Payer payer = springSecurityService.currentUser as Payer
+        Payment.findAllByPayer(payer, params)
+    }
 
-        Payer payer = Payer.get(adapter.payerId)
+    Long countForCurrentUser(Map params) {
+        Payer payer = springSecurityService.currentUser as Payer
+        Payment.countByPayer(payer)
+    }
 
-        if (!payer) {
-            throw new RuntimeException("Payer não encontrado para ID ${adapter.payerId}")
+    Payment getOwnedOrFail(Long id) {
+        Payment payment = Payment.get(id)
+        if (!payment) {
+            throw new RuntimeException("Pagamento não encontrado para ID $id")
         }
-
-        if (payer.customer?.email != currentUser.username) {
-            throw new RuntimeException("Acesso negado: não é o dono do pagador.")
+        if (payment.payer != springSecurityService.currentUser) {
+            throw new RuntimeException("Acesso negado: você não é o dono deste pagamento.")
         }
+        return payment
+    }
+
+    Payment create(SavePaymentAdapter adapter) {
+        Payer payer = springSecurityService.currentUser as Payer
 
         Payment payment = new Payment()
         payment.payer = payer
         payment.billingType = adapter.billingType
         payment.value = adapter.value
         payment.dueDate = adapter.dueDate
-        payment.status = PaymentStatus.PENDING
 
-        payment.save(failOnError: true)
-
-        emailNotificationService.notifyCreated(payment)
-
-        return  payment
-    }
-
-    @CompileDynamic
-    @Transactional
-    public Payment update(Long id, UpdatePaymentAdapter adapter) {
-        User currentUser = springSecurityService.currentUser as User
-
-        Payment payment = Payment.getOwnedOrFail(id, currentUser)
-
-        if (adapter.payerId != null) {
-            Payer newPayer = Payer.FindByIdAndCustomerEmail(adapter.payerId, currentUser.username)
-
-            if (!newPayer) {
-                throw new RuntimeException("Acesso negado: Payer não encontrado ou não pertence ao usuário.")
-            }
-
-            payment.payer = newPayer
+        if (!payment.save(flush: true)) {
+            payment.errors.allErrors.each { log.error it }
+            throw new RuntimeException("Erro ao salvar pagamento.")
         }
-
-        if (adapter.billingType != null) {
-            payment.billingType = adapter.billingType
-        }
-
-        if (adapter.value != null) {
-            payment.value = adapter.value
-        }
-
-        if (adapter.dueDate != null) {
-            payment.dueDate = adapter.dueDate
-        }
-
-        payment.save(failOnError: true)
-
         return payment
     }
 
-    public List<Payment> listForCurrentUser(Map params) {
-        String email = springSecurityService.authentication?.name
-        Payer payer = Payer.findByEmail(email)
-        if (!payer) {
-            return []
+    Payment update(Long id, UpdatePaymentAdapter adapter) {
+        Payment payment = getOwnedOrFail(id)
+        payment.billingType = adapter.billingType
+        payment.value = adapter.value
+        payment.dueDate = adapter.dueDate
+
+        if (!payment.save(flush: true)) {
+            payment.errors.allErrors.each { log.error it }
+            throw new RuntimeException("Erro ao atualizar pagamento.")
         }
-        return Payment.findAllByPayer(payer, params)
+        return payment
     }
 
-    public Long countForCurrentUser() {
-        String email = springSecurityService.authentication?.name
-        Payer payer = Payer.findByEmail(email)
-        if (!payer) {
-            return 0L
-        }
-        return Payment.countByPayer(payer)
-    }
-
-    public void softDelete(Long id) {
-        User currentUser = springSecurityService.currentUser as User
-
-        Payment payment = Payment.getOwnedOrFail(id, currentUser)
-
-        payment.deleted = true
-        payment.save(failOnError: true)
-        emailNotificationService.notifyDeleted(payment)
-    }
-
-    public void restore(Long id) {
-        Payment.where { id == id }.updateAll(deleted: false)
-    }
-
-    public void confirm(Long id) {
-        User currentUser = springSecurityService.currentUser as User
-
-        Payment payment = Payment.getOwnedOrFail(id, currentUser)
-
-        if (payment.status != PaymentStatus.PENDING) {
-            throw new RuntimeException("Só é possível confirmar pagamentos pendentes (PENDING)")
-        }
-
-        payment.status = PaymentStatus.RECEIVED
-        payment.save(failOnError: true)
-        emailNotificationService.notifyPaid(payment)
+    void delete(Long id) {
+        Payment payment = getOwnedOrFail(id)
+        payment.delete(flush: true)
     }
 }
