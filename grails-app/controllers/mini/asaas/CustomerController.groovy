@@ -24,12 +24,12 @@ class CustomerController {
             flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
             flash.success = false
             flash.type = MessageType.ERROR
-            redirect(url: '/onBoarding/createCustomer', model: [params: params])
+            redirect(controller: 'onBoarding', action: 'createCustomer', params: params)
         } catch (Exception e) {
             flash.message = "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
             flash.success = false
             flash.type = MessageType.ERROR
-            redirect(url: '/onBoarding/createCustomer', model: [params: params])
+            redirect(controller: 'onBoarding', action: 'createCustomer', params: params)
         }
     }
 }
