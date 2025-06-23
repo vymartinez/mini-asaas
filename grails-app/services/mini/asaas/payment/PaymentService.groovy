@@ -44,7 +44,10 @@ class PaymentService {
         payment.dueDate = adapter.dueDate
 
         if (!payment.save(flush: true)) {
-            payment.errors.allErrors.each { log.error it }
+            payment.errors.allErrors.each {err ->
+                log.error(err.toString())
+
+            }
             throw new RuntimeException("Erro ao salvar pagamento.")
         }
         return payment
@@ -57,14 +60,22 @@ class PaymentService {
         payment.dueDate = adapter.dueDate
 
         if (!payment.save(flush: true)) {
-            payment.errors.allErrors.each { log.error it }
+            payment.errors.allErrors.each { err ->
+                log.error(err.toString())
+            }
             throw new RuntimeException("Erro ao atualizar pagamento.")
         }
         return payment
     }
 
     void delete(Long id) {
-        Payment payment = getOwnedOrFail(id)
-        payment.delete(flush: true)
+        try {
+            Payment payment = getOwnedOrFail(id)
+            payment.delete(flush: true)
+        } catch (Exception exception) {
+            log.error("Falha ao deletar pagamento.", exception)
+            throw exception
+        }
+
     }
 }

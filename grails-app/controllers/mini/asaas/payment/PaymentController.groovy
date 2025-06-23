@@ -1,10 +1,12 @@
 package mini.asaas.payment
 
+import grails.plugin.springsecurity.annotation.Secured
 import mini.asaas.BaseController
 import mini.asaas.enums.MessageType
 import mini.asaas.adapters.SavePaymentAdapter
 import mini.asaas.adapters.UpdatePaymentAdapter
 
+@Secured(['permitAll'])
 class PaymentController extends BaseController {
 
     PaymentService paymentService

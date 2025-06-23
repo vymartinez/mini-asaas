@@ -10,35 +10,34 @@ class BaseController {
     }
 
     protected Integer getLimitPerPage() {
-        Integer defaultLimitPerPage = (!params.itemsPerPage && !params.max) ? 10 : 50
+        Integer defaultLimitPerPage = 50
 
         return getDefaultLimitPerPage(defaultLimitPerPage)
     }
 
     protected Integer getOffset() {
-        if (params.containsKey("page")) {
-            Integer currentPage = Integer.valueOf(params.page ?: 1)
-            return (currentPage - 1) * getLimitPerPage()
-        }
+        int page = params.int('page') ?: 1
 
-        if (params.offset == 'undefined') params.offset = null
-        return Integer.valueOf(params.offset ?: 0)
+        int defaulOffset = (page - 1) * getLimitPerPage()
+
+        Integer explicitOffset = params.int('offset')
+
+        return explicitOffset != null ? explicitOffset : defaulOffset
     }
 
     private Integer getDefaultLimitPerPage(Integer limitPerPage) {
-        if (params.containsKey("itemsPerPage")) {
-            String itemsPerPage = params.itemsPerPage?.toString()
-            if (!itemsPerPage?.isNumber()) params.itemsPerPage = null
+        Integer items = params.int('itemsPerPage')
 
-            params.itemsPerPage = params.itemsPerPage ? Integer.valueOf(params.itemsPerPage): limitPerPage
-
-            return Math.min(params.itemsPerPage, limitPerPage)
+        if (items != null) {
+            return Math.min(items, limitPerPage)
         }
 
-        String max = params.max?.toString()
-        if (!max?.isNumber()) params.max = null
-        params.max = params.max ? Integer.valueOf(params.max): limitPerPage
+        Integer max = params.int('max')
 
-        return Math.min(params.max, limitPerPage)
+        if (max != null) {
+            return Math.min(max, limitPerPage)
+        }
+
+        return limitPerPage
     }
 }
