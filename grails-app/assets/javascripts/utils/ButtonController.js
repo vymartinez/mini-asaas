@@ -29,7 +29,7 @@ function ButtonController() {
     }
 
     this.enable = function() {
-        this.buttonReference.removeProp('disabled');
+        this.buttonReference.prop('disabled', false);
         this.buttonReference.removeClass("disabled");
         this.buttonReference.html(this.oldDescription);
     };

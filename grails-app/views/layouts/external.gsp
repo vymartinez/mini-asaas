@@ -35,5 +35,6 @@
             </atlas-page-content>
         </atlas-page>
     </atlas-screen>
+    <asset:javascript src="application.js"/>
 </body>
 </html>
