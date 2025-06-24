@@ -21,6 +21,6 @@ class CustomUserDetails extends GrailsUser {
             grailsUser.id)
         if (!this.id) return
 
-        this.customerId = UserRepository.query([column: "customer.id", ignoreCustomer: true, id: this.id]).get()
+        this.customerId = UserRepository.query([column: "customer.id", id: this.id]).get()
     }
 }
