@@ -4,7 +4,7 @@ import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.annotation.Secured
 
 @GrailsCompileStatic
-class OnBoardingController {
+class OnboardingController {
 
     @Secured("permitAll")
     def createCustomer() {}
