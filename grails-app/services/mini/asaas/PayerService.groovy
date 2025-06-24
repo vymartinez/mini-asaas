@@ -57,6 +57,8 @@ class PayerService {
     public void disable(Long payerId, Long customerId) {
         Payer payer = findById(payerId, customerId)
 
+        addressService.disable(payer.address.id)
+        
         payer.deleted = true
         payer.save(failOnError: true)
     }
