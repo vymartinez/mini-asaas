@@ -53,7 +53,7 @@ class CustomerService {
     public void disable(Long customerId) {
         Customer customer = findById(customerId)
 
-        if (!customer) throw new RuntimeException("Usuário não encontrado")
+        addressService.disable(customer.address.id)
 
         customer.deleted = true
         customer.save(failOnError: true)
