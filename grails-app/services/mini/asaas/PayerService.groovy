@@ -48,7 +48,7 @@ class PayerService {
         return payer
     }
 
-    private buildPayer(Payer payer, SavePayerAdapter savePayerAdapter, Customer customer, Address address) {
+    private void buildPayer(Payer payer, SavePayerAdapter savePayerAdapter, Customer customer, Address address) {
         payer.name = savePayerAdapter.name
         payer.email = savePayerAdapter.email
         payer.cpfCnpj = savePayerAdapter.cpfCnpj
