@@ -58,8 +58,6 @@ class PayerService {
     public void disable(Long payerId, Long customerId) {
         Payer payer = findById(payerId)
 
-        if (!payer) throw new RuntimeException("Pagador não encontrado")
-
         if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         payer.deleted = true
