@@ -4,6 +4,7 @@ import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -63,6 +64,21 @@ class PayerController extends BaseController {
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/payer/list', model: [params: params])
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def disable() {
+        try {
+            Long payerId = params.payerId as Long
+            Long currentCustomerId = getCurrentCustomerId()
+            payerService.disable(payerId, currentCustomerId)
+
+            buildFlashAlert("Pagador desativado com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/payer/list')
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro ao desativar o pagador. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/payer/list')
         }
     }
 }
