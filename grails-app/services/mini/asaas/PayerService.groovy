@@ -61,7 +61,7 @@ class PayerService {
         payer.save(failOnError: true)
     }
 
-    private Payer findById(Long payerId, Long customerId) {
+    public Payer findById(Long payerId, Long customerId) {
         Payer payer = PayerRepository.query([id: payerId]).get()
 
         if (!payer) throw new RuntimeException("Pagador não encontrado")

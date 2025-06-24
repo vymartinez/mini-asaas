@@ -45,6 +45,19 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
+    def show(Long id) {
+        try {
+            Long currentCustomerId = getCurrentCustomerId()
+            Payer payer = payerService.findById(id, currentCustomerId)
+
+            return [payer: payer]
+        } catch (RuntimeException runtimeException) {
+            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
+            redirect(url: '/payer/list')
+        }
+    }
+
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
