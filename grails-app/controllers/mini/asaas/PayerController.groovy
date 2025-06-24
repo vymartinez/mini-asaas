@@ -16,7 +16,7 @@ class PayerController extends BaseController {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.create(savePayerAdapter, currentCustomerId)
 
             buildFlashAlert("Pagador criado com sucesso!", MessageType.SUCCESS, true)
@@ -35,7 +35,7 @@ class PayerController extends BaseController {
 
     def list() {
         try {
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
 
             return payers
@@ -50,7 +50,7 @@ class PayerController extends BaseController {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
             Long payerId = params.payerId as Long
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.update(savePayerAdapter, payerId, currentCustomerId)
 
             buildFlashAlert("Pagador atualizado com sucesso!", MessageType.SUCCESS, true)
