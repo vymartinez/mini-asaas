@@ -129,7 +129,8 @@ environments:
         dataSource:
             dbCreate: update
             url: jdbc:mysql://localhost:3306/miniasaas
-
+            user: root
+            password: admin123
     test:
         dataSource:
             dbCreate: update
@@ -165,6 +166,6 @@ grails:
                 authorityJoinClassName: 'mini.asaas.auth.UserRole'
                 authority.className: 'mini.asaas.role.Role'
             successHandler:
-                defaultTargetUrl: '/auth/login'
+                defaultTargetUrl: '/'
             logout:
                 postOnly: false
