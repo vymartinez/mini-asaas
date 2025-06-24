@@ -60,7 +60,7 @@ class AddressService {
         return address
     }
 
-    private buildAddress(Address address, AddressAdapter addressAdapter) {
+    private void buildAddress(Address address, AddressAdapter addressAdapter) {
         address.address = addressAdapter.address
         address.addressNumber = addressAdapter.addressNumber
         address.city = City.get(addressAdapter.cityId)

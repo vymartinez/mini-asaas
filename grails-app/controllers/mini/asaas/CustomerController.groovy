@@ -39,9 +39,6 @@ class CustomerController extends BaseController {
         } catch (ValidationException validationException) {
             buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(url: '/dashboard/profile', model: [params: params])
-        } catch (RuntimeException runtimeException) {
-            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
-            redirect(url: '/dashboard/profile', model: [params: params])
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')

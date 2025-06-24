@@ -66,7 +66,7 @@ class CustomerService {
         return customer
     }
 
-    private buildCustomer(Customer customer, SaveCustomerAdapter saveCustomerAdapter, Address address) {
+    private void buildCustomer(Customer customer, SaveCustomerAdapter saveCustomerAdapter, Address address) {
         customer.name = saveCustomerAdapter.name
         customer.email = saveCustomerAdapter.email
         customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
