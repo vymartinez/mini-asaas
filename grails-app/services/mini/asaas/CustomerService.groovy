@@ -50,6 +50,15 @@ class CustomerService {
         return customer
     }
 
+    public void disable(Long customerId) {
+        Customer customer = findById(customerId)
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado")
+
+        customer.deleted = true
+        customer.save(failOnError: true)
+    }
+
     private Customer validate(SaveCustomerAdapter saveCustomerAdapter) {
         Customer customer = new Customer()
 

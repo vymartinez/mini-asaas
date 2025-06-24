@@ -2,7 +2,9 @@ package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.enums.MessageType
+
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -44,6 +46,20 @@ class CustomerController extends BaseController {
             redirect(url: '/dashboard/profile', model: [params: params])
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/dashboard')
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def disable() {
+        try {
+            Long currentCustomerId = getCurrentCustomerId()
+            customerService.disable(currentCustomerId)
+
+            buildFlashAlert("Conta desativada com sucesso!", MessageType.SUCCESS, true)
+            redirect(controller: 'login', action: 'logout')
+        } catch (Exception exception) {
+            buildFlashAlert("Não foi possível desativar a conta. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
         }
     }
