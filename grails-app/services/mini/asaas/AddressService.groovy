@@ -36,6 +36,13 @@ class AddressService {
         return address
     }
 
+    public void disable(Long addressId) {
+        Address address = findById(addressId)
+
+        address.deleted = true
+        address.save(failOnError: true)
+    }
+
     private Address findById(Long addressId) {
         Address address = AddressRepository.query([id: addressId]).get()
 
