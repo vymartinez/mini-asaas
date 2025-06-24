@@ -42,10 +42,9 @@ class PayerService {
 
         if (payer.hasErrors()) throw new ValidationException("Erro ao atualizar pagador", payer.errors)
 
-        payer = findById(payerId)
+        payer = findById(payerId, customerId)
 
         Customer customer = customerService.findById(customerId)
-        if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         Address address = addressService.update(savePayerAdapter.address, payer.address.id)
 
@@ -56,18 +55,18 @@ class PayerService {
     }
 
     public void disable(Long payerId, Long customerId) {
-        Payer payer = findById(payerId)
-
-        if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
+        Payer payer = findById(payerId, customerId)
 
         payer.deleted = true
         payer.save(failOnError: true)
     }
 
-    private Payer findById(Long payerId) {
+    private Payer findById(Long payerId, Long customerId) {
         Payer payer = PayerRepository.query([id: payerId]).get()
 
         if (!payer) throw new RuntimeException("Pagador não encontrado")
+
+        if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         return payer
     }
