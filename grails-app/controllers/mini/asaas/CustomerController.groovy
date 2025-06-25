@@ -2,13 +2,12 @@ package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.enums.MessageType
-
 import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
-class CustomerController {
+class CustomerController extends BaseController {
 
     CustomerService customerService
 
@@ -19,17 +18,32 @@ class CustomerController {
 
             Customer customer = customerService.create(saveCustomerAdapter)
 
+            buildFlashAlert("Cadastro realizado com sucesso!", MessageType.SUCCESS, true)
             redirect(url: '/dashboard', model: [customer: customer])
-        } catch (ValidationException e) {
-            flash.message = "Atenção: " + e.errors.allErrors.defaultMessage.join(", ")
-            flash.success = false
-            flash.type = MessageType.ERROR
+        } catch (ValidationException validationException) {
+            buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
             redirect(controller: 'onboarding', action: 'createCustomer', params: params)
-        } catch (Exception e) {
-            flash.message = "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
-            flash.success = false
-            flash.type = MessageType.ERROR
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(controller: 'onboarding', action: 'createCustomer', params: params)
+        }
+    }
+
+    def update() {
+        try {
+            SaveCustomerAdapter saveCustomerAdapter = new SaveCustomerAdapter(params)
+
+            Long currentCustomerId = 1
+            Customer customer = customerService.update(saveCustomerAdapter, currentCustomerId)
+
+            buildFlashAlert("Dados alterados com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/dashboard', model: [customer: customer])
+        } catch (ValidationException validationException) {
+            buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
+            redirect(url: '/dashboard/profile', model: [params: params])
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/dashboard')
         }
     }
 }
