@@ -1,6 +1,7 @@
 package mini.asaas.adapters.user
 
 import grails.compiler.GrailsCompileStatic
+import mini.asaas.adapters.SaveCustomerAdapter
 
 @GrailsCompileStatic
 class SaveUserAdapter {
@@ -9,21 +10,11 @@ class SaveUserAdapter {
 
     String password
 
-    Boolean enable = true
-
-    List<String> roles = []
+    SaveCustomerAdapter customer
 
     public SaveUserAdapter(Map params) {
-        this.username = params.username as String
-        this.password = params.password as String
-        this.enable = params.enable != null ? params.enable.toString().toBoolean() : true
-
-        def rolesParam = params.roles
-
-        if (rolesParam instanceof List) {
-            this.roles = rolesParam*.toString()
-        } else if (rolesParam) {
-            this.roles = rolesParam.toString().split(',')*.trim()
-        }
+        this.username = params.username
+        this.password = params.password
+        this.customer = new SaveCustomerAdapter(params)
     }
 }

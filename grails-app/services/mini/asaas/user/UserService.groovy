@@ -3,142 +3,59 @@ package mini.asaas.user
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.validation.ValidationException
+import mini.asaas.Customer
+import mini.asaas.CustomerService
 import mini.asaas.adapters.user.SaveUserAdapter
-import mini.asaas.adapters.user.UpdateUserAdapter
-import mini.asaas.auth.UserRole
-import mini.asaas.role.Role
-
-import mini.asaas.utils.user.SecurityUtils
+import mini.asaas.utils.DomainUtils
 
 @GrailsCompileStatic
 @Transactional
 class UserService {
 
     SpringSecurityService springSecurityService
-
-    SecurityUtils securityUtils
+    CustomerService customerService
 
     public User create(SaveUserAdapter adapter) {
-        User currentUser = securityUtils.getCurrentUser()
-        boolean isAdmin = currentUser && securityUtils.isAdmin()
+        User user = validate(adapter)
 
-        if (currentUser && !isAdmin) {
-            throw new RuntimeException("Acesso negado: apenas administradores podem criar outros usuários.")
-        }
+        if (user.hasErrors()) throw new ValidationException("Erro ao criar usuário", user.errors)
 
+        Customer customer = customerService.create(adapter.customer)
+
+        buildUser(adapter, user, customer)
+
+        user.save(failOnError: true)
+    }
+
+    public User update(SaveUserAdapter adapter, User currentUser) {
+        User user = validate(adapter)
+
+        if (user.hasErrors()) throw new ValidationException("Erro ao atualizar usuário", user.errors)
+
+        Customer customer = customerService.update(adapter.customer, currentUser.customer.id)
+
+        buildUser(adapter, user, customer)
+
+        user.save(failOnError: true)
+
+        return user
+    }
+
+    private User validate(SaveUserAdapter adapter) {
         User user = new User()
-        user.username = adapter.username
-        user.password = adapter.password
-        user.enabled = isAdmin ? adapter.enable : true
 
-        user.save(failOnError: true)
+        if (!adapter.username) DomainUtils.addError(user, "O nome de usuário é obrigatório")
 
-        if (isAdmin) {
-            adapter.roles.each { authority ->
-                Role.findByAuthority(authority)?.with { role ->
-                    UserRole.create(user, role, true)
-                }
-            }
-        } else {
-            Role.findByAuthority('ROLE_CUSTOMER')?.with { role ->
-                UserRole.create(user, role, true)
-            }
-        }
+        if (!adapter.password) DomainUtils.addError(user, "A senha é obrigatória")
 
         return user
     }
 
-    public User update(Long id, UpdateUserAdapter adapter) {
-        User currentUser = securityUtils.getCurrentUser()
-
-        User user = User.get(id)
-
-        if (!user) {
-            throw new RuntimeException("Usuário não encontrado para ID ${id}")
-        }
-
-        if (currentUser.id != id && !securityUtils.isAdmin()) {
-            throw new RuntimeException("Acesso negado: apenas administradores podem atualizar outros usuários.")
-        }
-
+    private void buildUser(SaveUserAdapter adapter, User user, Customer customer) {
         user.username = adapter.username
-        user.enabled =adapter.enable
-
-        if (adapter.password) {
-            user.password = springSecurityService.encodePassword(adapter.password)
-        }
-
-        user.save(failOnError: true)
-
-        if (securityUtils.isAdmin()) {
-            UserRole.removeAll(user)
-            adapter.roles.each { authority ->
-                Role.findByAuthority(authority)?.with { role ->
-                    UserRole.create(user, role, true)
-                }
-            }
-        }
-
-        return user
-    }
-
-    public void softDelete(Long id) {
-        User currentUser = securityUtils.getCurrentUser()
-
-        if (!currentUser || !securityUtils.isAdmin()) {
-            throw new RuntimeException("Acesso negado: apenas administradores podem desabilitar usuários.")
-        }
-
-        User user = User.get(id)
-
-        if (!user) {
-            throw new RuntimeException("Usuário não enconytrado para ID ${id}")
-        }
-
-        user.enabled = false
-        user.save(failOnError: true)
-
-    }
-
-    public restore(Long id) {
-        User currentUser = securityUtils.getCurrentUser()
-
-        if (!currentUser || !securityUtils.isAdmin()) {
-            throw new RuntimeException("Acesso negado: apenas administradores podem restaurar usuários.")
-        }
-
-        User user = User.get(id)
-
-        if (!user) {
-            throw new RuntimeException("Usuário não encontrado para o ID ${id}")
-        }
-
+        user.password = springSecurityService.encodePassword(adapter.password)
+        user.customer = customer
         user.enabled = true
-        user.save(failOnError: true)
-    }
-
-    public User get(Serializable id) {
-        return User.get(id)
-    }
-
-    public List<User> list(Map params = [:]) {
-        return User.list(params)
-    }
-
-    public count() {
-        return User.count()
-    }
-
-    public boolean addRole(User user, String authority) {
-        Role.findByAuthority(authority)?.with { role ->
-            UserRole.create(user, role, true)
-            return true
-        } ?: false
-    }
-
-    public boolean removeRole(User user, String authority) {
-        return Role.findByAuthority(authority)?.with { role ->
-            UserRole.remove(user, role)
-        } ?: false
     }
 }
