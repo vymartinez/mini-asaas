@@ -12,6 +12,7 @@ class PayerController extends BaseController {
 
     PayerService payerService
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def create() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
@@ -33,6 +34,7 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
     def list() {
         try {
             Long currentCustomerId = getCurrentCustomerId()
@@ -45,6 +47,7 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
