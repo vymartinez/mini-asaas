@@ -3,6 +3,7 @@ package mini.asaas
 import mini.asaas.adapters.SaveCustomerAdapter
 import mini.asaas.enums.MessageType
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -10,6 +11,7 @@ class CustomerController extends BaseController {
 
     CustomerService customerService
 
+    @Secured("permitAll")
     def create() {
         try {
             SaveCustomerAdapter saveCustomerAdapter = new SaveCustomerAdapter(params)
@@ -20,10 +22,10 @@ class CustomerController extends BaseController {
             redirect(url: '/dashboard', model: [customer: customer])
         } catch (ValidationException validationException) {
             buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
-            redirect(url: '/onboarding/createCustomer', model: [params: params])
+            redirect(controller: 'onboarding', action: 'createCustomer', params: params)
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
-            redirect(url: '/onboarding/createCustomer', model: [params: params])
+            redirect(controller: 'onboarding', action: 'createCustomer', params: params)
         }
     }
 
