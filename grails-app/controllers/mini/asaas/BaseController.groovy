@@ -3,8 +3,11 @@ package mini.asaas
 import mini.asaas.enums.MessageType
 import mini.asaas.user.User
 import mini.asaas.userdetails.CustomUserDetails
+
+import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.SpringSecurityService
 
+@GrailsCompileStatic
 class BaseController {
 
     SpringSecurityService springSecurityService
@@ -23,12 +26,12 @@ class BaseController {
 
     protected Integer getOffset() {
         if (params.containsKey("page")) {
-            Integer currentPage = Integer.valueOf(params.page ?: 1)
+            Integer currentPage = Integer.valueOf(params.page as Integer ?: 1)
             return (currentPage - 1) * getLimitPerPage()
         }
 
         if (params.offset == 'undefined') params.offset = null
-        return Integer.valueOf(params.offset ?: 0)
+        return Integer.valueOf(params.offset as Integer ?: 0)
     }
 
     private Integer getDefaultLimitPerPage(Integer limitPerPage) {
@@ -36,16 +39,16 @@ class BaseController {
             String itemsPerPage = params.itemsPerPage?.toString()
             if (!itemsPerPage?.isNumber()) params.itemsPerPage = null
 
-            params.itemsPerPage = params.itemsPerPage ? Integer.valueOf(params.itemsPerPage): limitPerPage
+            params.itemsPerPage = params.itemsPerPage ? Integer.valueOf(params.itemsPerPage as String): limitPerPage
 
-            return Math.min(params.itemsPerPage, limitPerPage)
+            return Math.min(params.itemsPerPage as Integer, limitPerPage)
         }
 
         String max = params.max?.toString()
         if (!max?.isNumber()) params.max = null
-        params.max = params.max ? Integer.valueOf(params.max): limitPerPage
+        params.max = params.max ? Integer.valueOf(params.max as String): limitPerPage
 
-        return Math.min(params.max, limitPerPage)
+        return Math.min(params.max as Integer, limitPerPage)
     }
 
     protected User getCurrentUser() {
