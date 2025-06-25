@@ -34,7 +34,7 @@ class PayerService {
     public List<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
         Map filters = buildListFilters(params, customerId)
 
-        return PayerRepository.query(filters).list([max: max, offset: offset])
+        return PayerRepository.query(filters).readOnly().list([max: max, offset: offset])
     }
 
     public Payer update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
@@ -42,10 +42,9 @@ class PayerService {
 
         if (payer.hasErrors()) throw new ValidationException("Erro ao atualizar pagador", payer.errors)
 
-        payer = findById(payerId)
+        payer = findById(payerId, customerId)
 
         Customer customer = customerService.findById(customerId)
-        if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         Address address = addressService.update(savePayerAdapter.address, payer.address.id)
 
@@ -55,10 +54,12 @@ class PayerService {
         return payer
     }
 
-    private Payer findById(Long payerId) {
+    public Payer findById(Long payerId, Long customerId) {
         Payer payer = PayerRepository.query([id: payerId]).get()
 
         if (!payer) throw new RuntimeException("Pagador não encontrado")
+
+        if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         return payer
     }

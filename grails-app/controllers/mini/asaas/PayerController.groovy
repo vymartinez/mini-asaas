@@ -4,6 +4,7 @@ import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -29,6 +30,19 @@ class PayerController extends BaseController {
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/payer/create', model: [params: params])
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
+    def show(Long id) {
+        try {
+            Long currentCustomerId = getCurrentCustomerId()
+            Payer payer = payerService.findById(id, currentCustomerId)
+
+            return [payer: payer]
+        } catch (RuntimeException runtimeException) {
+            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
+            redirect(url: '/payer/list')
         }
     }
 
