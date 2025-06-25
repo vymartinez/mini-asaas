@@ -12,11 +12,12 @@ class PayerController extends BaseController {
 
     PayerService payerService
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def create() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.create(savePayerAdapter, currentCustomerId)
 
             buildFlashAlert("Pagador criado com sucesso!", MessageType.SUCCESS, true)
@@ -46,9 +47,10 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
     def list() {
         try {
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
 
             return payers
@@ -58,12 +60,13 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
             Long payerId = params.payerId as Long
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.update(savePayerAdapter, payerId, currentCustomerId)
 
             buildFlashAlert("Pagador atualizado com sucesso!", MessageType.SUCCESS, true)
