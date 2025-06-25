@@ -1,6 +1,7 @@
 package mini.asaas
 
 import mini.asaas.adapters.SaveCustomerAdapter
+import mini.asaas.repositorys.CustomerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
@@ -21,14 +22,31 @@ class CustomerService {
         if (customer.hasErrors()) throw new ValidationException("Erro ao criar conta do usuário", customer.errors)
 
         Address address = addressService.create(saveCustomerAdapter.address)
-        
-        customer.name = saveCustomerAdapter.name
-        customer.email = saveCustomerAdapter.email
-        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
-        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
-        customer.address = address
+        buildCustomer(customer, saveCustomerAdapter, address)
 
         customer.save(failOnError: true)
+        return customer
+    }
+
+    public Customer update(SaveCustomerAdapter saveCustomerAdapter, Long customerId) {
+        Customer customer = validate(saveCustomerAdapter)
+
+        if (customer.hasErrors()) throw new ValidationException("Erro ao atualizar a conta do usuário", customer.errors)
+
+        customer = findById(customerId)
+
+        Address address = addressService.update(saveCustomerAdapter.address, customer.address.id)
+        buildCustomer(customer, saveCustomerAdapter, address)
+
+        customer.save(failOnError: true)
+        return customer
+    }
+
+    public Customer findById(Long customerId) {
+        Customer customer = CustomerRepository.query([id: customerId]).get()
+
+        if (!customer) throw new RuntimeException("Usuário não encontrado")
+
         return customer
     }
 
@@ -43,8 +61,16 @@ class CustomerService {
 
         if (!saveCustomerAdapter.cpfCnpj) DomainUtils.addError(customer, "O CPF/CNPJ é obrigatório")
 
-        if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado não é válido")
+        if (saveCustomerAdapter.cpfCnpj && !CpfCnpjUtils.validate(saveCustomerAdapter.cpfCnpj)) DomainUtils.addError(customer, "O CPF/CNPJ informado é inválido")
 
         return customer
+    }
+
+    private void buildCustomer(Customer customer, SaveCustomerAdapter saveCustomerAdapter, Address address) {
+        customer.name = saveCustomerAdapter.name
+        customer.email = saveCustomerAdapter.email
+        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
+        customer.address = address
     }
 }

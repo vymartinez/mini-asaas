@@ -7,8 +7,6 @@ class City extends BaseEntity {
 
     String name
 
-    String district
-
     State state
 
     String ibgeCode
