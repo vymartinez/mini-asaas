@@ -13,7 +13,7 @@ class SaveUserAdapter {
     SaveCustomerAdapter customer
 
     public SaveUserAdapter(Map params) {
-        this.username = params.username
+        this.username = params.name
         this.password = params.password
         this.customer = new SaveCustomerAdapter(params)
     }

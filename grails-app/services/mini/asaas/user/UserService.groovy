@@ -1,13 +1,14 @@
 package mini.asaas.user
 
-import grails.compiler.GrailsCompileStatic
-import grails.gorm.transactions.Transactional
-import grails.plugin.springsecurity.SpringSecurityService
-import grails.validation.ValidationException
 import mini.asaas.Customer
 import mini.asaas.CustomerService
 import mini.asaas.adapters.user.SaveUserAdapter
 import mini.asaas.utils.DomainUtils
+
+import grails.compiler.GrailsCompileStatic
+import grails.gorm.transactions.Transactional
+import grails.plugin.springsecurity.SpringSecurityService
+import grails.validation.ValidationException
 
 @GrailsCompileStatic
 @Transactional
