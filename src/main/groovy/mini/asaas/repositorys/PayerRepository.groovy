@@ -29,6 +29,12 @@ class PayerRepository implements Repository<Payer, PayerRepository> {
                 eq("cellPhone", StringUtils.removeNonNumeric(search.cellPhone.toString()))
             }
 
+            if (search.containsKey("nameOrEmail[like]")) {
+                or {
+                    like("name", "%${search.nameOrEmail}%")
+                    like("email", "%${search.nameOrEmail}%")
+                }
+            }
         }
     }
 
@@ -42,7 +48,9 @@ class PayerRepository implements Repository<Payer, PayerRepository> {
             "name",
             "email",
             "cpfCnpj",
-            "cellPhone"
+            "cellPhone",
+            "customerId",
+            "nameOrEmail[like]"
         ]
     }
 }
