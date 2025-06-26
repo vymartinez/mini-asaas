@@ -6,7 +6,7 @@ import mini.asaas.BaseController
 import mini.asaas.enums.MessageType
 import mini.asaas.payment.Payment
 import mini.asaas.adapters.SavePaymentAdapter
-import mini.asaas.payment.PaymentService
+import mini.asaas.PaymentService
 
 
 class PaymentController extends BaseController {
@@ -27,21 +27,22 @@ class PaymentController extends BaseController {
         List<Payment> payments = paymentService.list(params, params.max as Integer, params.offset as Integer)
         Long paymentCount = paymentService.count(params)
 
-        respond payments, model: [paymentCount: paymentCount]
+        render(view: 'index', model: [payments: payments, paymentCount: paymentCount])
     }
 
     def show(Long id) {
         try {
             Payment payment = paymentService.getById(id)
-            respond payment
-        } catch (RuntimeException e) {
-            buildFlashAlert(e.message, MessageType.ERROR, false)
+            render(view: 'show', model: [payment: payment])
+        } catch (RuntimeException exception) {
+            buildFlashAlert(exception.message, MessageType.ERROR, false)
             redirect(action: "index")
         }
     }
 
     def create() {
-        respond new SavePaymentAdapter(params)
+        SavePaymentAdapter adapter = new SavePaymentAdapter(params)
+        render(view: 'create', model: [adapter: adapter])
     }
 
     def save(SavePaymentAdapter adapter) {
@@ -71,12 +72,8 @@ class PaymentController extends BaseController {
     def edit(Long id) {
         try {
             Payment payment = paymentService.getById(id)
-            SavePaymentAdapter adapter = new SavePaymentAdapter()
-            adapter.id = payment.id
-            adapter.billingType = payment.billingType
-            adapter.value = payment.value
-            adapter.dueDate = payment.dueDate
-            respond adapter
+            SavePaymentAdapter adapter = new SavePaymentAdapter(payment)
+            render(view: 'edit', model: [adapter: adapter])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
             redirect(action: "index")
@@ -103,7 +100,7 @@ class PaymentController extends BaseController {
             render(view: "edit", model: [adapter: adapter, errors: exception.errors])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
-            redirect action: "index"
+            redirect(action: "index")
         }
     }
 

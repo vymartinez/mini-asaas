@@ -1,7 +1,8 @@
 package mini.asaas
 
+import mini.asaas.PaymentService
+
 import grails.compiler.GrailsCompileStatic
-import mini.asaas.payment.PaymentService
 
 @GrailsCompileStatic
 class ExpireOverduePaymentJob {
@@ -9,7 +10,7 @@ class ExpireOverduePaymentJob {
     PaymentService paymentService
 
     public static triggers = {
-        cron name: 'expireOverduePaymentsTrigger', cronExpression: '0 0 00 * * ?'
+        cron name: 'expireOverduePaymentsTrigger', cronExpression: '0 0 0 * * ?'
     }
 
     def execute() {

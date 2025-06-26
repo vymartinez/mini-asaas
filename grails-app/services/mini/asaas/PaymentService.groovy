@@ -42,6 +42,32 @@ class PaymentService {
         return [ payerId: payerId ]
     }
 
+    private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
+        payment.status = newStatus
+
+        String failureMsg
+
+        switch(newStatus) {
+            case PaymentStatus.OVERDUE:
+                failureMsg = "Erro ao vencer pagamento id: ${payment.id}"
+                break
+            case PaymentStatus.RECEIVED:
+                failureMsg = "Erro ao confirmar pagamento em dinheiro id: ${payment.id}"
+                break
+            case PaymentStatus.PENDING:
+                failureMsg = "Erro ao criar cobrança id: ${payment.id}"
+                break
+            default:
+                failureMsg = "Falha ao atualizar status do pagamento id: ${payment.id}"
+        }
+
+        if (!payment.save()) {
+            log.error(failureMsg)
+        } else {
+            notificationCallback(payment)
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Payment> list(Map params, Integer max, Integer offset) {
         Payer payer = getCurrentPayer()
@@ -125,25 +151,21 @@ class PaymentService {
     public void expirePayment(Long id) {
         Payment payment = getById(id)
         if (payment.status == PaymentStatus.PENDING && payment.dueDate.before(new Date())) {
-            payment.status = PaymentStatus.OVERDUE
-            if (!payment.save()) {
-                log.error("Erro ao vencer pagamento id: ${id}")
-            } else {
-                emailNotificationService.notifyExpired(payment)
+            updateStatusAndNotify(payment, PaymentStatus.OVERDUE) { Payment expiredPayment ->
+                emailNotificationService.notifyExpired(expiredPayment)
             }
         }
     }
 
     public void expireOverduePayments() {
         Date now = new Date()
-        List<Payment> pending = paymentRepository.query([status: PaymentStatus.PENDING]).list()
-        pending.findAll { it.dueDate.before(now) }.each { payment ->
-            payment.status = PaymentStatus.OVERDUE
-            if (!payment.save()) {
-                log.error("Erro ao vencer pagamento id: ${payment.id}")
-            } else {
-                emailNotificationService.notifyExpired(payment)
-            }
-        }
+
+        paymentRepository
+                .query([status: PaymentStatus.PENDING])
+                .list() as List<Payment>
+                .findAll { it.dueDate.before(now) }
+                .each { payment ->
+                    updateStatusAndNotify(payment, PaymentStatus.OVERDUE, emailNotificationService.&notifyExpired)
+                }
     }
 }

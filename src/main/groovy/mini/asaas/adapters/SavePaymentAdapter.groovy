@@ -1,6 +1,7 @@
 package mini.asaas.adapters
 
 import mini.asaas.enums.BillingType
+import mini.asaas.payment.Payment
 
 class SavePaymentAdapter {
 
@@ -15,5 +16,12 @@ class SavePaymentAdapter {
     static constraints = {
         id nullable: true
         value min: 0.01G
+    }
+
+    public SavePaymentAdapter(Payment payment) {
+        this.id = payment.id
+        this.billingType = payment.billingType
+        this.value = payment.value
+        this.dueDate = payment.dueDate
     }
 }
