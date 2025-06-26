@@ -1,5 +1,5 @@
 <%@ page import="mini.asaas.Customer" %>
-<g:set var="securityService" bean="securityService" />
+<g:set var="securityService" bean="springSecurityService" />
 
 <% Customer customer = securityService.currentUser.customer %>
 
