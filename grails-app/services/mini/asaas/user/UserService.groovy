@@ -14,8 +14,8 @@ import grails.validation.ValidationException
 @Transactional
 class UserService {
 
-    SpringSecurityService springSecurityService
     CustomerService customerService
+    SpringSecurityService springSecurityService
 
     public User create(SaveUserAdapter adapter) {
         User user = validate(adapter)
