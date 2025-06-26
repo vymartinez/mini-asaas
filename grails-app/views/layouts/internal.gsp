@@ -1,3 +1,8 @@
+<%@ page import="mini.asaas.Customer" %>
+<g:set var="securityService" bean="securityService" />
+
+<% Customer customer = securityService.currentUser.customer %>
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -28,7 +33,7 @@
             slot="header"
             page-name="${pageProperty(name: "body.page-title")}"
         >
-            <g:render template="/templates/header" />
+            <g:render template="/templates/header" model="${[customer: customer]}" />
         </atlas-page-header>
         <atlas-page-content slot="content" class="js-atlas-content">
         <g:if test="${flash.message}">
