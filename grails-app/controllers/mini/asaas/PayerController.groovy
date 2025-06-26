@@ -1,6 +1,5 @@
 package mini.asaas
 
-import grails.plugin.springsecurity.annotation.Secured
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
