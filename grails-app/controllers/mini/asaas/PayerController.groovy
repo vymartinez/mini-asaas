@@ -34,7 +34,7 @@ class PayerController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def show(Long id) {
         try {
             Long currentCustomerId = getCurrentCustomerId()
