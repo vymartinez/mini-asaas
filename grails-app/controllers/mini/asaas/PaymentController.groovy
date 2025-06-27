@@ -17,17 +17,22 @@ class PaymentController extends BaseController {
             save: "POST",
             update: "PUT",
             delete: "DELETE",
-            confirmCashPayment: "POST"
+            confirmCashPayment: "POST",
+            restore: "POST"
     ]
 
     def index() {
-        params.max = getLimitPerPage()
-        params.offset = getOffset()
-
-        List<Payment> payments = paymentService.list(params, params.max as Integer, params.offset as Integer)
-        Long paymentCount = paymentService.count(params)
-
-        render(view: 'index', model: [payments: payments, paymentCount: paymentCount])
+        try {
+            List<Payment> payments = paymentService.list(params, getLimitPerPage(), getOffset())
+            return payments
+        } catch (Exception exception) {
+            buildFlashAlert(
+                    "Ocorreu um erro ao listar as cobranças. Por favor, tente novamente mais tarde.",
+                    MessageType.ERROR,
+                    false
+            )
+            redirect(url: '/dashboard')
+        }
     }
 
     def show(Long id) {
@@ -132,5 +137,18 @@ class PaymentController extends BaseController {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
         redirect(action: "show", id: id)
+    }
+
+    def restore(Long id) {
+        try {
+            Payment payment = paymentService.restore(id)
+            String msg = "${message(code: 'payment.restored.success', args: [payment.id])}"
+            buildFlashAlert(msg, MessageType.SUCCESS, true)
+        } catch (ValidationException exception) {
+            buildFlashAlert("${message(code: 'payment.restored.error')}", MessageType.ERROR, false)
+        } catch (RuntimeException exception) {
+            buildFlashAlert(exception.message, MessageType.ERROR, false)
+        }
+        redirect(action: 'index')
     }
 }

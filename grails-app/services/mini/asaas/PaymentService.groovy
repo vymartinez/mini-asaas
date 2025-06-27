@@ -168,4 +168,18 @@ class PaymentService {
                     updateStatusAndNotify(payment, PaymentStatus.OVERDUE, emailNotificationService.&notifyExpired)
                 }
     }
+
+    public Payment restore(Long id) {
+        Payment payment = getById(id)
+        if (!payment.deleted) {
+            throw new RuntimeException("Pagamento não está excluído e não pode ser restaurado.")
+        }
+        payment.deleted = false
+        payment.status = PaymentStatus.PENDING
+        if (!payment.save()) {
+            throw new ValidationException("Erro ao restaurar pagamento", payment.errors)
+        }
+        emailNotificationService.notifyRestored(payment)
+        return payment
+    }
 }
