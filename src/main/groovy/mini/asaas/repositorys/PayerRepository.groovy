@@ -31,8 +31,8 @@ class PayerRepository implements Repository<Payer, PayerRepository> {
 
             if (search.containsKey("nameOrEmail[like]")) {
                 or {
-                    like("name", "%${search.nameOrEmail}%")
-                    like("email", "%${search.nameOrEmail}%")
+                    like("name", "%${search."nameOrEmail[like]"}%")
+                    like("email", "%${search."nameOrEmail[like]"}%")
                 }
             }
         }

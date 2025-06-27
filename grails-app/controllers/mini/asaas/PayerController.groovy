@@ -2,6 +2,7 @@ package mini.asaas
 
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
+import mini.asaas.repositorys.PayerRepository
 
 import grails.compiler.GrailsCompileStatic
 import grails.validation.ValidationException
@@ -35,9 +36,12 @@ class PayerController extends BaseController {
     def list() {
         try {
             Long currentCustomerId = 1
-            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
+            Integer max = getLimitPerPage()
 
-            return [payers: payers]
+            List<Payer> payers = payerService.list(params, currentCustomerId, max, getOffset())
+            Long totalCount = PayerRepository.query().readOnly().count()
+
+           return [payers: payers, totalCount: totalCount, max: max]
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
