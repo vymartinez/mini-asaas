@@ -3,13 +3,11 @@
 <head>
     <meta name="layout" content="external"/>
     <title>Mini Asaas - Login</title>
-    <asset:stylesheet src="register.css"/>
 </head>
 
 <body>
-
 <atlas-panel>
-    <atlas-form action="${createLink(controller: 'login', action: 'authenticate')}">
+    <atlas-form action="${ postUrl }" method="post">
         <atlas-heading>Acesso ao Sistema</atlas-heading>
 
         <atlas-grid>
@@ -45,13 +43,6 @@
         </atlas-grid>
 
     </atlas-form>
-
-    <g:if test="${flash.message}">
-        <div class="alert alert-danger" style="margin-top: 15px; text-align: center;">
-            ${flash.message}
-        </div>
-    </g:if>
-
 </atlas-panel>
 
 </body>

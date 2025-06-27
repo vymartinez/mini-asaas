@@ -164,6 +164,8 @@ grails:
                 authorityJoinClassName: 'mini.asaas.auth.UserRole'
                 authority.className: 'mini.asaas.role.Role'
             successHandler:
-                defaultTargetUrl: '/'
+                defaultTargetUrl: '/dashboard'
             logout:
                 postOnly: false
+            auth:
+                loginFormUrl: '/login/auth'
