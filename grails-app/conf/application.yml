@@ -8,6 +8,7 @@ grails:
             # Whether to translate GORM events into Reactor events
             # Disabled by default for performance reasons
             events: false
+
 info:
     app:
         name: '@info.app.name@'
@@ -158,3 +159,15 @@ environments:
 grails:
     i18n:
         encoding: UTF-8
+
+   plugin:
+        springsecurity:
+            userLookup:
+                userDomainClassName: 'mini.asaas.user.User'
+                authorityJoinClassName: 'mini.asaas.auth.UserRole'
+                authority.className: 'mini.asaas.role.Role'
+            successHandler:
+                defaultTargetUrl: '/'
+            logout:
+                postOnly: false
+
