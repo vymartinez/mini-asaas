@@ -157,7 +157,10 @@ environments:
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
 
 grails:
-    plugin:
+    i18n:
+        encoding: UTF-8
+
+   plugin:
         springsecurity:
             userLookup:
                 userDomainClassName: 'mini.asaas.user.User'
@@ -167,3 +170,4 @@ grails:
                 defaultTargetUrl: '/'
             logout:
                 postOnly: false
+
