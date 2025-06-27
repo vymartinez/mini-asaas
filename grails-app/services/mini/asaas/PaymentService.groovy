@@ -20,10 +20,10 @@ import grails.validation.ValidationException
 @Transactional
 class PaymentService {
 
-    SpringSecurityService springSecurityService
+    EmailNotificationService emailNotificationService
     PayerRepository payerRepository
     PaymentRepository paymentRepository
-    EmailNotificationService emailNotificationService
+    SpringSecurityService springSecurityService
 
     private Payer getCurrentPayer() {
         User user = springSecurityService.currentUser as User
