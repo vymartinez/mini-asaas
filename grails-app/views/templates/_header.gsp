@@ -1,6 +1,6 @@
 <atlas-navbar>
     <atlas-layout inline alignment="center" justify="end" >
-        <atlas-dropdown-button type="filled" icon="asaas-logo" theme="primary" description="Olá, ${ customer.name.split(" ")[0] }" pill >
+        <atlas-dropdown-button type="filled" icon="asaas-logo" theme="primary" description="Olá, ${ formatTagLib.firstName(name: customer.name) }" pill >
             <atlas-dropdown-item 
                 icon="user"
                 href="${createLink(controller: "dashboard", action: "profile")}"
@@ -17,16 +17,16 @@
     </atlas-layout>
 </atlas-navbar>
 <atlas-layout>
-    <atlas-dropdown-button type="filled" icon="asaas-logo" theme="primary" hide-arrow description="Olá, ${ customer.name.split(" ")[0] }" block hide-on-desktop >
+    <atlas-dropdown-button type="filled" icon="asaas-logo" theme="primary" hide-arrow description="Olá, ${ formatTagLib.firstName(name: customer.name) }" block hide-on-desktop >
         <atlas-dropdown-item
-                icon="user"
-                href="${createLink(controller: "dashboard", action: "profile")}"
+            icon="user"
+            href="${createLink(controller: "dashboard", action: "profile")}"
         >
             Ver perfil
         </atlas-dropdown-item>
         <atlas-dropdown-item
-                theme="danger"
-                icon="power"
+            theme="danger"
+            icon="power"
         >
             Sair
         </atlas-dropdown-item>
