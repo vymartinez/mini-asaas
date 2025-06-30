@@ -5,6 +5,7 @@ import mini.asaas.enums.MessageType
 import mini.asaas.repositorys.PayerRepository
 
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -12,11 +13,12 @@ class PayerController extends BaseController {
 
     PayerService payerService
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def create() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.create(savePayerAdapter, currentCustomerId)
 
             buildFlashAlert("Pagador criado com sucesso!", MessageType.SUCCESS, true)
@@ -33,10 +35,25 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def show(Long id) {
+        try {
+            Long currentCustomerId = getCurrentCustomerId()
+            Payer payer = payerService.findById(id, currentCustomerId)
+
+            return [payer: payer]
+        } catch (RuntimeException runtimeException) {
+            buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
+            redirect(url: '/payer/list')
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def list() {
         try {
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Integer max = getLimitPerPage()
+            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
 
             List<Payer> payers = payerService.list(params, currentCustomerId, max, getOffset())
             Long totalCount = PayerRepository.query().readOnly().count()
@@ -48,12 +65,13 @@ class PayerController extends BaseController {
         }
     }
 
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def update() {
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
             Long payerId = params.payerId as Long
-            Long currentCustomerId = 1
+            Long currentCustomerId = getCurrentCustomerId()
             Payer payer = payerService.update(savePayerAdapter, payerId, currentCustomerId)
 
             buildFlashAlert("Pagador atualizado com sucesso!", MessageType.SUCCESS, true)
