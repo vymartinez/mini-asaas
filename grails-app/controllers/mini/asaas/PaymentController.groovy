@@ -29,7 +29,7 @@ class PaymentController extends BaseController {
 
     def show() {
         try {
-            Payment payment = paymentService.getById(params.id as Long)
+            Payment payment = paymentService.getById(params.id as Long, params.payerId as Long)
             render(view: 'show', model: [payment: payment])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
@@ -70,7 +70,7 @@ class PaymentController extends BaseController {
 
     def edit() {
         try {
-            Payment payment = paymentService.getById(params.id as Long)
+            Payment payment = paymentService.getById(params.id as Long, params.payerId as Long)
             SavePaymentAdapter adapter = new SavePaymentAdapter(payment)
             render(view: 'edit', model: [adapter: adapter])
         } catch (RuntimeException exception) {
@@ -98,7 +98,7 @@ class PaymentController extends BaseController {
 
     def delete() {
         try {
-            paymentService.delete(params.id as Long)
+            paymentService.delete(params.id as Long, params.payerId as Long)
             String msg = "${message(code: "payment.deleted.success")}"
             buildFlashAlert(
                     msg,
@@ -113,7 +113,7 @@ class PaymentController extends BaseController {
 
     def confirmCashPayment() {
         try {
-            paymentService.confirmCashPayment(params.id as Long)
+            paymentService.confirmCashPayment(params.id as Long, params.payerId as Long)
             String msg = "${message(code: "payment.confirmed.success")}"
             buildFlashAlert(msg, MessageType.SUCCESS, true)
         } catch (RuntimeException exception) {
@@ -124,7 +124,7 @@ class PaymentController extends BaseController {
 
     def restore() {
         try {
-            Payment payment = paymentService.restore(params.id as Long)
+            Payment payment = paymentService.restore(params.id as Long, params.payerId as Long)
             String msg = "${message(code: 'payment.restored.success', args: [payment.id])}"
             buildFlashAlert(msg, MessageType.SUCCESS, true)
         } catch (ValidationException exception) {
