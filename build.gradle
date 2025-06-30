@@ -78,8 +78,12 @@ dependencies {
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
     implementation "org.grails.plugins:mail:3.0.0"
+
     implementation "org.grails.plugins:spring-security-core:5.2.1"
     implementation "org.grails.plugins:quartz:3.0.0"
+
+    implementation "org.grails.plugins:spring-security-core:4.0.3"
+
 }
 
 bootRun {

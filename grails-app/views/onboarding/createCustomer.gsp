@@ -7,7 +7,7 @@
 
 <body>
 <atlas-panel class="js-create-customer">
-    <atlas-form action="/customer/create" method="post" class="js-create-customer-form">
+    <atlas-form action="/user/create" method="post" class="js-create-customer-form">
         <atlas-heading>Cadastro de Usuários</atlas-heading>
         <atlas-grid>
             <atlas-row>
