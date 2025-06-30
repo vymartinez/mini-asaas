@@ -15,13 +15,13 @@
                     <atlas-input label="Nome" id="name" name="name" type="text" placeholder="Nome" required value="${ params.name }"></atlas-input>
                 </atlas-col>
                 <atlas-col lg="6">
-                    <atlas-masked-input label="Email" id="email" name="email" type="text" placeholder="Email" alias="email" required value="${ params.email }"></atlas-masked-input>
+                    <atlas-masked-input label="Email" id="email" name="email" type="text" placeholder="Email" mask-alias="email" required value="${ params.email }"></atlas-masked-input>
                 </atlas-col>
                 <atlas-col lg="6">
                     <atlas-password-input label="Senha" id="password" name="password" placeholder="Senha" label="Senha" required value="${ params.password }"></atlas-password-input>
                 </atlas-col>
                 <atlas-col lg="6">
-                    <atlas-masked-input label="CPF/CNPJ" id="cpfCnpj" name="cpfCnpj" type="text" placeholder="CPF/CNPJ" alias="cpf-cnpj" required value="${ params.cpfCnpj }"></atlas-masked-input>
+                    <atlas-masked-input label="CPF/CNPJ" id="cpfCnpj" name="cpfCnpj" type="text" placeholder="CPF/CNPJ" mask-alias="cpf-cnpj" required value="${ params.cpfCnpj }"></atlas-masked-input>
                 </atlas-col>
                 <atlas-col lg="6">
                     <atlas-postal-code label="CEP" id="zipCode" name="zipCode" type="text" placeholder="CEP" required value="${ params.zipCode }"></atlas-postal-code>

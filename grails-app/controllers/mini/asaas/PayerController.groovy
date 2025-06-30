@@ -82,4 +82,7 @@ class PayerController extends BaseController {
             redirect(url: '/payer/list', model: [params: params])
         }
     }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def register() { }
 }

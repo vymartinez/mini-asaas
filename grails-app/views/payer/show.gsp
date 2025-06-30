@@ -42,7 +42,7 @@
                         type="text"
                         value="${params.cpfCnpj ?: payer.cpfCnpj}"
                         placeholder="CPF/CNPJ"
-                        alias="cpf-cnpj"
+                        mask-alias="cpf-cnpj"
                         required
                     ></atlas-masked-input>
                 </atlas-col>
@@ -54,7 +54,7 @@
                         type="text"
                         value="${params.cellPhone ?: payer.cellPhone}"
                         placeholder="Telefone"
-                        alias="cell-phone"
+                        mask-alias="cell-phone"
                         required
                     ></atlas-masked-input>
                 </atlas-col>
