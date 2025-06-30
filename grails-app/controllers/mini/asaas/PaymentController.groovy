@@ -13,14 +13,6 @@ class PaymentController extends BaseController {
 
     PaymentService paymentService
 
-    static allowedMethods = [
-            save: "POST",
-            update: "PUT",
-            delete: "DELETE",
-            confirmCashPayment: "POST",
-            restore: "POST"
-    ]
-
     def index() {
         try {
             List<Payment> payments = paymentService.list(params, getLimitPerPage(), getOffset())
@@ -35,9 +27,9 @@ class PaymentController extends BaseController {
         }
     }
 
-    def show(Long id) {
+    def show() {
         try {
-            Payment payment = paymentService.getById(id)
+            Payment payment = paymentService.getById(params.id as Long)
             render(view: 'show', model: [payment: payment])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
@@ -46,27 +38,29 @@ class PaymentController extends BaseController {
     }
 
     def create() {
-        SavePaymentAdapter adapter = new SavePaymentAdapter(params)
-        render(view: 'create', model: [adapter: adapter])
-    }
-
-    def save(SavePaymentAdapter adapter) {
         try {
-            Payment payment = paymentService.create(adapter)
-            String flashMsg = "${message(code: "payment.created.success", args: [payment.id])}"
+            SavePaymentAdapter adapter = new SavePaymentAdapter(params)
+            render(view: 'create', model: [adapter: adapter])
+        } catch (Exception exception) {
             buildFlashAlert(
-                    flashMsg,
-                    MessageType.SUCCESS,
-                    true
-            )
-            redirect(action: "show", id: payment.id)
-        } catch (ValidationException exception) {
-            String errMsg = "${message(code: "payment.created.error")}"
-            buildFlashAlert(
-                    errMsg,
+                    "Ocorreu um erro interno ao preparar o formulário de criação. Por favor, tente novamente mais tarde.",
                     MessageType.ERROR,
                     false
             )
+            redirect(action: "index")
+        }
+    }
+
+    def save() {
+        try {
+            SavePaymentAdapter adapter = new SavePaymentAdapter(params)
+            Payment payment = paymentService.create(adapter)
+            String flashMsg = "${message(code: "payment.created.success", args: [payment.id])}"
+            buildFlashAlert(flashMsg, MessageType.SUCCESS, true)
+            redirect(action: "show", id: payment.id)
+        } catch (ValidationException exception) {
+            String errMsg = "${message(code: "payment.created.error")}"
+            buildFlashAlert(errMsg, MessageType.ERROR, false)
             render(view: "create", model: [adapter: adapter, errors: exception.errors])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
@@ -74,9 +68,9 @@ class PaymentController extends BaseController {
         }
     }
 
-    def edit(Long id) {
+    def edit() {
         try {
-            Payment payment = paymentService.getById(id)
+            Payment payment = paymentService.getById(params.id as Long)
             SavePaymentAdapter adapter = new SavePaymentAdapter(payment)
             render(view: 'edit', model: [adapter: adapter])
         } catch (RuntimeException exception) {
@@ -85,23 +79,16 @@ class PaymentController extends BaseController {
         }
     }
 
-    def update(SavePaymentAdapter adapter) {
+    def update() {
+        SavePaymentAdapter adapter = new SavePaymentAdapter(params)
         try {
             Payment payment = paymentService.update(adapter)
             String msg = "${message(code: "payment.updated.success", args: [payment.id])}"
-            buildFlashAlert(
-                    msg,
-                    MessageType.SUCCESS,
-                    true
-            )
+            buildFlashAlert(msg, MessageType.SUCCESS, true)
             redirect(action: "show", id: payment.id)
         } catch (ValidationException exception) {
             String err = "${message(code: "payment.updated.error")}"
-            buildFlashAlert(
-                    err,
-                    MessageType.ERROR,
-                    false
-            )
+            buildFlashAlert(err, MessageType.ERROR, false)
             render(view: "edit", model: [adapter: adapter, errors: exception.errors])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
@@ -109,9 +96,9 @@ class PaymentController extends BaseController {
         }
     }
 
-    def delete(Long id) {
+    def delete() {
         try {
-            paymentService.delete(id)
+            paymentService.delete(params.id as Long)
             String msg = "${message(code: "payment.deleted.success")}"
             buildFlashAlert(
                     msg,
@@ -124,24 +111,20 @@ class PaymentController extends BaseController {
         redirect(action: "index")
     }
 
-    def confirmCashPayment(Long id) {
+    def confirmCashPayment() {
         try {
-            paymentService.confirmCashPayment(id)
+            paymentService.confirmCashPayment(params.id as Long)
             String msg = "${message(code: "payment.confirmed.success")}"
-            buildFlashAlert(
-                    msg,
-                    MessageType.SUCCESS,
-                    true
-            )
+            buildFlashAlert(msg, MessageType.SUCCESS, true)
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
         redirect(action: "show", id: id)
     }
 
-    def restore(Long id) {
+    def restore() {
         try {
-            Payment payment = paymentService.restore(id)
+            Payment payment = paymentService.restore(params.id as Long)
             String msg = "${message(code: 'payment.restored.success', args: [payment.id])}"
             buildFlashAlert(msg, MessageType.SUCCESS, true)
         } catch (ValidationException exception) {
