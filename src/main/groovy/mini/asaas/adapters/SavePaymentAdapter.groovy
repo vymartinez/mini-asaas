@@ -7,6 +7,8 @@ class SavePaymentAdapter {
 
     Long id
 
+    Long payerId
+
     BillingType billingType
 
     BigDecimal value
@@ -20,6 +22,7 @@ class SavePaymentAdapter {
 
     public SavePaymentAdapter(Payment payment) {
         this.id = payment.id
+        this.payerId = payment.payer?.id
         this.billingType = payment.billingType
         this.value = payment.value
         this.dueDate = payment.dueDate

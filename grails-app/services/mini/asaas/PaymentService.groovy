@@ -25,13 +25,13 @@ class PaymentService {
     PaymentRepository paymentRepository
     SpringSecurityService springSecurityService
 
-    private Payer getCurrentPayer() {
+    private Payer getCurrentPayer(Long payerId) {
         User user = springSecurityService.currentUser as User
         Customer customer = Customer.findWhere(user: user)
         if (!customer) {
             throw new RuntimeException("Customer não encontrado para o usuário ${user.username}")
         }
-        Payer payer = payerRepository.query([customerId: customer.id]).get()
+        Payer payer = payerRepository.query([id: payerId, customerId: customer.id]).get()
         if (!payer) {
             throw new RuntimeException("Payer não encontrado para o Customer ${customer.id}")
         }
@@ -45,57 +45,41 @@ class PaymentService {
     private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
         payment.status = newStatus
 
-        String failureMsg
-
-        switch(newStatus) {
-            case PaymentStatus.OVERDUE:
-                failureMsg = "Erro ao vencer pagamento id: ${payment.id}"
-                break
-            case PaymentStatus.RECEIVED:
-                failureMsg = "Erro ao confirmar pagamento em dinheiro id: ${payment.id}"
-                break
-            case PaymentStatus.PENDING:
-                failureMsg = "Erro ao criar cobrança id: ${payment.id}"
-                break
-            default:
-                failureMsg = "Falha ao atualizar status do pagamento id: ${payment.id}"
+        if (!payment.save()) {
+            throw new ValidationException("Erro ao ayualizar status do pagamento", payment.errors)
         }
 
-        if (!payment.save()) {
-            log.error(failureMsg)
-        } else {
-            notificationCallback(payment)
+        if (notificationCallback != null) {
+            notificationCallback.call()
         }
     }
 
     @Transactional(readOnly = true)
     public List<Payment> list(Map params, Integer max, Integer offset) {
-        Payer payer = getCurrentPayer()
+        Long payerId = params.get("payerId")?.toString()?.toLong()
+        Payer payer = getCurrentPayer(payerId)
         Map filters = buildListFilters(params, payer.id)
-        paymentRepository.query(filters).list([max: max, offset: offset])
+
+        return paymentRepository.query(filters).list([max: max, offset: offset])
     }
 
     @Transactional(readOnly = true)
-    public Long count(Map params) {
-        Payer payer = getCurrentPayer()
-        Map filters = buildListFilters(params, payer.id)
-        paymentRepository.query(filters).count()
-    }
-
-    @Transactional(readOnly = true)
-    public Payment getById(Long id) {
+    public Payment getById(Long id, Long payerId) {
         Payment payment = paymentRepository.query([id: id]).get()
         if (!payment) {
             throw new RuntimeException("Pagamento não encontrado para ID $id")
         }
-        if (payment.payer.id != getCurrentPayer().id) {
+
+        Payer payer = getCurrentPayer(payerId)
+        if (payment.payer?.id != payer.id) {
             throw new RuntimeException("Acesso negado: você não é o dono deste pagamento.")
         }
         return payment
     }
 
     public Payment create(SavePaymentAdapter adapter) {
-        Payer payer = getCurrentPayer()
+        Long payerId = adapter.payerId?.toString()?.toLong()
+        Payer payer = getCurrentPayer(payerId)
         Payment payment = new Payment()
         payment.payer = payer
         payment.billingType = adapter.billingType
@@ -116,7 +100,8 @@ class PaymentService {
             throw new RuntimeException("ID da cobrança é obrigatório para atualização")
         }
 
-        Payment payment = getById(adapter.id)
+        Long payerId = adapter.payerId?.toString()?.toLong()
+        Payment payment = getById(adapter.id, payerId)
         payment.billingType = adapter.billingType
         payment.value = adapter.value
         payment.dueDate = adapter.dueDate
@@ -128,14 +113,14 @@ class PaymentService {
         return payment
     }
 
-    public void delete(Long id) {
-        Payment payment = getById(id)
+    public void delete(Long id, Long payerId) {
+        Payment payment = getById(id, payerId)
         emailNotificationService.notifyDeleted(payment)
         payment.delete()
     }
 
-    public Payment confirmCashPayment(Long id) {
-        Payment payment = getById(id)
+    public Payment confirmCashPayment(Long id, Long payerId) {
+        Payment payment = getById(id, payerId)
         if (payment.status != PaymentStatus.PENDING) {
             throw new RuntimeException("Pagamento não está pendente e não pode ser confirmado em dinheiro.")
         }
@@ -148,8 +133,8 @@ class PaymentService {
         return payment
     }
 
-    public void expirePayment(Long id) {
-        Payment payment = getById(id)
+    public void expirePayment(Long id, Long payerId) {
+        Payment payment = getById(id, payerId)
         if (payment.status == PaymentStatus.PENDING && payment.dueDate.before(new Date())) {
             updateStatusAndNotify(payment, PaymentStatus.OVERDUE) { Payment expiredPayment ->
                 emailNotificationService.notifyExpired(expiredPayment)
@@ -169,8 +154,8 @@ class PaymentService {
                 }
     }
 
-    public Payment restore(Long id) {
-        Payment payment = getById(id)
+    public Payment restore(Long id, Long payerId) {
+        Payment payment = getById(id, payerId)
         if (!payment.deleted) {
             throw new RuntimeException("Pagamento não está excluído e não pode ser restaurado.")
         }
