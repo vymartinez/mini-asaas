@@ -4,9 +4,9 @@
     <title>Mini Asaas</title>
 </head>
 <body>
-<atlas-panel>
+<atlas-panel class="js-payer-show">
         <atlas-heading>Detalhes do Pagador</atlas-heading>
-    <atlas-form action="${createLink(controller: "payer", action: "update")}">
+    <atlas-form action="${createLink(controller: "payer", action: "update")}" class="js-payer-show-form">
         <atlas-input
             value="${payer.id}"
             name="id"
@@ -175,5 +175,6 @@
         ></atlas-button>
     </atlas-form>
 </atlas-panel>
+<asset:javascript src="payer-show.js"/>
 </body>
 </html>
