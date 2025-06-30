@@ -41,13 +41,13 @@ class NotificationService {
         String status = notificationStatus.toString().toLowerCase()
 
         String subject = messageSource.getMessage(
-            'payment.notify' + status + '.subject',
+            'payment.notify.' + status + '.subject',
             [payment.id] as Object[],
             Locale.getDefault()
         )
 
         String body = messageSource.getMessage(
-            'payment.notify' + status + '.body',
+            'payment.notify.' + status + '.body',
             [amount, payment.payer.name] as Object[],
             Locale.getDefault()
         )

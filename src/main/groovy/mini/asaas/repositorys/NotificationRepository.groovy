@@ -25,7 +25,8 @@ class NotificationRepository implements Repository<Notification, NotificationRep
     @Override
     public List<String> listAllowedFilters() {
         return [
-            "status"
+            "status",
+            "customerId",
         ]
     }
 }
