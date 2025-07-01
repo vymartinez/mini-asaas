@@ -1,5 +1,8 @@
 package mini.asaas.enums
 
+import grails.compiler.GrailsCompileStatic
+
+@GrailsCompileStatic
 enum NotificationStatus {
 
     CREATED,

@@ -11,15 +11,11 @@ class EmailNotificationService {
 
     MailService mailService
 
-    public void sendEmail(Notification notification) {
-        send(to: notification.customer.email, subject: notification.subject, body: notification.body)
-    }
-
-    private void send(Map<String, String> args) {
+    public void send(Notification notification) {
         mailService.sendMail {
-            to args.get('to')
-            subject args.get('subject')
-            body args.get('body')
+            to notification.customer.email
+            subject notification.subject
+            body notification.body
         }
     }
 }

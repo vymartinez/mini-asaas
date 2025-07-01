@@ -1,13 +1,10 @@
 package mini.asaas.payment
 
-import grails.compiler.GrailsCompileStatic
 import mini.asaas.enums.BillingType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.Payer
 import mini.asaas.utils.BaseEntity
 
-
-@GrailsCompileStatic
 class Payment extends BaseEntity {
 
     Payer payer
