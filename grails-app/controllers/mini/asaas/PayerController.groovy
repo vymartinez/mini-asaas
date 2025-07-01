@@ -25,13 +25,13 @@ class PayerController extends BaseController {
             redirect(url: '/payer/list', model: [payer: payer])
         } catch (ValidationException validationException) {
             buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
-            redirect(url: '/payer/create', model: [params: params])
+            redirect(url: '/payer/register', model: [params: params])
         } catch (RuntimeException runtimeException) {
             buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
-            redirect(url: '/payer/create', model: [params: params])
+            redirect(url: '/payer/register', model: [params: params])
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
-            redirect(url: '/payer/create', model: [params: params])
+            redirect(url: '/payer/register', model: [params: params])
         }
     }
 
@@ -85,6 +85,36 @@ class PayerController extends BaseController {
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/payer/list', model: [params: params])
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def disable() {
+        try {
+            Long payerId = params.payerId as Long
+            Long currentCustomerId = getCurrentCustomerId()
+            payerService.disable(payerId, currentCustomerId)
+
+            buildFlashAlert("Pagador desativado com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/payer/list')
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro ao desativar o pagador. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/payer/list')
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_FULLY'])
+    def restore() {
+        try {
+            Long payerId = params.payerId as Long
+            Long currentCustomerId = getCurrentCustomerId()
+            payerService.restore(payerId, currentCustomerId)
+
+            buildFlashAlert("Pagador reativado com sucesso!", MessageType.SUCCESS, true)
+            redirect(url: '/payer/list')
+        } catch (Exception exception) {
+            buildFlashAlert("Ocorreu um erro ao reativar o pagador. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
+            redirect(url: '/payer/list')
         }
     }
 
