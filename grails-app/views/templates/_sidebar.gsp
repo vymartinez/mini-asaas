@@ -18,7 +18,7 @@
                 icon="users"
                 value="payers"
                 text="Ver Pagadores"
-                href="${createLink(controller: "payer", action: 'list', params: [page: 1])}"
+                href="${createLink(controller: "payer", action: 'list')}"
                 ${ controllerName == 'payer' && actionName == 'list' ? 'active' : '' }
             ></atlas-sidebar-menu-item>
         </atlas-sidebar-menu-item>

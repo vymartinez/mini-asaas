@@ -1,8 +1,8 @@
 package mini.asaas
 
+import grails.gorm.PagedResultList
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
-import mini.asaas.repositorys.PayerRepository
 
 import grails.compiler.GrailsCompileStatic
 import grails.plugin.springsecurity.annotation.Secured
@@ -55,10 +55,9 @@ class PayerController extends BaseController {
             Integer max = getLimitPerPage()
             Integer offset = getOffset()
 
-            List<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
-            Long totalCount = PayerRepository.query().readOnly().count()
+            PagedResultList<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
 
-           return [payers: payers, totalCount: totalCount, max: max]
+           return [payers: payers, totalCount: payers.totalCount, max: max]
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')

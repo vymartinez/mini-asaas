@@ -1,5 +1,6 @@
 package mini.asaas
 
+import grails.gorm.PagedResultList
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.repositorys.PayerRepository
 import mini.asaas.utils.CpfCnpjUtils
@@ -31,7 +32,7 @@ class PayerService {
         return payer
     }
 
-    public List<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
+    public PagedResultList<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
         Map filters = buildListFilters(params, customerId)
 
         return PayerRepository.query(filters).readOnly().list([max: max, offset: offset])
