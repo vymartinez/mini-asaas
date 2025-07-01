@@ -36,8 +36,7 @@ class PaymentController extends BaseController {
 
     def create() {
         try {
-            SavePaymentAdapter adapter = new SavePaymentAdapter(params)
-            render(view: 'create', model: [adapter: adapter])
+            render(view: 'create')
         } catch (Exception exception) {
             String msg = "${message(code: "payment.create.error")}"
             buildFlashAlert(msg, MessageType.ERROR, false)

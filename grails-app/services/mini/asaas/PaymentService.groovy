@@ -25,7 +25,7 @@ class PaymentService {
     PaymentRepository paymentRepository
     SpringSecurityService springSecurityService
 
-    private Payer getCurrentPayer(Long payerId) {
+    private Payer findPayer(Long payerId) {
         User user = springSecurityService.currentUser as User
         Customer customer = Customer.findWhere(user: user)
 
@@ -62,19 +62,17 @@ class PaymentService {
         }
     }
 
-    @Transactional(readOnly = true)
     public List<Payment> list(Map params, Integer max, Integer offset) {
         Long payerId = params.get("payerId")?.toString()?.toLong()
-        Payer payer = getCurrentPayer(payerId)
+        Payer payer = findPayer(payerId)
 
         Map filters = buildListFilters(params, payer.id)
 
-        return paymentRepository.query(filters).list([max: max, offset: offset])
+        return paymentRepository.query(filters).readOnly().list([max: max, offset: offset])
     }
 
-    @Transactional(readOnly = true)
     public Payment getById(Long id, Long payerId) {
-        Payment payment = paymentRepository.query([id: id]).get()
+        Payment payment = paymentRepository.query([id: id]).readOnly().get()
 
         if (!payment) {
             throw new RuntimeException("Pagamento não encontrado para ID $id")
@@ -84,7 +82,7 @@ class PaymentService {
             throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
         }
 
-        Payer payer = getCurrentPayer(payerId)
+        Payer payer = findPayer(payerId)
 
         if (payment.payer.id != payer.id) {
             throw new RuntimeException("Acesso negado: você não é o dono deste pagamento.")
@@ -95,7 +93,7 @@ class PaymentService {
 
     public Payment create(SavePaymentAdapter adapter) {
         Long payerId = adapter.payerId?.toString()?.toLong()
-        Payer payer = getCurrentPayer(payerId)
+        Payer payer = findPayer(payerId)
 
         Payment payment = new Payment()
         payment.payer = payer
