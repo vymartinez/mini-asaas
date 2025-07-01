@@ -3,15 +3,11 @@ package mini.asaas.notification
 import mini.asaas.Customer
 import mini.asaas.Notification
 import mini.asaas.enums.NotificationType
-import mini.asaas.payment.Payment
 import mini.asaas.repositorys.NotificationRepository
-import mini.asaas.utils.BigDecimalUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
 import org.springframework.context.MessageSource
-
-import java.math.RoundingMode
 
 @GrailsCompileStatic
 @Transactional
