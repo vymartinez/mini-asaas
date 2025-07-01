@@ -35,13 +35,7 @@ class PaymentController extends BaseController {
     }
 
     def create() {
-        try {
-            render(view: 'create')
-        } catch (Exception exception) {
-            String msg = "${message(code: "payment.create.error")}"
-            buildFlashAlert(msg, MessageType.ERROR, false)
-            redirect(action: "index")
-        }
+        return render(view: 'create')
     }
 
     def save() {
@@ -64,8 +58,7 @@ class PaymentController extends BaseController {
     def edit() {
         try {
             Payment payment = paymentService.getById(params.id as Long, params.payerId as Long)
-            SavePaymentAdapter adapter = new SavePaymentAdapter(payment)
-            render(view: 'edit', model: [adapter: adapter])
+            render(view: 'edit', model: [payment: payment])
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
             redirect(action: "index")

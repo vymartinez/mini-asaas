@@ -15,6 +15,7 @@ import mini.asaas.repositorys.PaymentRepository
 import mini.asaas.repositorys.PayerRepository
 
 import grails.validation.ValidationException
+import mini.asaas.utils.user.UserUtils
 
 @GrailsCompileStatic
 @Transactional
@@ -23,15 +24,9 @@ class PaymentService {
     EmailNotificationService emailNotificationService
     PayerRepository payerRepository
     PaymentRepository paymentRepository
-    SpringSecurityService springSecurityService
 
     private Payer findPayer(Long payerId) {
-        User user = springSecurityService.currentUser as User
-        Customer customer = Customer.findWhere(user: user)
-
-        if (!customer) {
-            throw new RuntimeException("Customer não encontrado para o usuário ${user.username}")
-        }
+        Customer customer = UserUtils.getCurrentCustomer(true)
 
         Payer payer = payerRepository.query([id: payerId, customerId: customer.id]).get()
 
@@ -42,8 +37,8 @@ class PaymentService {
         return payer
     }
 
-    private Map buildListFilters(Map params, Long payerId) {
-        return [ payerId: payerId ]
+    private Map buildListFilters(Long payerId) {
+        return [ payerId: payerId, deleted: false ]
     }
 
     private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
@@ -64,9 +59,10 @@ class PaymentService {
 
     public List<Payment> list(Map params, Integer max, Integer offset) {
         Long payerId = params.get("payerId")?.toString()?.toLong()
+
         Payer payer = findPayer(payerId)
 
-        Map filters = buildListFilters(params, payer.id)
+        Map filters = buildListFilters(payer.id)
 
         return paymentRepository.query(filters).readOnly().list([max: max, offset: offset])
     }
@@ -139,8 +135,14 @@ class PaymentService {
 
     public void delete(Long id, Long payerId) {
         Payment payment = getById(id, payerId)
+
+        payment.deleted = true
+
+        if (!payment.save()) {
+            throw new ValidationException("Erro ao marcar o pagamento como deletado", payment.errors)
+        }
+
         emailNotificationService.notifyDeleted(payment)
-        payment.delete()
     }
 
     public Payment confirmCashPayment(Long id, Long payerId) {
@@ -175,12 +177,10 @@ class PaymentService {
     }
 
     public void expireOverduePayments() {
-        Date now = new Date()
-
         paymentRepository
                 .query([status: PaymentStatus.PENDING])
                 .list() as List<Payment>
-                .findAll { it.dueDate.before(now) }
+                .findAll { it.dueDate.before(new Date()) }
                 .each { payment ->
                     updateStatusAndNotify(payment, PaymentStatus.OVERDUE, emailNotificationService.&notifyExpired)
                 }
@@ -194,10 +194,11 @@ class PaymentService {
         }
 
         payment.deleted = false
+
         payment.status = PaymentStatus.PENDING
 
         if (!payment.payer) {
-            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+            throw new ValidationException("Pagamento precisa estar vinculado a um payer", payment.errors)
         }
 
         if (!payment.save()) {
