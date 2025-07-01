@@ -1,7 +1,6 @@
 package mini.asaas
 
-import mini.asaas.enums.NotificationStatus
-import mini.asaas.payment.Payment
+import mini.asaas.enums.NotificationType
 import mini.asaas.utils.BaseEntity
 
 class Notification extends BaseEntity {
@@ -10,9 +9,7 @@ class Notification extends BaseEntity {
 
     String body
 
-    NotificationStatus notificationStatus
+    NotificationType type
 
     Customer customer
-
-    Payment payment
 }

@@ -2,7 +2,7 @@ package mini.asaas.notification
 
 import mini.asaas.Customer
 import mini.asaas.Notification
-import mini.asaas.enums.NotificationStatus
+import mini.asaas.enums.NotificationType
 import mini.asaas.payment.Payment
 import mini.asaas.repositorys.NotificationRepository
 import mini.asaas.utils.BigDecimalUtils
@@ -20,8 +20,8 @@ class NotificationService {
     EmailNotificationService emailNotificationService
     MessageSource messageSource
 
-    public Notification create(Payment payment, Customer customer, NotificationStatus notificationStatus) {
-        Notification notification = buildNotification(payment, customer, notificationStatus)
+    public Notification create(Object[] subjectArgs, Object[] bodyArgs, Customer customer, NotificationType type) {
+        Notification notification = buildNotification(subjectArgs, bodyArgs, customer, type)
 
         notification.save(failOnError: true)
 
@@ -34,29 +34,29 @@ class NotificationService {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
-    private Notification buildNotification(Payment payment, Customer customer, NotificationStatus notificationStatus) {
+    private Notification buildNotification(Object[] subjectArgs, Object[] bodyArgs, Customer customer, NotificationType type) {
         Notification notification = new Notification()
 
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
-        String status = notificationStatus.toString().toLowerCase()
+        String types = type.toString().split("_")
+        String status = types[1].toLowerCase()
+        String domain = types[0].toLowerCase()
 
         String subject = messageSource.getMessage(
-            'payment.notify.' + status + '.subject',
-            [payment.id] as Object[],
+            domain + '.notify.' + status + '.subject',
+            subjectArgs,
             Locale.getDefault()
         )
 
         String body = messageSource.getMessage(
-            'payment.notify.' + status + '.body',
-            [amount, payment.payer.name] as Object[],
+            domain + '.notify.' + status + '.body',
+            bodyArgs,
             Locale.getDefault()
         )
 
         notification.subject = subject
         notification.body = body
-        notification.notificationStatus = notificationStatus
+        notification.type = type
         notification.customer = customer
-        notification.payment = payment
 
         return notification
     }
