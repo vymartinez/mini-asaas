@@ -169,3 +169,4 @@ grails:
                 postOnly: false
             auth:
                 loginFormUrl: '/login/auth'
+            rejectIfNoRule: false
