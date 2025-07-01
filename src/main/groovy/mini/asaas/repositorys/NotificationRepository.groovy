@@ -12,8 +12,12 @@ class NotificationRepository implements Repository<Notification, NotificationRep
     @Override
     public void buildCriteria() {
         addCriteria {
-            if (search.containsKey("status")) {
-                eq("notificationStatus", search.status.toString())
+            if (search.containsKey("type")) {
+                eq("type", search.type.toString())
+            }
+
+            if (search.containsKey("customerId")) {
+                eq("customer.id", search.customerId)
             }
         }
     }
@@ -25,7 +29,7 @@ class NotificationRepository implements Repository<Notification, NotificationRep
     @Override
     public List<String> listAllowedFilters() {
         return [
-            "status",
+            "type",
             "customerId",
         ]
     }
