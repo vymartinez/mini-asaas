@@ -21,6 +21,9 @@ class NotificationService {
     MessageSource messageSource
 
     public Notification create(Payment payment, Customer customer, NotificationStatus notificationStatus) {
+
+        if (alreadySent(payment.id, customer.id, notificationStatus)) throw new RuntimeException("Notificação já enviada.")
+
         Notification notification = buildNotification(payment, customer, notificationStatus)
 
         notification.save(failOnError: true)
@@ -30,7 +33,7 @@ class NotificationService {
         return notification
     }
 
-    public List<Notification> list(Integer customerId, Integer max, Integer offset) {
+    public List<Notification> list(Long customerId, Integer max, Integer offset) {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
@@ -59,5 +62,9 @@ class NotificationService {
         notification.payment = payment
 
         return notification
+    }
+
+    private Boolean alreadySent(Long paymentId, Long customerId, NotificationStatus status) {
+        return (NotificationRepository.query([paymentId: paymentId, customerId: customerId, status: status]).readOnly().get() != null)
     }
 }

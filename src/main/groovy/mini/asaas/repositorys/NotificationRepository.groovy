@@ -13,7 +13,15 @@ class NotificationRepository implements Repository<Notification, NotificationRep
     public void buildCriteria() {
         addCriteria {
             if (search.containsKey("status")) {
-                eq("status", search.status.toString())
+                eq("notificationStatus", search.status.toString())
+            }
+
+            if (search.containsKey("customerId")) {
+                eq("customer.id", search.customerId)
+            }
+
+            if (search.containsKey("paymentId")) {
+                eq("payment.id", search.paymentId)
             }
         }
     }
@@ -27,6 +35,7 @@ class NotificationRepository implements Repository<Notification, NotificationRep
         return [
             "status",
             "customerId",
+            "paymentId",
         ]
     }
 }
