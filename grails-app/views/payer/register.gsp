@@ -5,10 +5,10 @@
 </head>
 
 <body>
-<atlas-panel>
+<atlas-panel class="js-create-payer">
     <atlas-layout gap="5" mobile-gap="5" >
         <atlas-heading muted >Criar Pagador</atlas-heading>
-        <atlas-form action="/payer/create">
+        <atlas-form action="/payer/create" class="js-create-payer-form">
             <atlas-grid container >
                 <atlas-row>
                     <atlas-col lg="6">
@@ -29,7 +29,7 @@
                             name="email"
                             type="text"
                             placeholder="Email"
-                            alias="email"
+                            mask-alias="email"
                             required
                         >
                         </atlas-masked-input>
@@ -41,7 +41,7 @@
                             name="cpfCnpj"
                             type="text"
                             placeholder="CPF/CNPJ"
-                            alias="cpf-cnpj"
+                            mask-alias="cpf-cnpj"
                             required
                         ></atlas-masked-input>
                     </atlas-col>
@@ -52,7 +52,7 @@
                             name="cellphone"
                             type="text"
                             placeholder="Telefone"
-                            alias="cell-phone"
+                            mask-alias="cell-phone"
                             required
                         ></atlas-masked-input>
                     </atlas-col>
@@ -90,6 +90,18 @@
                     </atlas-col>
                     <atlas-col lg="6">
                         <atlas-input
+                            label="Cidade"
+                            id="cityName"
+                            name="cityName"
+                            type="text"
+                            placeholder="Cidade"
+                            required
+                            disabled
+                            value="${ params.cityName }">
+                        </atlas-input>
+                    </atlas-col>
+                    <atlas-col lg="3">
+                        <atlas-input
                             label="UF"
                             id="state" name="state"
                             type="text"
@@ -98,7 +110,7 @@
                             disabled
                         ></atlas-input>
                     </atlas-col>
-                    <atlas-col lg="6">
+                    <atlas-col lg="3">
                         <atlas-input
                             label="Número"
                             id="addressNumber"
@@ -121,10 +133,13 @@
                 </atlas-row>
             </atlas-grid>
             <atlas-button
-                description="Cadastrar" submit block
+                description="Cadastrar" submit block class="js-submit-button"
             ></atlas-button>
+            <atlas-input id="cityId" name="cityId" label="cityId" hidden value="${ params.cityId }"></atlas-input>
+            <atlas-input type="hidden" class="js-zip-code-url" value="${createLink(controller: 'zipCode', action: 'find')}"></atlas-input>
         </atlas-form>
     </atlas-layout>
 </atlas-panel>
+<asset:javascript src="create-payer.js"/>
 </body>
 </html>
