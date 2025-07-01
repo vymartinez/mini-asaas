@@ -53,9 +53,9 @@ class PayerController extends BaseController {
         try {
             Long currentCustomerId = getCurrentCustomerId()
             Integer max = getLimitPerPage()
-            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
+            Integer offset = getOffset()
 
-            List<Payer> payers = payerService.list(params, currentCustomerId, max, getOffset())
+            List<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
             Long totalCount = PayerRepository.query().readOnly().count()
 
            return [payers: payers, totalCount: totalCount, max: max]
