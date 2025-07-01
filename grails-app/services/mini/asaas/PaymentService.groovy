@@ -28,13 +28,17 @@ class PaymentService {
     private Payer getCurrentPayer(Long payerId) {
         User user = springSecurityService.currentUser as User
         Customer customer = Customer.findWhere(user: user)
+
         if (!customer) {
             throw new RuntimeException("Customer não encontrado para o usuário ${user.username}")
         }
+
         Payer payer = payerRepository.query([id: payerId, customerId: customer.id]).get()
+
         if (!payer) {
             throw new RuntimeException("Payer não encontrado para o Customer ${customer.id}")
         }
+
         return payer
     }
 
@@ -44,6 +48,10 @@ class PaymentService {
 
     private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
         payment.status = newStatus
+
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
 
         if (!payment.save()) {
             throw new ValidationException("Erro ao ayualizar status do pagamento", payment.errors)
@@ -58,6 +66,7 @@ class PaymentService {
     public List<Payment> list(Map params, Integer max, Integer offset) {
         Long payerId = params.get("payerId")?.toString()?.toLong()
         Payer payer = getCurrentPayer(payerId)
+
         Map filters = buildListFilters(params, payer.id)
 
         return paymentRepository.query(filters).list([max: max, offset: offset])
@@ -66,20 +75,28 @@ class PaymentService {
     @Transactional(readOnly = true)
     public Payment getById(Long id, Long payerId) {
         Payment payment = paymentRepository.query([id: id]).get()
+
         if (!payment) {
             throw new RuntimeException("Pagamento não encontrado para ID $id")
         }
 
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
+
         Payer payer = getCurrentPayer(payerId)
-        if (payment.payer?.id != payer.id) {
+
+        if (payment.payer.id != payer.id) {
             throw new RuntimeException("Acesso negado: você não é o dono deste pagamento.")
         }
+
         return payment
     }
 
     public Payment create(SavePaymentAdapter adapter) {
         Long payerId = adapter.payerId?.toString()?.toLong()
         Payer payer = getCurrentPayer(payerId)
+
         Payment payment = new Payment()
         payment.payer = payer
         payment.billingType = adapter.billingType
@@ -87,11 +104,16 @@ class PaymentService {
         payment.dueDate = adapter.dueDate
         payment.status = PaymentStatus.PENDING
 
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
+
         if (!payment.save()) {
             throw new ValidationException("Erro ao salvar pagamento", payment.errors)
         }
 
         emailNotificationService.notifyCreated(payment)
+
         return payment
     }
 
@@ -105,6 +127,10 @@ class PaymentService {
         payment.billingType = adapter.billingType
         payment.value = adapter.value
         payment.dueDate = adapter.dueDate
+
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
 
         if (!payment.save()) {
             throw new ValidationException("Erro ao atualizar pagamento", payment.errors)
@@ -121,15 +147,23 @@ class PaymentService {
 
     public Payment confirmCashPayment(Long id, Long payerId) {
         Payment payment = getById(id, payerId)
+
         if (payment.status != PaymentStatus.PENDING) {
             throw new RuntimeException("Pagamento não está pendente e não pode ser confirmado em dinheiro.")
         }
+
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
+
         payment.status = PaymentStatus.RECEIVED
 
         if (!payment.save()) {
             throw new ValidationException("Erro ao confirmar pagamento em dinheiro", payment.errors)
         }
+
         emailNotificationService.notifyPaid(payment)
+
         return payment
     }
 
@@ -156,15 +190,24 @@ class PaymentService {
 
     public Payment restore(Long id, Long payerId) {
         Payment payment = getById(id, payerId)
+
         if (!payment.deleted) {
             throw new RuntimeException("Pagamento não está excluído e não pode ser restaurado.")
         }
+
         payment.deleted = false
         payment.status = PaymentStatus.PENDING
+
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
+
         if (!payment.save()) {
             throw new ValidationException("Erro ao restaurar pagamento", payment.errors)
         }
+
         emailNotificationService.notifyRestored(payment)
+
         return payment
     }
 }

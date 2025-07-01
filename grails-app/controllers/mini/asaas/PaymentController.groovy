@@ -18,11 +18,8 @@ class PaymentController extends BaseController {
             List<Payment> payments = paymentService.list(params, getLimitPerPage(), getOffset())
             return payments
         } catch (Exception exception) {
-            buildFlashAlert(
-                    "Ocorreu um erro ao listar as cobranças. Por favor, tente novamente mais tarde.",
-                    MessageType.ERROR,
-                    false
-            )
+            String msg = "${message(code: "payment.index.error")}"
+            buildFlashAlert(msg, MessageType.ERROR, false)
             redirect(url: '/dashboard')
         }
     }
@@ -42,11 +39,8 @@ class PaymentController extends BaseController {
             SavePaymentAdapter adapter = new SavePaymentAdapter(params)
             render(view: 'create', model: [adapter: adapter])
         } catch (Exception exception) {
-            buildFlashAlert(
-                    "Ocorreu um erro interno ao preparar o formulário de criação. Por favor, tente novamente mais tarde.",
-                    MessageType.ERROR,
-                    false
-            )
+            String msg = "${message(code: "payment.create.error")}"
+            buildFlashAlert(msg, MessageType.ERROR, false)
             redirect(action: "index")
         }
     }
@@ -100,14 +94,11 @@ class PaymentController extends BaseController {
         try {
             paymentService.delete(params.id as Long, params.payerId as Long)
             String msg = "${message(code: "payment.deleted.success")}"
-            buildFlashAlert(
-                    msg,
-                    MessageType.SUCCESS,
-                    true
-            )
+            buildFlashAlert(msg, MessageType.SUCCESS, true)
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
+
         redirect(action: "index")
     }
 
@@ -119,6 +110,7 @@ class PaymentController extends BaseController {
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
+
         redirect(action: "show", id: id)
     }
 
@@ -132,6 +124,7 @@ class PaymentController extends BaseController {
         } catch (RuntimeException exception) {
             buildFlashAlert(exception.message, MessageType.ERROR, false)
         }
+
         redirect(action: 'index')
     }
 }
