@@ -15,14 +15,6 @@ class NotificationRepository implements Repository<Notification, NotificationRep
             if (search.containsKey("status")) {
                 eq("notificationStatus", search.status.toString())
             }
-
-            if (search.containsKey("customerId")) {
-                eq("customer.id", search.customerId)
-            }
-
-            if (search.containsKey("paymentId")) {
-                eq("payment.id", search.paymentId)
-            }
         }
     }
 
@@ -35,7 +27,6 @@ class NotificationRepository implements Repository<Notification, NotificationRep
         return [
             "status",
             "customerId",
-            "paymentId",
         ]
     }
 }

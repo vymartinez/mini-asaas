@@ -21,9 +21,6 @@ class NotificationService {
     MessageSource messageSource
 
     public Notification create(Payment payment, Customer customer, NotificationStatus notificationStatus) {
-
-        if (alreadySent(payment.id, customer.id, notificationStatus)) throw new RuntimeException("Notificação já enviada.")
-
         Notification notification = buildNotification(payment, customer, notificationStatus)
 
         notification.save(failOnError: true)
@@ -62,9 +59,5 @@ class NotificationService {
         notification.payment = payment
 
         return notification
-    }
-
-    private Boolean alreadySent(Long paymentId, Long customerId, NotificationStatus status) {
-        return (NotificationRepository.query([paymentId: paymentId, customerId: customerId, status: status]).readOnly().get() != null)
     }
 }
