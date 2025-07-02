@@ -1,5 +1,6 @@
 package mini.asaas
 
+import grails.gorm.PagedResultList
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
@@ -47,13 +48,16 @@ class PayerController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY', 'IS_AUTHENTICATED_REMEMBERED'])
+    @Secured(['IS_AUTHENTICATED_FULLY'])
     def list() {
         try {
             Long currentCustomerId = getCurrentCustomerId()
-            List<Payer> payers = payerService.list(params, currentCustomerId, getLimitPerPage(), getOffset())
+            Integer max = getLimitPerPage()
+            Integer offset = getOffset()
 
-            return [payers: payers]
+            PagedResultList<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
+
+           return [payers: payers, totalCount: payers.totalCount, max: max]
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(url: '/dashboard')
