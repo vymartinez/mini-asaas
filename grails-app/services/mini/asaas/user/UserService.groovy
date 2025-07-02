@@ -3,11 +3,13 @@ package mini.asaas.user
 import mini.asaas.Customer
 import mini.asaas.CustomerService
 import mini.asaas.adapters.user.SaveUserAdapter
+import mini.asaas.auth.UserRole
+import mini.asaas.enums.RoleAuthority
+import mini.asaas.role.Role
 import mini.asaas.utils.DomainUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.validation.ValidationException
 
 @GrailsCompileStatic
@@ -15,7 +17,6 @@ import grails.validation.ValidationException
 class UserService {
 
     CustomerService customerService
-    SpringSecurityService springSecurityService
 
     public void create(SaveUserAdapter adapter) {
         User user = validate(adapter)
@@ -27,6 +28,8 @@ class UserService {
         buildUser(adapter, user, customer)
 
         user.save(failOnError: true)
+
+        createUserRole(user)
     }
 
     public User update(SaveUserAdapter adapter, User currentUser) {
@@ -43,6 +46,12 @@ class UserService {
         return user
     }
 
+    private void createUserRole(User user) {
+        UserRole defaultUserRole = new UserRole(user: user, role: Role.findByAuthority(RoleAuthority.ROLE_USER.toString()))
+
+        defaultUserRole.save(failOnError: true)
+    }
+
     private User validate(SaveUserAdapter adapter) {
         User user = new User()
 
@@ -55,7 +64,7 @@ class UserService {
 
     private void buildUser(SaveUserAdapter adapter, User user, Customer customer) {
         user.username = adapter.username
-        user.password = springSecurityService.encodePassword(adapter.password)
+        user.password = adapter.password
         user.customer = customer
         user.enabled = true
     }
