@@ -17,23 +17,26 @@
         rel="stylesheet"
         href="https://atlas.asaas.com/reset.css"
         crossorigin="anonymous">
+    <asset:stylesheet src="general.css"/>
     <g:layoutHead/>
 </head>
 
 <body class="has-atlas">
     <atlas-screen fullscreen>
-        <atlas-page container>
-            <atlas-page-content slot="content">
-                <g:if test="${flash.message}">
-                    <atlas-alert
-                        type="${flash.success ? 'success' : 'error'}"
-                        message="${flash.message}"
-                        class="js-atlas-alert"
-                    ></atlas-alert>
-                </g:if>
-                <g:layoutBody />
-            </atlas-page-content>
-        </atlas-page>
+        <div class="bg-asaas">
+            <atlas-page container fluid-content >
+                <atlas-page-content slot="content" fluid>
+                    <g:if test="${flash.message}">
+                        <atlas-alert
+                            type="${flash.success ? 'success' : 'error'}"
+                            message="${flash.message}"
+                            class="js-atlas-alert"
+                        ></atlas-alert>
+                    </g:if>
+                    <g:layoutBody />
+                </atlas-page-content>
+            </atlas-page>
+        </div>
     </atlas-screen>
     <asset:javascript src="application.js"/>
 </body>
