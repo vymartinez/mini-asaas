@@ -54,7 +54,6 @@ class PayerRepository implements Repository<Payer, PayerRepository> {
             "cpfCnpj",
             "cellPhone",
             "customerId",
-            "includeDeleted",
             "nameOrEmail[like]"
         ]
     }

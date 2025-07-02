@@ -45,8 +45,7 @@ class AddressRepository implements Repository<Address, AddressRepository> {
             "addressNumber",
             "province",
             "zipCode",
-            "complement",
-            "includeDeleted"
+            "complement"
         ]
     }
 }
