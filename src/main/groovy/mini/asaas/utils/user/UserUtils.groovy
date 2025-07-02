@@ -27,7 +27,7 @@ class UserUtils {
 
         GrailsWebRequest webRequest = (GrailsWebRequest) RequestContextHolder.getRequestAttributes()
 
-        User currentUser = webRequest?.params?.currentUser
+        User currentUser = springSecurityService.currentUser as User
 
         if (currentUser instanceof User) {
             return currentUser

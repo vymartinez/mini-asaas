@@ -64,7 +64,7 @@ class PaymentService {
 
         Map filters = buildListFilters(payer.id)
 
-        return paymentRepository.query(filters).readOnly().list([max: max, offset: offset])
+        return paymentRepository.query(filters).readOnly().list([max: max, offset: offset]).toList()
     }
 
     public Payment getById(Long id, Long payerId) {
@@ -179,7 +179,9 @@ class PaymentService {
     public void expireOverduePayments() {
         paymentRepository
                 .query([status: PaymentStatus.PENDING])
-                .list() as List<Payment>
+                .list()
+                .toList()
+                .collect { it as Payment }
                 .findAll { it.dueDate.before(new Date()) }
                 .each { payment ->
                     updateStatusAndNotify(payment, PaymentStatus.OVERDUE, emailNotificationService.&notifyExpired)
