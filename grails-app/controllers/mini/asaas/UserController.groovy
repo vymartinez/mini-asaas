@@ -15,7 +15,7 @@ class UserController extends BaseController {
     UserService userService
 
     @Secured("permitAll")
-    def save() {
+    def create() {
         try {
             SaveUserAdapter adapter = new SaveUserAdapter(params)
 
