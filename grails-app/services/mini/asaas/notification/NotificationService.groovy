@@ -33,7 +33,7 @@ class NotificationService {
     private Notification buildNotification(Object[] subjectArgs, Object[] bodyArgs, Customer customer, NotificationType type) {
         Notification notification = new Notification()
 
-        String types = type.toString().split("_")
+        String[] types = type.toString().split("_")
         String status = types[1].toLowerCase()
         String domain = types[0].toLowerCase()
 
