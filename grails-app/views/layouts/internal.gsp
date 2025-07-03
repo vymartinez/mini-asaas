@@ -27,26 +27,23 @@
 
 <body class="has-atlas">
 <atlas-screen fullscreen>
+    <g:render template="/templates/header" model="${[customer: customer]}" />
     <g:render template="/templates/sidebar" />
     <atlas-page class="js-atlas-page" container>
-    <atlas-page-header 
-            slot="header"
-            page-name="${pageProperty(name: "body.page-title")}"
-        >
-            <g:render template="/templates/header" model="${[customer: customer]}" />
-        </atlas-page-header>
         <atlas-page-content slot="content" class="js-atlas-content">
         <g:if test="${flash.message}">
             <atlas-alert
-                    type="${flash.success ? 'success' : 'error'}"
-                    message="${flash.message}"
-                    class="js-atlas-alert"
+                type="${flash.success ? 'success' : 'error'}"
+                message="${ flash.message }"
+                class="js-atlas-alert"
             ></atlas-alert>
         </g:if>
             <g:layoutBody />
         </atlas-page-content>
     </atlas-page>
 </atlas-screen>
+<g:render template="/templates/notification/center"  />
 <asset:javascript src="application.js"/>
+<asset:javascript src="notifications.js"/>
 </body>
 </html>

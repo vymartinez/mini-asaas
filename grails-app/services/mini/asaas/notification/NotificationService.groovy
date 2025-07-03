@@ -26,7 +26,7 @@ class NotificationService {
         return notification
     }
 
-    public List<Notification> list(Integer customerId, Integer max, Integer offset) {
+    public List<Notification> list(Long customerId, Integer max, Integer offset) {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
