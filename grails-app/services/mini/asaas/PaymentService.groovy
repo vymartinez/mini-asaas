@@ -3,7 +3,7 @@ package mini.asaas
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityService
-
+import mini.asaas.adapters.UpdatePaymentAdapter
 import mini.asaas.user.User
 import mini.asaas.Customer
 import mini.asaas.Payer
@@ -25,71 +25,29 @@ class PaymentService {
     PayerRepository payerRepository
     PaymentRepository paymentRepository
 
-    private Payer findPayer(Long payerId) {
-        Customer customer = UserUtils.getCurrentCustomer(true)
-
-        Payer payer = payerRepository.query([id: payerId, customerId: customer.id]).get()
-
-        if (!payer) {
-            throw new RuntimeException("Payer não encontrado para o Customer ${customer.id}")
-        }
-
-        return payer
-    }
-
-    private Map buildListFilters(Long payerId) {
-        return [ payerId: payerId, deleted: false ]
-    }
-
-    private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
-        payment.status = newStatus
-
-        if (!payment.payer) {
-            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
-        }
-
-        if (!payment.save()) {
-            throw new ValidationException("Erro ao ayualizar status do pagamento", payment.errors)
-        }
-
-        if (notificationCallback != null) {
-            notificationCallback.call()
-        }
-    }
-
-    public List<Payment> list(Map params, Integer max, Integer offset) {
+    public List<Payment> list(Map params, Integer max, Integer offset, Long customerId) {
         Long payerId = params.get("payerId")?.toString()?.toLong()
 
-        Payer payer = findPayer(payerId)
+        Payer payer = findPayer(payerId, customerId)
 
         Map filters = buildListFilters(payer.id)
 
         return paymentRepository.query(filters).readOnly().list([max: max, offset: offset]).toList()
     }
 
-    public Payment getById(Long id, Long payerId) {
-        Payment payment = paymentRepository.query([id: id]).readOnly().get()
+    public Payment getById(Long id, Long payerId, Long customerId) {
+        Payment payment = paymentRepository.query([id: id, payerId: payerId, customerId: customerId]).readOnly().get()
 
         if (!payment) {
             throw new RuntimeException("Pagamento não encontrado para ID $id")
         }
 
-        if (!payment.payer) {
-            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
-        }
-
-        Payer payer = findPayer(payerId)
-
-        if (payment.payer.id != payer.id) {
-            throw new RuntimeException("Acesso negado: você não é o dono deste pagamento.")
-        }
-
         return payment
     }
 
-    public Payment create(SavePaymentAdapter adapter) {
+    public Payment create(SavePaymentAdapter adapter, Long customerId) {
         Long payerId = adapter.payerId?.toString()?.toLong()
-        Payer payer = findPayer(payerId)
+        Payer payer = findPayer(payerId, customerId)
 
         Payment payment = new Payment()
         payment.payer = payer
@@ -111,13 +69,13 @@ class PaymentService {
         return payment
     }
 
-    public Payment update(SavePaymentAdapter adapter) {
+    public Payment update(UpdatePaymentAdapter adapter, Long customerId) {
         if (!adapter.id) {
             throw new RuntimeException("ID da cobrança é obrigatório para atualização")
         }
 
         Long payerId = adapter.payerId?.toString()?.toLong()
-        Payment payment = getById(adapter.id, payerId)
+        Payment payment = getById(adapter.id, payerId, customerId)
         payment.billingType = adapter.billingType
         payment.value = adapter.value
         payment.dueDate = adapter.dueDate
@@ -133,8 +91,8 @@ class PaymentService {
         return payment
     }
 
-    public void delete(Long id, Long payerId) {
-        Payment payment = getById(id, payerId)
+    public void delete(Long id, Long payerId, Long customerId) {
+        Payment payment = getById(id, payerId, customerId)
 
         payment.deleted = true
 
@@ -145,8 +103,8 @@ class PaymentService {
         emailNotificationService.notifyDeleted(payment)
     }
 
-    public Payment confirmCashPayment(Long id, Long payerId) {
-        Payment payment = getById(id, payerId)
+    public Payment confirmCashPayment(Long id, Long payerId, Long customerId) {
+        Payment payment = getById(id, payerId, customerId)
 
         if (payment.status != PaymentStatus.PENDING) {
             throw new RuntimeException("Pagamento não está pendente e não pode ser confirmado em dinheiro.")
@@ -167,8 +125,8 @@ class PaymentService {
         return payment
     }
 
-    public void expirePayment(Long id, Long payerId) {
-        Payment payment = getById(id, payerId)
+    public void expirePayment(Long id, Long payerId, Long customerId) {
+        Payment payment = getById(id, payerId, customerId)
         if (payment.status == PaymentStatus.PENDING && payment.dueDate.before(new Date())) {
             updateStatusAndNotify(payment, PaymentStatus.OVERDUE) { Payment expiredPayment ->
                 emailNotificationService.notifyExpired(expiredPayment)
@@ -188,8 +146,8 @@ class PaymentService {
                 }
     }
 
-    public Payment restore(Long id, Long payerId) {
-        Payment payment = getById(id, payerId)
+    public Payment restore(Long id, Long payerId, Long customerId) {
+        Payment payment = getById(id, payerId, customerId)
 
         if (!payment.deleted) {
             throw new RuntimeException("Pagamento não está excluído e não pode ser restaurado.")
@@ -210,5 +168,36 @@ class PaymentService {
         emailNotificationService.notifyRestored(payment)
 
         return payment
+    }
+
+    private Payer findPayer(Long payerId, Long customerId) {
+
+        Payer payer = payerRepository.query([id: payerId, customerId: customerId]).get()
+
+        if (!payer) {
+            throw new RuntimeException("Payer não encontrado para o Customer ${customerId}")
+        }
+
+        return payer
+    }
+
+    private Map buildListFilters(Long payerId) {
+        return [ payerId: payerId, deleted: false ]
+    }
+
+    private void updateStatusAndNotify(Payment payment, PaymentStatus newStatus, Closure<? extends Void> notificationCallback) {
+        payment.status = newStatus
+
+        if (!payment.payer) {
+            throw new IllegalArgumentException("Pagamento precisa estar vinculado a um payer.")
+        }
+
+        if (!payment.save()) {
+            throw new ValidationException("Erro ao atualizar status do pagamento", payment.errors)
+        }
+
+        if (notificationCallback != null) {
+            notificationCallback.call()
+        }
     }
 }

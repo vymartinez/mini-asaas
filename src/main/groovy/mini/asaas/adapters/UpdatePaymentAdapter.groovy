@@ -1,6 +1,5 @@
 package mini.asaas.adapters
 
-import grails.web.servlet.mvc.GrailsParameterMap
 import mini.asaas.enums.BillingType
 import mini.asaas.payment.Payment
 import mini.asaas.utils.BigDecimalUtils
@@ -8,7 +7,8 @@ import mini.asaas.utils.BigDecimalUtils
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 
-class SavePaymentAdapter {
+
+class UpdatePaymentAdapter {
 
     Long id
 
@@ -20,12 +20,11 @@ class SavePaymentAdapter {
 
     Date dueDate
 
-    static constraints = {
-        id nullable: true
-        value min: 0.01G
+    static contraints = {
+        value min: 0.01
     }
 
-    public SavePaymentAdapter(Map params) {
+    public UpdatePaymentAdapter(Map params) {
         this.id = params.id?.toString()?.toLong()
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = params.billingType as BillingType
