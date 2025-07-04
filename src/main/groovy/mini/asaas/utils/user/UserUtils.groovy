@@ -11,10 +11,8 @@ import org.springframework.web.context.request.RequestContextHolder
 @GrailsCompileStatic
 class UserUtils {
 
-    private static SpringSecurityService getSpringSecurityService() {
-        return Holders.applicationContext.getBean("springSecurityService") as SpringSecurityService
-    }
     public static User getCurrentUser(Boolean throwExceptionIfNull = false) {
+
         SpringSecurityService springSecurityService = getSpringSecurityService()
 
         if (springSecurityService?.currentUserId) {
@@ -46,6 +44,7 @@ class UserUtils {
     }
 
     public static Customer getCurrentCustomer(Boolean throwExceptionIfNull = false) {
+
         User user = getCurrentUser(throwExceptionIfNull)
 
         if (!user) {
@@ -64,5 +63,9 @@ class UserUtils {
     public static Long getCurrentCustomerId(Boolean throwExceptionIfNull = false) {
         Customer customer = getCurrentCustomer(throwExceptionIfNull)
         return customer?.id
+    }
+
+    private static SpringSecurityService getSpringSecurityService() {
+        return Holders.applicationContext.getBean("springSecurityService") as SpringSecurityService
     }
 }
