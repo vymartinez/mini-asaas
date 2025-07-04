@@ -89,6 +89,21 @@ class EmailNotificationService {
         send(to: payment.payer.email, subject: subject, body: body)
     }
 
+    public void notifyRestored(Payment payment) {
+        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String subject = messageSource.getMessage(
+                'payment.notify.restored.subject',
+                [payment.id] as Object[],
+                Locale.getDefault()
+        )
+        String body = messageSource.getMessage(
+                'payment.notify.restored.body',
+                [amount, payment.payer.name] as Object[],
+                Locale.getDefault()
+        )
+        send(to: payment.payer.email, subject: subject, body: body)
+    }
+
     private void send(Map<String, String> args) {
         mailService.sendMail {
             to args.get('to')
