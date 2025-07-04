@@ -9,7 +9,7 @@
     </atlas-table-header>
     <atlas-table-body slot="body">
         <g:each var="payer" in="${ payers }">
-            <atlas-table-row href="${createLink(controller: "payer", action: "show", id: payer.id)}">
+            <atlas-table-row theme="${ !payer.deleted ? "primary" : "danger" }" href="${createLink(controller: "payer", action: "show", id: payer.id)}">
                 <atlas-table-col>
                     ${payer.name}
                 </atlas-table-col>
@@ -25,12 +25,22 @@
                         href="${createLink(controller: "payer", action: "show", id: payer.id)}"
                     >
                     </atlas-icon-button>
-                    <atlas-icon-button
-                        icon="trash"
-                        theme="danger"
-                        description="Desativar pagador"
-                        href="${createLink(controller: "payer", action: "delete")}"
-                    ></atlas-icon-button>
+                    <g:if test="${ !payer.deleted }">
+                        <atlas-icon-button
+                            icon="trash"
+                            theme="danger"
+                            description="Desativar pagador"
+                            href="${createLink(controller: "payer", action: "disable", params: [payerId: payer.id])}"
+                        ></atlas-icon-button>
+                    </g:if>
+                    <g:else>
+                        <atlas-icon-button
+                            icon="check"
+                            theme="success"
+                            description="Reativar pagador"
+                            href="${createLink(controller: "payer", action: "restore", params: [payerId: payer.id])}"
+                        ></atlas-icon-button>
+                    </g:else>
                 </atlas-button-group>
             </atlas-table-row>
         </g:each>

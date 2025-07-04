@@ -29,6 +29,10 @@ class PayerRepository implements Repository<Payer, PayerRepository> {
                 eq("cellPhone", StringUtils.removeNonNumeric(search.cellPhone.toString()))
             }
 
+            if (search.containsKey("customerId")) {
+                eq("customer.id", search.customerId)
+            }
+
             if (search.containsKey("nameOrEmail[like]")) {
                 or {
                     like("name", "%${search."nameOrEmail[like]"}%")

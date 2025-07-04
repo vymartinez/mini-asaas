@@ -49,8 +49,8 @@
                 <atlas-col lg="6">
                     <atlas-masked-input
                         label="Telefone"
-                        id="cellphone"
-                        name="cellphone"
+                        id="cellPhone"
+                        name="cellPhone"
                         type="text"
                         value="${params.cellPhone ?: payer.cellPhone}"
                         placeholder="Telefone"
