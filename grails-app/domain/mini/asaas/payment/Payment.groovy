@@ -18,7 +18,7 @@ class Payment extends BaseEntity {
     Date dueDate
 
     static constraints = {
-        value min: BigDecimal("0.01")
+        value min: new BigDecimal(0.01)
     }
 
 }
