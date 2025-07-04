@@ -40,7 +40,7 @@ class PaymentController extends BaseController {
     }
 
     def create() {
-        return redirect(view: 'create')
+        return render(view: 'create')
     }
 
     def save() {
