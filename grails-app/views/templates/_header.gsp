@@ -1,5 +1,6 @@
-<atlas-navbar>
-    <atlas-layout inline alignment="center" justify="end" >
+<atlas-navbar slot="navbar">
+    <atlas-layout inline alignment="center" justify="space-between" >
+        <atlas-button pill description="Central de Notificações" data-atlas-offcanvas="notification-center"></atlas-button>
         <atlas-dropdown-button type="filled" icon="asaas-logo" theme="primary" description="Olá, ${ formatTagLib.firstName(name: customer.name) }" pill >
             <atlas-dropdown-item 
                 icon="user"
