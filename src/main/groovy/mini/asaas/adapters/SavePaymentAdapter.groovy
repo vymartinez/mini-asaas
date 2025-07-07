@@ -21,14 +21,19 @@ class SavePaymentAdapter {
 
     static constraints = {
         id nullable: true
-        value min: 0.01G
+        value min: new BigDecimal("0.01")
     }
 
     public SavePaymentAdapter(Map params) {
         this.id = params.id?.toString()?.toLong()
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)
-        this.value = BigDecimalUtils.round(params.value as BigDecimal, 2, RoundingMode.HALF_UP)
+
+        if (params.value) {
+            this.value = new BigDecimal(params.value.toString()).setScale(2, RoundingMode.HALF_UP)
+        } else {
+            this.value = null
+        }
 
         if (params.dueDate) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
