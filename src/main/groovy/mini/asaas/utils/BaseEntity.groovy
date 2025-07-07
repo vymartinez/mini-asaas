@@ -1,5 +1,8 @@
 package mini.asaas.utils
 
+import grails.gorm.dirty.checking.DirtyCheck
+
+@DirtyCheck
 abstract class BaseEntity {
 
     Date dateCreated
