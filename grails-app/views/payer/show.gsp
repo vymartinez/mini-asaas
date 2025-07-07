@@ -173,6 +173,7 @@
         <atlas-button
                 class="js-submit-button" description="Atualizar dados do pagador" submit block
         ></atlas-button>
+        <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
     </atlas-form>
 </atlas-panel>
 <asset:javascript src="payer-show.js"/>

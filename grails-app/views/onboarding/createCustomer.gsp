@@ -51,6 +51,7 @@
         <atlas-button
                class="js-submit-button" description="Cadastrar" submit block
         ></atlas-button>
+        <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
     </atlas-form>
 </atlas-panel>
 <asset:javascript src="create-customer.js"/>

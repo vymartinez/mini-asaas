@@ -5,6 +5,7 @@ import mini.asaas.repositorys.CustomerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
+import mini.asaas.utils.StringUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
@@ -69,7 +70,7 @@ class CustomerService {
     private void buildCustomer(Customer customer, SaveCustomerAdapter saveCustomerAdapter, Address address) {
         customer.name = saveCustomerAdapter.name
         customer.email = saveCustomerAdapter.email
-        customer.cpfCnpj = saveCustomerAdapter.cpfCnpj
+        customer.cpfCnpj = StringUtils.removeNonNumeric(saveCustomerAdapter.cpfCnpj)
         customer.personType = CpfCnpjUtils.getPersonType(saveCustomerAdapter.cpfCnpj)
         customer.address = address
     }

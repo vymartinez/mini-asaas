@@ -152,6 +152,7 @@
             <atlas-button
                     description="Atualizar dados" submit block class="js-submit-button"
             ></atlas-button>
+            <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
         </atlas-form>
     </atlas-layout>
 </atlas-panel>

@@ -144,6 +144,7 @@
             <atlas-button
                 description="Cadastrar" submit block class="js-submit-button"
             ></atlas-button>
+            <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
             <atlas-input id="cityId" name="cityId" label="cityId" hidden value="${ params.cityId }"></atlas-input>
             <atlas-input type="hidden" class="js-zip-code-url" value="${createLink(controller: 'zipCode', action: 'find')}"></atlas-input>
         </atlas-form>
