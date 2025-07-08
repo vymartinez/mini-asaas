@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat
 
 class SavePaymentAdapter {
 
-    Long id
-
     Long payerId
 
     BillingType billingType
@@ -20,12 +18,10 @@ class SavePaymentAdapter {
     Date dueDate
 
     static constraints = {
-        id nullable: true
         value min: 0.01G
     }
 
     public SavePaymentAdapter(Map params) {
-        this.id = params.id?.toString()?.toLong()
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)
         this.value = BigDecimalUtils.round(params.value as BigDecimal, 2, RoundingMode.HALF_UP)
