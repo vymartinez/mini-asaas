@@ -8,19 +8,16 @@
 
         if (!form || !editBtn || !submitBtn) return;
 
-        // Desabilita campos inicialmente
         const fields = Array.from(form.querySelectorAll('input, select'))
             .filter(f => f.name !== 'paymentId');
 
         fields.forEach(f => f.disabled = true);
 
-        // Ativa campos ao clicar em "Editar"
         editBtn.addEventListener('click', () => {
             fields.forEach(f => f.disabled = false);
             if (editBtn.tagName !== 'ATLAS-BUTTON') editBtn.disabled = true;
         });
 
-        // Validação do formulário
         form.addEventListener('submit', event => {
             clearErrors(form);
 
@@ -55,7 +52,6 @@
             if (!valid) event.preventDefault();
         });
 
-        // Funções auxiliares
         function showError(input, message) {
             const wrapper = input.closest('atlas-col') || input.parentElement;
             let err = wrapper.querySelector('.form-error');
@@ -71,7 +67,6 @@
             form.querySelectorAll('.form-error').forEach(el => el.remove());
         }
 
-        // Carregamento dinâmico dos pagadores via AJAX
         const payerOptionsContainer = document.getElementById("payer-options-container");
 
         if (payerOptionsContainer) {
