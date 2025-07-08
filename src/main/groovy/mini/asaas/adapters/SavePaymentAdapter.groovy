@@ -18,7 +18,11 @@ class SavePaymentAdapter {
     Date dueDate
 
     static constraints = {
+
         value min: 0.01
+
+        value min: 0.01G
+
     }
 
     public SavePaymentAdapter(Map params) {

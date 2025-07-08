@@ -170,5 +170,9 @@ grails:
             auth:
                 loginFormUrl: '/login/auth'
 
+
     enable:
         native2ascii: false
+
+            rejectIfNoRule: false
+

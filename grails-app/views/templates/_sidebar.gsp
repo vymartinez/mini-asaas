@@ -1,4 +1,4 @@
-<atlas-sidebar slot="sidebar" default-collapsed >
+<atlas-sidebar slot="sidebar">
     <atlas-sidebar-menu slot="body">
         <atlas-sidebar-menu-item
                 icon="users"

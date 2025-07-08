@@ -45,10 +45,6 @@ class PaymentService {
 
         Map filters = buildListFilters(params, customerId)
 
-        if (params.showDeleted in [true, 'true', 'on']) {
-            filters.includeDeleted = true
-        }
-
         return paymentRepository.query(filters)
                 .readOnly()
                 .list([max: max, offset: offset])
@@ -77,6 +73,7 @@ class PaymentService {
         Payment payment = findById(paymentId, customerId)
 
         payment.deleted = true
+        payment.status = PaymentStatus.CANCELED
         payment.save(failOnError: true)
         emailNotificationService.notifyDeleted(payment)
     }
@@ -85,19 +82,20 @@ class PaymentService {
         Payment payment = findById(paymentId, customerId)
 
         payment.deleted = false
+        payment.status = PaymentStatus.PENDING
         payment.save(failOnError: true)
         emailNotificationService.notifyRestored(payment)
     }
 
     public void notifyOverduePayments() {
-        List<Payment> overdue = paymentRepository
+        List<Payment> overduePayments = paymentRepository
                 .query([
                         status: PaymentStatus.PENDING,
                         dueDate: new Date()
                 ])
                 .list()
 
-        overdue.each { emailNotificationService.notifyExpired(it) }
+        overduePayments.each { emailNotificationService.notifyExpired(it) }
     }
 
     public Payment findById(Long paymentId, Long customerId) {

@@ -12,11 +12,11 @@
             <atlas-button
                 icon="plus"
                 description="Adicionar pagador"
-                href="${createLink(controller: "payer", action: "create")}"
+                href="${createLink(controller: "payer", action: "register")}"
                 slot="actions"
             ></atlas-button>
         </atlas-toolbar>
-        <atlas-search-input label="Pesquisar" value="${ params."nameOrEmail[like]" }" placeholder="Pesquisar por nome ou e-mail" class="js-search-input"></atlas-search-input>
+        <atlas-search-input block label="Pesquisar" value="${ params."nameOrEmail[like]" }" placeholder="Pesquisar por nome ou e-mail" class="js-search-input"></atlas-search-input>
         <g:render template="/payer/templates/table" model="${[payers: payers]}"/>
     </g:if>
     <g:else>
@@ -28,7 +28,7 @@
             <atlas-button
                 icon="plus"
                 description="Adicionar pagador"
-                href="${createLink(controller: "payer", action: "create")}"
+                href="${createLink(controller: "payer", action: "register")}"
                 slot="button"
             ></atlas-button>
         </atlas-empty-state>

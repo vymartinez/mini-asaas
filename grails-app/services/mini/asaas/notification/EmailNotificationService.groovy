@@ -1,21 +1,16 @@
 package mini.asaas.notification
 
-import mini.asaas.payment.Payment
-import mini.asaas.utils.BigDecimalUtils
-import java.math.RoundingMode
-
+import mini.asaas.Notification
 import grails.compiler.GrailsCompileStatic
 import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
-import org.springframework.context.MessageSource
 
 @GrailsCompileStatic
 @Transactional
 class EmailNotificationService {
 
-    MessageSource messageSource
-
     MailService mailService
+
 
     public void notifyCreated(Payment payment) {
         String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
@@ -105,10 +100,13 @@ class EmailNotificationService {
     }
 
     private void send(Map<String, String> args) {
+
+    public void send(Notification notification) {
+
         mailService.sendMail {
-            to args.get('to')
-            subject args.get('subject')
-            body args.get('body')
+            to notification.customer.email
+            subject notification.subject
+            body notification.body
         }
     }
 }

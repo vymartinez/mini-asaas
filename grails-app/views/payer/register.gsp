@@ -19,6 +19,7 @@
                             type="text"
                             placeholder="Nome"
                             required
+                            value="${ params.name }"
                         >
                         </atlas-input>
                     </atlas-col>
@@ -31,6 +32,7 @@
                             placeholder="Email"
                             mask-alias="email"
                             required
+                            value="${ params.email }"
                         >
                         </atlas-masked-input>
                     </atlas-col>
@@ -43,17 +45,19 @@
                             placeholder="CPF/CNPJ"
                             mask-alias="cpf-cnpj"
                             required
+                            value="${ params.cpfCnpj }"
                         ></atlas-masked-input>
                     </atlas-col>
                     <atlas-col lg="6">
                         <atlas-masked-input
                             label="Telefone"
-                            id="cellphone"
-                            name="cellphone"
+                            id="cellPhone"
+                            name="cellPhone"
                             type="text"
                             placeholder="Telefone"
                             mask-alias="cell-phone"
                             required
+                            value="${ params.cellPhone }"
                         ></atlas-masked-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -64,6 +68,7 @@
                             type="text"
                             placeholder="CEP"
                             required
+                            value="${ params.zipCode }"
                         ></atlas-postal-code>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -75,6 +80,7 @@
                             placeholder="Bairro"
                             required
                             disabled
+                            value="${ params.province }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -86,6 +92,7 @@
                             placeholder="Logradouro"
                             required
                             disabled
+                            value="${ params.address }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -108,6 +115,7 @@
                             placeholder="UF"
                             required
                             disabled
+                            value="${ params.state }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="3">
@@ -118,7 +126,7 @@
                             type="text"
                             placeholder="Número"
                             required
-                            disabled
+                            value="${ params.addressNumber }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -128,6 +136,7 @@
                             name="complement"
                             type="text"
                             placeholder="Complemento"
+                            value="${ params.complement }"
                         ></atlas-input>
                     </atlas-col>
                 </atlas-row>
