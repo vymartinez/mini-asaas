@@ -15,23 +15,23 @@
 
                 <atlas-col lg="12">
                     <atlas-masked-input
-                            label="Email"
-                            id="username"
-                            name="username"
-                            type="text"
-                            placeholder="Email"
-                            alias="email"
-                            required>
+                        label="Email"
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Email"
+                        mask-alias="email"
+                        required>
                     </atlas-masked-input>
                 </atlas-col>
 
                 <atlas-col lg="12">
                     <atlas-password-input
-                            label="Senha"
-                            id="password"
-                            name="password"
-                            placeholder="Senha"
-                            required>
+                        label="Senha"
+                        id="password"
+                        name="password"
+                        placeholder="Senha"
+                        required>
                     </atlas-password-input>
                 </atlas-col>
 

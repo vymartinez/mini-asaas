@@ -36,8 +36,22 @@ class AddressService {
         return address
     }
 
+    public void disable(Long addressId) {
+        Address address = findById(addressId)
+
+        address.deleted = true
+        address.save(failOnError: true)
+    }
+
+    public void restore(Long addressId) {
+        Address address = findById(addressId)
+
+        address.deleted = false
+        address.save(failOnError: true)
+    }
+
     private Address findById(Long addressId) {
-        Address address = AddressRepository.query([id: addressId]).get()
+        Address address = AddressRepository.query([id: addressId, includeDeleted: true]).get()
 
         if (!address) throw new RuntimeException("Endereço não encontrado")
 

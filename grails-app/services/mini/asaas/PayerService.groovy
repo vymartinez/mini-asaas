@@ -1,5 +1,6 @@
 package mini.asaas
 
+import grails.gorm.PagedResultList
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.repositorys.PayerRepository
 import mini.asaas.utils.CpfCnpjUtils
@@ -31,7 +32,7 @@ class PayerService {
         return payer
     }
 
-    public List<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
+    public PagedResultList<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
         Map filters = buildListFilters(params, customerId)
 
         return PayerRepository.query(filters).readOnly().list([max: max, offset: offset])
@@ -55,13 +56,31 @@ class PayerService {
     }
 
     public Payer findById(Long payerId, Long customerId) {
-        Payer payer = PayerRepository.query([id: payerId]).get()
+        Payer payer = PayerRepository.query([id: payerId, includeDeleted: true]).get()
 
         if (!payer) throw new RuntimeException("Pagador não encontrado")
 
         if (customerId != payer.customer.id) throw new RuntimeException("O pagador não pertence ao cliente logado")
 
         return payer
+    }
+
+    public void disable(Long payerId, Long customerId) {
+        Payer payer = findById(payerId, customerId)
+
+        addressService.disable(payer.address.id)
+
+        payer.deleted = true
+        payer.save(failOnError: true)
+    }
+
+    public void restore(Long payerId, Long customerId) {
+        Payer payer = findById(payerId, customerId)
+
+        addressService.restore(payer.address.id)
+
+        payer.deleted = false
+        payer.save(failOnError: true)
     }
 
     private Payer validate(SavePayerAdapter savePayerAdapter) {
@@ -96,6 +115,7 @@ class PayerService {
 
         if (params."nameOrEmail[like]") filters."nameOrEmail[like]" = params."nameOrEmail[like]"
         filters.customerId = customerId
+        filters.includeDeleted = true
 
         return filters
     }

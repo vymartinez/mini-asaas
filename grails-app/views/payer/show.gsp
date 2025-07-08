@@ -4,9 +4,9 @@
     <title>Mini Asaas</title>
 </head>
 <body>
-<atlas-panel>
+<atlas-panel class="js-payer-show">
         <atlas-heading>Detalhes do Pagador</atlas-heading>
-    <atlas-form action="${createLink(controller: "payer", action: "update")}">
+    <atlas-form action="${createLink(controller: "payer", action: "update")}" class="js-payer-show-form">
         <atlas-input
             value="${payer.id}"
             name="id"
@@ -42,19 +42,19 @@
                         type="text"
                         value="${params.cpfCnpj ?: payer.cpfCnpj}"
                         placeholder="CPF/CNPJ"
-                        alias="cpf-cnpj"
+                        mask-alias="cpf-cnpj"
                         required
                     ></atlas-masked-input>
                 </atlas-col>
                 <atlas-col lg="6">
                     <atlas-masked-input
                         label="Telefone"
-                        id="cellphone"
-                        name="cellphone"
+                        id="cellPhone"
+                        name="cellPhone"
                         type="text"
                         value="${params.cellPhone ?: payer.cellPhone}"
                         placeholder="Telefone"
-                        alias="cell-phone"
+                        mask-alias="cell-phone"
                         required
                     ></atlas-masked-input>
                 </atlas-col>
@@ -175,5 +175,6 @@
         ></atlas-button>
     </atlas-form>
 </atlas-panel>
+<asset:javascript src="payer-show.js"/>
 </body>
 </html>

@@ -169,6 +169,7 @@ grails:
                 postOnly: false
             auth:
                 loginFormUrl: '/login/auth'
+            rejectIfNoRule: false
     mail:
         host: smtp.gmail.com
         port: 465

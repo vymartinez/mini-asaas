@@ -5,17 +5,18 @@
 </head>
 
 <body>
-<atlas-panel>
+<atlas-panel class="js-payers-search">
+    <atlas-input type="hidden" class="js-search-url" value="${createLink(controller: 'payer', action: 'list')}"></atlas-input>
     <g:if test="${ payers }">
         <atlas-toolbar>
             <atlas-button
                 icon="plus"
                 description="Adicionar pagador"
-                href="${createLink(controller: "payer", action: "create")}"
+                href="${createLink(controller: "payer", action: "register")}"
                 slot="actions"
             ></atlas-button>
         </atlas-toolbar>
-        <atlas-search-input label="Pesquisar" placeholder="Pesquisar por nome ou e-mail"></atlas-search-input>
+        <atlas-search-input block label="Pesquisar" value="${ params."nameOrEmail[like]" }" placeholder="Pesquisar por nome ou e-mail" class="js-search-input"></atlas-search-input>
         <g:render template="/payer/templates/table" model="${[payers: payers]}"/>
     </g:if>
     <g:else>
@@ -27,11 +28,13 @@
             <atlas-button
                 icon="plus"
                 description="Adicionar pagador"
-                href="${createLink(controller: "payer", action: "create")}"
+                href="${createLink(controller: "payer", action: "register")}"
                 slot="button"
             ></atlas-button>
         </atlas-empty-state>
     </g:else>
+    <g:render template="/templates/pagination" model="${[totalCount: totalCount, max: max]}" />
 </atlas-panel>
+<asset:javascript src="payers-list.js"/>
 </body>
 </html>

@@ -5,10 +5,10 @@
 </head>
 
 <body>
-<atlas-panel>
+<atlas-panel class="js-create-payer">
     <atlas-layout gap="5" mobile-gap="5" >
         <atlas-heading muted >Criar Pagador</atlas-heading>
-        <atlas-form action="/payer/create">
+        <atlas-form action="/payer/create" class="js-create-payer-form">
             <atlas-grid container >
                 <atlas-row>
                     <atlas-col lg="6">
@@ -19,6 +19,7 @@
                             type="text"
                             placeholder="Nome"
                             required
+                            value="${ params.name }"
                         >
                         </atlas-input>
                     </atlas-col>
@@ -29,8 +30,9 @@
                             name="email"
                             type="text"
                             placeholder="Email"
-                            alias="email"
+                            mask-alias="email"
                             required
+                            value="${ params.email }"
                         >
                         </atlas-masked-input>
                     </atlas-col>
@@ -41,19 +43,21 @@
                             name="cpfCnpj"
                             type="text"
                             placeholder="CPF/CNPJ"
-                            alias="cpf-cnpj"
+                            mask-alias="cpf-cnpj"
                             required
+                            value="${ params.cpfCnpj }"
                         ></atlas-masked-input>
                     </atlas-col>
                     <atlas-col lg="6">
                         <atlas-masked-input
                             label="Telefone"
-                            id="cellphone"
-                            name="cellphone"
+                            id="cellPhone"
+                            name="cellPhone"
                             type="text"
                             placeholder="Telefone"
-                            alias="cell-phone"
+                            mask-alias="cell-phone"
                             required
+                            value="${ params.cellPhone }"
                         ></atlas-masked-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -64,6 +68,7 @@
                             type="text"
                             placeholder="CEP"
                             required
+                            value="${ params.zipCode }"
                         ></atlas-postal-code>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -75,6 +80,7 @@
                             placeholder="Bairro"
                             required
                             disabled
+                            value="${ params.province }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -86,9 +92,22 @@
                             placeholder="Logradouro"
                             required
                             disabled
+                            value="${ params.address }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
+                        <atlas-input
+                            label="Cidade"
+                            id="cityName"
+                            name="cityName"
+                            type="text"
+                            placeholder="Cidade"
+                            required
+                            disabled
+                            value="${ params.cityName }">
+                        </atlas-input>
+                    </atlas-col>
+                    <atlas-col lg="3">
                         <atlas-input
                             label="UF"
                             id="state" name="state"
@@ -96,9 +115,10 @@
                             placeholder="UF"
                             required
                             disabled
+                            value="${ params.state }"
                         ></atlas-input>
                     </atlas-col>
-                    <atlas-col lg="6">
+                    <atlas-col lg="3">
                         <atlas-input
                             label="Número"
                             id="addressNumber"
@@ -106,7 +126,7 @@
                             type="text"
                             placeholder="Número"
                             required
-                            disabled
+                            value="${ params.addressNumber }"
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -116,15 +136,19 @@
                             name="complement"
                             type="text"
                             placeholder="Complemento"
+                            value="${ params.complement }"
                         ></atlas-input>
                     </atlas-col>
                 </atlas-row>
             </atlas-grid>
             <atlas-button
-                description="Cadastrar" submit block
+                description="Cadastrar" submit block class="js-submit-button"
             ></atlas-button>
+            <atlas-input id="cityId" name="cityId" label="cityId" hidden value="${ params.cityId }"></atlas-input>
+            <atlas-input type="hidden" class="js-zip-code-url" value="${createLink(controller: 'zipCode', action: 'find')}"></atlas-input>
         </atlas-form>
     </atlas-layout>
 </atlas-panel>
+<asset:javascript src="create-payer.js"/>
 </body>
 </html>
