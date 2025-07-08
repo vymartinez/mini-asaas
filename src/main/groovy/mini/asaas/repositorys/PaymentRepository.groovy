@@ -59,6 +59,6 @@ class PaymentRepository implements Repository<Payment, PaymentRepository> {
 
     @Override
     Boolean getDomainHasSoftDelete() {
-        true
+        return true
     }
 }

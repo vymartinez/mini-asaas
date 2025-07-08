@@ -16,8 +16,8 @@ class OverduePaymentsJob {
 
     @Transactional
     public void execute(JobExecutionContext context) {
-        log.info "Iniciando OverduePaymentsJob em ${new Date()}"
         try {
+            log.info "OverduePaymentsJob.execute >>> Iniciando OverduePaymentsJob em ${new Date()}"
             paymentService.notifyOverduePayments()
             log.info "OverduePaymentsJob concluído com sucesso"
         } catch (Exception exception) {

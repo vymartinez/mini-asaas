@@ -13,24 +13,18 @@ import mini.asaas.adapters.SavePaymentAdapter
 import mini.asaas.adapters.UpdatePaymentAdapter
 import mini.asaas.enums.MessageType
 
+@Secured(['IS_AUTHENTICATED_FULLY'])
 @GrailsCompileStatic
 class PaymentController extends BaseController {
 
-    PaymentService paymentService
     PayerService payerService
     MessageSource messageSource
+    PaymentService paymentService
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def register() {
-        Long customerId = getCurrentCustomerId()
-        Integer max = getLimitPerPage()
-        Integer offset = getOffset()
-        PagedResultList<Payer> payers =
-                payerService.list(params, customerId, max, offset)
-        [payers: payers]
+        return [:]
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def create() {
         try {
             SavePaymentAdapter adapter = new SavePaymentAdapter(params)
@@ -54,14 +48,9 @@ class PaymentController extends BaseController {
                     MessageType.ERROR,
                     false
             )
-            Long customerId = getCurrentCustomerId()
-            Integer max = getLimitPerPage()
-            Integer offset = getOffset()
-            PagedResultList<Payer> payers =
-                    payerService.list(params, customerId, max, offset)
             render(
                     view: 'register',
-                    model: [params: params, payers: payers, errors: validationException.errors]
+                    model: [params: params, errors: validationException.errors]
             )
         }
         catch (RuntimeException runtimeException) {
@@ -78,29 +67,26 @@ class PaymentController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def show(Long id) {
         try {
             Long currentCustomerId = getCurrentCustomerId()
             Payment payment = paymentService.findById(id, currentCustomerId)
 
-            Integer max = getLimitPerPage()
-            Integer offset = getOffset()
-            PagedResultList<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
 
-            return [payment: payment, payers: payers, billingTypes: BillingType.values(), status: PaymentStatus.values()]
+
+            return [payment: payment, customerId: currentCustomerId, billingTypes: BillingType.values(), status: PaymentStatus.values()]
         } catch (RuntimeException re) {
             buildFlashAlert(re.message, MessageType.ERROR, false)
             redirect(url: '/payment/list')
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def list() {
         try {
             Long customerId = getCurrentCustomerId()
             Integer max = getLimitPerPage()
             Integer offset = getOffset()
+
             PagedResultList<Payment> payments =
                     paymentService.list(params, customerId, max, offset)
             [ payments: payments,
@@ -116,10 +102,9 @@ class PaymentController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def update() {
+        Long customerId = getCurrentCustomerId()
         try {
-            Long customerId = getCurrentCustomerId()
             UpdatePaymentAdapter adapter = new UpdatePaymentAdapter(params)
 
             Payment payment = paymentService.update(adapter, customerId)
@@ -141,16 +126,11 @@ class PaymentController extends BaseController {
                     MessageType.ERROR,
                     false
             )
-            Long customerId = getCurrentCustomerId()
-            Integer max = getLimitPerPage()
-            Integer offset = getOffset()
-            PagedResultList<Payer> payers =
-                    payerService.list(params, customerId, max, offset)
+
             render(
                     view: 'show',
                     model: [
                             params : params,
-                            payers : payers,
                             payment: paymentService.findById(params.long('id'), customerId),
                             errors : validationException.errors
                     ]
@@ -175,7 +155,6 @@ class PaymentController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def disable() {
         try {
             Long paymentId = params.paymentId as Long
@@ -190,7 +169,6 @@ class PaymentController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def restore() {
         try {
             Long paymentId = params.paymentId as Long

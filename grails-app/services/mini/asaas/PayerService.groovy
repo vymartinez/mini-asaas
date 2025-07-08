@@ -65,6 +65,14 @@ class PayerService {
         return payer
     }
 
+    public List<Payer> listAll(Long customerId) {
+        Map filters = [customerId: customerId]
+        return PayerRepository.query(filters)
+                .sort('name', 'asc')
+                .readOnly()
+                .list()
+    }
+
     private Payer validate(SavePayerAdapter savePayerAdapter) {
         Payer payer = new Payer()
 
