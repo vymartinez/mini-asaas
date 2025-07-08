@@ -3,11 +3,11 @@
 (() => {
 
     function init() {
-
         const form = document.querySelector('atlas-form[action="/payment/create"]');
         if (!form) return;
 
         form.addEventListener('submit', onSubmit);
+        loadPayerOptions();
     }
 
     function onSubmit(event) {
@@ -29,7 +29,7 @@
             form.querySelector(`
               input[name="${errors[0].field}"],
               select[name="${errors[0].field}"]
-            `).focus();
+            `)?.focus();
             return;
         }
 
@@ -81,9 +81,31 @@
         form.querySelectorAll('.form-error').forEach(el => el.remove());
     }
 
+    function loadPayerOptions() {
+        const container = document.getElementById("payer-options-container");
+        if (!container) return;
+
+        const selectedId = container.getAttribute("data-selected-id");
+        const url = selectedId ? `/payer/selectOptions?selectedId=${selectedId}` : `/payer/selectOptions`;
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error("Erro ao carregar pagadores");
+                return response.text();
+            })
+            .then(html => {
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                console.error("Erro ao carregar opções de pagador:", error);
+                container.innerHTML = "<atlas-option disabled>Erro ao carregar pagadores</atlas-option>";
+            });
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
+
 })();

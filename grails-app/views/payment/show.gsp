@@ -1,3 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<meta name="layout" content="internal"/>
+
 <html>
 <head>
     <meta name="layout" content="internal">
@@ -15,14 +18,13 @@
             <atlas-row>
 
                 <atlas-col lg="6">
-                    <atlas-select placeholder="Selecione o pagador" name="payerId" id="payerId" label="Pagador" required>
-                        <g:each in="${payers}" var="p">
-                            <atlas-option value="${p.id}" label="${p.name}" ${((params.payerId ?: payment.payer.id.toString()) == p.id.toString()) ? 'selected' : ''}>
-                                ${p.name}
-                            </atlas-option>
-                        </g:each>
+                    <atlas-select placeholder="Selecione um pagador" id="payer-options-container" name="payerId" label="Pagador" required data-selected-id="${params.payerId ?: payment?.payer?.id}">
+                        <atlas-option value="">Carregando...</atlas-option>
                     </atlas-select>
+
                 </atlas-col>
+
+            </atlas-col>
 
                 <atlas-col lg="6">
                     <atlas-select placeholder="Selecione" name="billingType" id="billingType" label="Tipo de Cobrança" required>
@@ -80,6 +82,6 @@
     </atlas-form>
 </atlas-panel>
 
-<asset:javascript src="payment/payment-show.js"/>
+<asset:javascript src="payment/payment-create.js"/>
 </body>
 </html>

@@ -2,31 +2,34 @@
     'use strict';
 
     window.addEventListener('DOMContentLoaded', () => {
-        const form= document.querySelector('.js-payment-show-form');
-        const submitBtn= form?.querySelector('.js-submit-button');
-        const editBtn= document.querySelector('[data-panel-start-editing]');
+        const form = document.querySelector('.js-payment-show-form');
+        const submitBtn = form?.querySelector('.js-submit-button');
+        const editBtn = document.querySelector('[data-panel-start-editing]');
 
         if (!form || !editBtn || !submitBtn) return;
 
+        // Desabilita campos inicialmente
         const fields = Array.from(form.querySelectorAll('input, select'))
             .filter(f => f.name !== 'paymentId');
 
         fields.forEach(f => f.disabled = true);
 
+        // Ativa campos ao clicar em "Editar"
         editBtn.addEventListener('click', () => {
             fields.forEach(f => f.disabled = false);
             if (editBtn.tagName !== 'ATLAS-BUTTON') editBtn.disabled = true;
         });
 
+        // Validação do formulário
         form.addEventListener('submit', event => {
             clearErrors(form);
 
             const payerId = form.querySelector('[name="payerId"]').value;
             const billingType = form.querySelector('[name="billingType"]').value;
-            const valueField= form.querySelector('[name="value"]');
-            const dueDateField= form.querySelector('[name="dueDate"]');
+            const valueField = form.querySelector('[name="value"]');
+            const dueDateField = form.querySelector('[name="dueDate"]');
 
-            let valid= true;
+            let valid = true;
 
             if (!payerId) {
                 showError(form.querySelector('[name="payerId"]'), 'Selecione um pagador.');
@@ -52,6 +55,7 @@
             if (!valid) event.preventDefault();
         });
 
+        // Funções auxiliares
         function showError(input, message) {
             const wrapper = input.closest('atlas-col') || input.parentElement;
             let err = wrapper.querySelector('.form-error');
@@ -66,5 +70,27 @@
         function clearErrors(form) {
             form.querySelectorAll('.form-error').forEach(el => el.remove());
         }
+
+        // Carregamento dinâmico dos pagadores via AJAX
+        const payerOptionsContainer = document.getElementById("payer-options-container");
+
+        if (payerOptionsContainer) {
+            const selectedId = payerOptionsContainer.getAttribute("data-selected-id");
+            console.log("Carregando opções de pagador...");
+
+            fetch(`/payer/selectOptions?selectedId=${selectedId || ''}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao carregar pagadores");
+                    return response.text();
+                })
+                .then(html => {
+                    payerOptionsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar opções de pagador:", error);
+                    payerOptionsContainer.innerHTML = "<atlas-option disabled>Erro ao carregar pagadores</atlas-option>";
+                });
+        }
+
     });
 })();

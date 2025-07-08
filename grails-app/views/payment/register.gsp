@@ -16,17 +16,8 @@
             <atlas-grid container>
                 <atlas-row>
                     <atlas-col lg="6">
-                        <atlas-select placeholder="Selecione o pagador"
-                                      name="payerId"
-                                      id="payerId"
-                                      label="Pagador"
-                                      required>
-                            <g:each in="${payers}" var="p">
-                                <atlas-option value="${p.id}"
-                                              label="${p.name}"
-                                    ${params.payerId == p.id.toString() ? 'selected' : ''}>
-                                </atlas-option>
-                            </g:each>
+                        <atlas-select placeholder="Selecione um pagador" id="payer-options-container" name="payerId" label="Pagador" required data-selected-id="${params.payerId ?: payment?.payer?.id}">
+                            <atlas-option value="">Carregando...</atlas-option>
                         </atlas-select>
                     </atlas-col>
 
