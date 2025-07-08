@@ -11,7 +11,7 @@ function NotificationListController() {
             success: function (data) {
                 if (!data) return;
 
-                notificationListReference[0].innerHTML = data
+                notificationListReference.replaceWith(data);
             }
         })
     }
@@ -19,7 +19,7 @@ function NotificationListController() {
 
 var notificationListController;
 
-document.addEventListener("AtlasContentLoaded", function() {
+$(document).ready(function() {
     notificationListController = new NotificationListController();
     notificationListController.init();
 });
