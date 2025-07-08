@@ -53,7 +53,8 @@ class PaymentRepository implements Repository<Payment, PaymentRepository> {
                 'dueDate',
                 'customerId',
                 'payer.customer.id',
-                'payer.name[like]'
+                'payer.name[like]',
+                'dueDate[between]'
         ]
     }
 

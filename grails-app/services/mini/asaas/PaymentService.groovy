@@ -14,6 +14,7 @@ import mini.asaas.notification.EmailNotificationService
 import mini.asaas.PayerService
 import mini.asaas.payment.Payment
 import mini.asaas.repositorys.PaymentRepository
+import mini.asaas.utils.DateRangeUtils
 import mini.asaas.utils.DomainUtils
 
 
@@ -88,14 +89,26 @@ class PaymentService {
     }
 
     public void notifyOverduePayments() {
+        Map<String, Date> range = DateRangeUtils.getRangeUntilToday(1)
+
         List<Payment> overduePayments = paymentRepository
                 .query([
                         status: PaymentStatus.PENDING,
-                        dueDate: new Date()
+                        "dueDate[between]": [range.start, range.end]
                 ])
                 .list()
 
-        overduePayments.each { emailNotificationService.notifyExpired(it) }
+        overduePayments.each {
+            try {
+                it.status = PaymentStatus.OVERDUE
+                it.save(failOnError: true)
+                emailNotificationService.notifyExpired(it)
+            } catch (org.hibernate.StaleObjectStateException | org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException exception) {
+                log.warn "Pagamento ${it.id} foi modificado por outra transação. Ignorando..."
+            } catch (Exception exception) {
+                log.error "Erro ao processar pagamento ${it.id}: ${exception.message}", exception
+            }
+        }
     }
 
     public Payment findById(Long paymentId, Long customerId) {
@@ -108,7 +121,6 @@ class PaymentService {
 
         return payment
     }
-
 
     private Payment validate(SavePaymentAdapter adapter) {
 
