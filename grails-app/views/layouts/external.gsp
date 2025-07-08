@@ -26,13 +26,7 @@
         <div class="bg-asaas">
             <atlas-page container fluid-content >
                 <atlas-page-content slot="content" fluid>
-                    <g:if test="${flash.message}">
-                        <atlas-alert
-                            type="${flash.success ? 'success' : 'error'}"
-                            message="${flash.message}"
-                            class="js-atlas-alert"
-                        ></atlas-alert>
-                    </g:if>
+                    <g:render template="/templates/alert" />
                     <g:layoutBody />
                 </atlas-page-content>
             </atlas-page>

@@ -6,6 +6,7 @@ import mini.asaas.repositorys.PayerRepository
 import mini.asaas.utils.CpfCnpjUtils
 import mini.asaas.utils.DomainUtils
 import mini.asaas.utils.EmailUtils
+import mini.asaas.utils.StringUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
@@ -18,7 +19,7 @@ class PayerService {
     AddressService addressService
     CustomerService customerService
 
-    public Payer create(SavePayerAdapter savePayerAdapter, Long customerId) {
+    public void create(SavePayerAdapter savePayerAdapter, Long customerId) {
         Payer payer = validate(savePayerAdapter)
 
         if (payer.hasErrors()) throw new ValidationException("Erro ao criar pagador", payer.errors)
@@ -29,7 +30,6 @@ class PayerService {
         buildPayer(payer, savePayerAdapter, customer, address)
 
         payer.save(failOnError: true)
-        return payer
     }
 
     public PagedResultList<Payer> list(Map params, Long customerId, Integer max, Integer offset) {
@@ -38,7 +38,7 @@ class PayerService {
         return PayerRepository.query(filters).readOnly().list([max: max, offset: offset])
     }
 
-    public Payer update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
+    public void update(SavePayerAdapter savePayerAdapter, Long payerId, Long customerId) {
         Payer payer = validate(savePayerAdapter)
 
         if (payer.hasErrors()) throw new ValidationException("Erro ao atualizar pagador", payer.errors)
@@ -52,7 +52,6 @@ class PayerService {
         buildPayer(payer, savePayerAdapter, customer, address)
 
         payer.save(failOnError: true)
-        return payer
     }
 
     public Payer findById(Long payerId, Long customerId) {
@@ -104,8 +103,8 @@ class PayerService {
     private void buildPayer(Payer payer, SavePayerAdapter savePayerAdapter, Customer customer, Address address) {
         payer.name = savePayerAdapter.name
         payer.email = savePayerAdapter.email
-        payer.cpfCnpj = savePayerAdapter.cpfCnpj
-        payer.cellPhone = savePayerAdapter.cellPhone
+        payer.cpfCnpj = StringUtils.removeNonNumeric(savePayerAdapter.cpfCnpj)
+        payer.cellPhone = StringUtils.removeNonNumeric(savePayerAdapter.cellPhone)
         payer.address = address
         payer.customer = customer
     }

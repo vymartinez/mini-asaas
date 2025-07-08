@@ -119,7 +119,6 @@
                             placeholder="Número"
                             value="${ params.addressNumber ?: customer.address.addressNumber }"
                             required
-                            disabled
                         ></atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -129,9 +128,9 @@
                             name="cityName" 
                             type="text"
                             placeholder="Cidade"
-                            value="${ params.cityName ?: customer.address.city.name }">
                             required
                             disabled
+                            value="${ params.cityName ?: customer.address.city.name }">
                         </atlas-input>
                     </atlas-col>
                     <atlas-col lg="6">
@@ -142,7 +141,6 @@
                             type="text"
                             placeholder="Complemento"
                             value="${ params.complement ?: customer.address.complement }"
-                            disabled
                         ></atlas-input>
                     </atlas-col>
                 </atlas-row>
@@ -152,6 +150,7 @@
             <atlas-button
                     description="Atualizar dados" submit block class="js-submit-button"
             ></atlas-button>
+            <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
         </atlas-form>
     </atlas-layout>
 </atlas-panel>
