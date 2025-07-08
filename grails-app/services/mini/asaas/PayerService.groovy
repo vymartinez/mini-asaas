@@ -56,7 +56,7 @@ class PayerService {
     }
 
     public Payer findById(Long payerId, Long customerId) {
-        Payer payer = PayerRepository.query([id: payerId]).get()
+        Payer payer = PayerRepository.query([id: payerId, includeDeleted: true]).get()
 
         if (!payer) throw new RuntimeException("Pagador não encontrado")
 
@@ -65,12 +65,31 @@ class PayerService {
         return payer
     }
 
+
     public List<Payer> listAll(Long customerId) {
         Map filters = [customerId: customerId]
         return PayerRepository.query(filters)
                 .sort('name', 'asc')
                 .readOnly()
                 .list()
+
+    public void disable(Long payerId, Long customerId) {
+        Payer payer = findById(payerId, customerId)
+
+        addressService.disable(payer.address.id)
+
+        payer.deleted = true
+        payer.save(failOnError: true)
+    }
+
+    public void restore(Long payerId, Long customerId) {
+        Payer payer = findById(payerId, customerId)
+
+        addressService.restore(payer.address.id)
+
+        payer.deleted = false
+        payer.save(failOnError: true)
+
     }
 
     private Payer validate(SavePayerAdapter savePayerAdapter) {
@@ -105,6 +124,7 @@ class PayerService {
 
         if (params."nameOrEmail[like]") filters."nameOrEmail[like]" = params."nameOrEmail[like]"
         filters.customerId = customerId
+        filters.includeDeleted = true
 
         return filters
     }
