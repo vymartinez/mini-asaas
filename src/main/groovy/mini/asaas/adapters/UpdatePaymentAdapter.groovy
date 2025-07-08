@@ -24,19 +24,14 @@ class UpdatePaymentAdapter {
     PaymentStatus status
 
     static contraints = {
-        value min: new BigDecimal("0.01")
+        value min: 0.01
     }
 
     public UpdatePaymentAdapter(Map params) {
         this.id = params.id?.toString()?.toLong()
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)
-
-        if (params.value) {
-            this.value = new BigDecimal(params.value.toString()).setScale(2, RoundingMode.HALF_UP)
-        } else {
-            this.value = null
-        }
+        this.value = BigDecimalUtils.arrendondarPadrao(params.value as BigDecimal)
 
         if (params.dueDate) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
