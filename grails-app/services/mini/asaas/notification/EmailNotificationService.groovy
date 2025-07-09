@@ -5,6 +5,7 @@ import grails.compiler.GrailsCompileStatic
 import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
 import mini.asaas.payment.Payment
+import org.springframework.context.MessageSource
 
 @GrailsCompileStatic
 @Transactional
@@ -12,6 +13,7 @@ class EmailNotificationService {
 
     MailService mailService
 
+    MessageSource messageSource
 
     public void notifyCreated(Payment payment) {
         String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
