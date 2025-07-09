@@ -63,10 +63,10 @@ class PayerController extends BaseController {
     }
 
     def update() {
+        Long payerId = params.payerId as Long
         try {
             SavePayerAdapter savePayerAdapter = new SavePayerAdapter(params)
 
-            Long payerId = params.payerId as Long
             Long currentCustomerId = getCurrentCustomerId()
             payerService.update(savePayerAdapter, payerId, currentCustomerId)
 
@@ -74,13 +74,13 @@ class PayerController extends BaseController {
             redirect(controller: 'payer', action: 'list')
         } catch (ValidationException validationException) {
             buildFlashAlert("Atenção: " + validationException.errors.allErrors.defaultMessage.join(", "), MessageType.ERROR, false)
-            redirect(controller: 'payer', action: 'register', params: params)
+            redirect(controller: 'payer', action: 'show', id: payerId, params: params)
         } catch (RuntimeException runtimeException) {
             buildFlashAlert(runtimeException.getMessage(), MessageType.ERROR, false)
-            redirect(controller: 'payer', action: 'register', params: params)
+            redirect(controller: 'payer', action: 'show', id: payerId, params: params)
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro interno. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
-            redirect(controller: 'payer', action: 'register', params: params)
+            redirect(controller: 'payer', action: 'show', id: payerId, params: params)
         }
     }
 
