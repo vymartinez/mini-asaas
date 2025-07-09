@@ -26,6 +26,15 @@
                             href="${createLink(controller: "payment", action: "show", id: payment.id)}"
                     >
                     </atlas-icon-button>
+                    <g:if test="${payment.status != paymentStatuses.RECEIVED && payment.status != paymentStatuses.OVERDUE}">
+                        <atlas-icon-button
+                                icon="money "
+                                theme="success"
+                                class="js-confirm-cash-btn"
+                                description="Confirmar recebimento em dinheiro"
+                                href="${createLink(controller: 'payment', action: 'confirmCash', params: [paymentId: payment.id])}"
+                        ></atlas-icon-button>
+                    </g:if>
                     <g:if test="${ !payment.deleted }">
                         <atlas-icon-button
                                 icon="trash"
