@@ -18,13 +18,13 @@ class SavePaymentAdapter {
     Date dueDate
 
     static constraints = {
-        value min: 0.01G
+        value min: 0.01
     }
 
     public SavePaymentAdapter(Map params) {
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)
-        this.value = BigDecimalUtils.round(params.value as BigDecimal, 2, RoundingMode.HALF_UP)
+        this.value = BigDecimalUtils.arrendondarPadrao(params.value as BigDecimal)
 
         if (params.dueDate) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")

@@ -84,7 +84,6 @@ class PayerController extends BaseController {
         }
     }
 
-
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def selectOptions(Long selectedId) {
         Long customerId = getCurrentCustomerId()
@@ -94,7 +93,6 @@ class PayerController extends BaseController {
     }
 
     @Secured(['IS_AUTHENTICATED_FULLY'])
-
     def disable() {
         try {
             Long payerId = params.payerId as Long
@@ -122,7 +120,6 @@ class PayerController extends BaseController {
             redirect(url: '/payer/list')
         }
     }
-
 
     def register() { }
 }

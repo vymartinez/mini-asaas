@@ -196,4 +196,16 @@ class PaymentController extends BaseController {
         }
         redirect(url: "/payment/list")
     }
+
+    def receipt(Long id) {
+        Long customerId = getCurrentCustomerId()
+        Payment payment = paymentService.findById(id, customerId)
+
+        if (payment.status != PaymentStatus.RECEIVED) {
+            buildFlashAlert("Somente cobranças com status RECEBIDO podem gerar comprovante.", MessageType.ERROR, false)
+            return redirect(action: 'list')
+        }
+
+        [payment: payment, customerId: customerId]
+    }
 }
