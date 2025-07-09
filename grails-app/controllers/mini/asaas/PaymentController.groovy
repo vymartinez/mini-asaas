@@ -182,4 +182,18 @@ class PaymentController extends BaseController {
             redirect(url: '/payment/list')
         }
     }
+
+    def confirmCash(Long paymentId) {
+        try {
+            Long customerId = getCurrentCustomerId()
+            paymentService.confirmCash(paymentId, customerId)
+            buildFlashAlert("Cobrança confirmada como recebida em dinheiro!", MessageType.SUCCESS, true)
+        } catch (IllegalStateException ise) {
+            buildFlashAlert(ise.message, MessageType.INFO, true)
+        } catch (Exception e) {
+            log.error("Erro ao confirmar recebimento em dinheiro", e)
+            buildFlashAlert("Erro ao confirmar a cobrança.", MessageType.ERROR, true)
+        }
+        redirect(url: "/payment/list")
+    }
 }
