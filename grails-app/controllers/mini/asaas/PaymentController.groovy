@@ -91,6 +91,7 @@ class PaymentController extends BaseController {
                     paymentService.list(params, customerId, max, offset)
             [ payments: payments,
               totalCount: payments.totalCount,
+              paymentStatuses: PaymentStatus.values(),
               max: max ]
         } catch (Exception exception) {
             buildFlashAlert(
