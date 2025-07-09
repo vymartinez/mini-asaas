@@ -122,6 +122,20 @@ class PaymentService {
         return payment
     }
 
+    public Payment confirmCash(Long paymentId, Long customerId) {
+        Payment payment = findById(paymentId, customerId)
+
+        if (payment.status == PaymentStatus.RECEIVED) {
+            throw new IllegalStateException("Pagamento já foi confirmado.")
+        }
+
+        payment.status = PaymentStatus.RECEIVED
+        payment.save(failOnError: true)
+        emailNotificationService.notifyConfirmedInCash(payment)
+
+        return payment
+    }
+
     private Payment validate(SavePaymentAdapter adapter) {
 
         Payment payment = new Payment()
