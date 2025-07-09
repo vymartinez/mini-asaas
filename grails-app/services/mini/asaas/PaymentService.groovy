@@ -7,13 +7,14 @@ import grails.gorm.transactions.Transactional
 
 import mini.asaas.adapters.SavePaymentAdapter
 import mini.asaas.adapters.UpdatePaymentAdapter
-
-
+import mini.asaas.enums.NotificationType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.notification.EmailNotificationService
 import mini.asaas.PayerService
+import mini.asaas.notification.NotificationService
 import mini.asaas.payment.Payment
 import mini.asaas.repositorys.PaymentRepository
+import mini.asaas.utils.BigDecimalUtils
 import mini.asaas.utils.DateRangeUtils
 import mini.asaas.utils.DomainUtils
 
@@ -23,6 +24,7 @@ import mini.asaas.utils.DomainUtils
 class PaymentService {
 
     EmailNotificationService emailNotificationService
+    NotificationService notificationService
     PayerService payerService
     PaymentRepository paymentRepository
 
@@ -38,7 +40,7 @@ class PaymentService {
         buildPayment(payment, savePaymentAdapter, payer)
 
         payment.save(failOnError: true)
-        emailNotificationService.notifyCreated(payment)
+        notificationService.create([payment.id] as Object[], [payment.value, payment.payer.name] as Object[], payer.customer, NotificationType.PAYMENT_CREATED )
         return payment
     }
 
@@ -64,7 +66,14 @@ class PaymentService {
         payment.save(failOnError: true)
 
         if (payment.status == PaymentStatus.RECEIVED) {
-            emailNotificationService.notifyPaid(payment)
+            notificationService.create(
+                    [payment.id] as Object[],
+                    [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                    payment.payer.customer,
+                    NotificationType.PAYMENT_PAID
+            )
+        } else {
+            notificationService.notifyUpdated(payment)
         }
 
         return payment
@@ -76,7 +85,7 @@ class PaymentService {
         payment.deleted = true
         payment.status = PaymentStatus.CANCELED
         payment.save(failOnError: true)
-        emailNotificationService.notifyDeleted(payment)
+        notificationService.notifyDeleted(payment)
     }
 
     public void restore(Long paymentId, Long customerId) {
@@ -85,7 +94,7 @@ class PaymentService {
         payment.deleted = false
         payment.status = PaymentStatus.PENDING
         payment.save(failOnError: true)
-        emailNotificationService.notifyRestored(payment)
+        notificationService.notifyRestored(payment)
     }
 
     public void notifyOverduePayments() {
@@ -102,7 +111,7 @@ class PaymentService {
             try {
                 it.status = PaymentStatus.OVERDUE
                 it.save(failOnError: true)
-                emailNotificationService.notifyExpired(it)
+                notificationService.notifyExpired(it)
             } catch (org.hibernate.StaleObjectStateException | org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException exception) {
                 log.warn "Pagamento ${it.id} foi modificado por outra transação. Ignorando..."
             } catch (Exception exception) {
@@ -131,7 +140,7 @@ class PaymentService {
 
         payment.status = PaymentStatus.RECEIVED
         payment.save(failOnError: true)
-        emailNotificationService.notifyConfirmedInCash(payment)
+        notificationService.notifyConfirmedInCash(payment)
 
         return payment
     }
