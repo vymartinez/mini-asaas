@@ -6,6 +6,7 @@ import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
 import mini.asaas.payment.Payment
 import org.springframework.context.MessageSource
+import mini.asaas.utils.BigDecimalUtils
 
 @GrailsCompileStatic
 @Transactional
@@ -16,7 +17,7 @@ class EmailNotificationService {
     MessageSource messageSource
 
     public void notifyCreated(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.created.subject',
@@ -34,7 +35,7 @@ class EmailNotificationService {
     }
 
     public void notifyPaid(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.paid.subject',
@@ -52,7 +53,7 @@ class EmailNotificationService {
     }
 
     public void notifyExpired(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.expired.subject',
@@ -70,7 +71,7 @@ class EmailNotificationService {
     }
 
     public void notifyDeleted(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.deleted.subject',
@@ -88,7 +89,7 @@ class EmailNotificationService {
     }
 
     public void notifyRestored(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
         String subject = messageSource.getMessage(
                 'payment.notify.restored.subject',
                 [payment.id] as Object[],
@@ -103,7 +104,7 @@ class EmailNotificationService {
     }
 
     public void notifyConfirmedInCash(Payment payment) {
-        String amount = BigDecimalUtils.round(payment.value, 2, RoundingMode.HALF_UP).toString()
+        String amount = BigDecimalUtils.arrendondarPadrao(payment.value).toString()
 
         String subject = messageSource.getMessage(
                 'payment.notify.confirmedInCash.subject',
@@ -118,6 +119,14 @@ class EmailNotificationService {
         )
 
         send(to: payment.payer.email, subject: subject, body: body)
+    }
+
+    public void sendNotification(Notification notification) {
+        mailService.sendMail {
+            to notification.customer.email
+            subject notification.subject
+            body notification.body
+        }
     }
 
     private void send(Map<String, String> args) {

@@ -21,7 +21,7 @@ class NotificationService {
 
         notification.save(failOnError: true)
 
-        emailNotificationService.send(notification)
+        emailNotificationService.sendNotification(notification)
 
         return notification
     }
