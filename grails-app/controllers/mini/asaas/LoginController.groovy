@@ -5,11 +5,11 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.plugin.springsecurity.SpringSecurityService
 
+@Secured(['permitAll'])
 class LoginController extends BaseController {
 
     SpringSecurityService springSecurityService
 
-    @Secured(['permitAll'])
     def index() {
         if (springSecurityService.isLoggedIn()) {
             redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
@@ -19,7 +19,6 @@ class LoginController extends BaseController {
         }
     }
 
-    @Secured(['permitAll'])
     def auth() {
         ConfigObject conf = SpringSecurityUtils.securityConfig
 
@@ -32,7 +31,6 @@ class LoginController extends BaseController {
         return [postUrl: postUrl]
     }
 
-    @Secured(['permitAll'])
     def authfail() {
         buildFlashAlert("Usuário ou senha inválidos.", MessageType.ERROR, false)
         redirect(action: "auth", params: params)

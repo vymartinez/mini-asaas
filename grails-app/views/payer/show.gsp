@@ -169,10 +169,12 @@
             </atlas-row>
         </atlas-grid>
         <atlas-input id="cityId" name="cityId" label="cityId" hidden value="${ params.cityId ?: payer.address.city.id }"></atlas-input>
+        <atlas-input id="payerId" name="payerId" label="payerId" hidden value="${ payer.id }"></atlas-input>
         <atlas-input type="hidden" class="js-zip-code-url" value="${createLink(controller: 'zipCode', action: 'find')}"></atlas-input>
         <atlas-button
                 class="js-submit-button" description="Atualizar dados do pagador" submit block
         ></atlas-button>
+        <atlas-helper-text class="js-feedback-message" criticality="warning" hidden></atlas-helper-text>
     </atlas-form>
 </atlas-panel>
 <asset:javascript src="payer-show.js"/>

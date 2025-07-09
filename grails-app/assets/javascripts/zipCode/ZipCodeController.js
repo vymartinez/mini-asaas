@@ -6,8 +6,13 @@ function ZipCodeController(reference) {
     var buttonController = new ButtonController();
     buttonController.buttonReference = this.reference.find(".js-submit-button");
 
+    var feedbackReference = this.reference.find(".js-feedback-message");
+    var feedbackMessage = "CEP não encontrado. Verifique e tente novamente."
+
     this.search = function () {
         buttonController.disable();
+        feedbackReference.html("");
+        feedbackReference.attr("hidden", true);
 
         var zipCode = zipCodeReference[0].value;
         if (!zipCode) return;
@@ -21,6 +26,11 @@ function ZipCodeController(reference) {
 
                 buttonController.enable();
                 _this.completeAddress(data)
+            },
+            error: function () {
+                feedbackReference.html(feedbackMessage);
+                feedbackReference.attr("hidden", false);
+                buttonController.enable();
             }
         })
     }

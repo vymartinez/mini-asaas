@@ -4,6 +4,7 @@ import mini.asaas.adapters.ZipCodeInfoAdapter
 import mini.asaas.dtos.ViaCepDTO
 import mini.asaas.integration.viacep.ViaCepManager
 import mini.asaas.utils.GsonBuilderUtils
+
 import grails.converters.JSON
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
@@ -12,7 +13,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class ViaCepManagerService {
 
-    ZipCodeInfoAdapter get(String zipCode) {
+    public ZipCodeInfoAdapter get(String zipCode) {
         ViaCepManager viaCepManager = new ViaCepManager()
         viaCepManager.get("/${zipCode}/json")
 

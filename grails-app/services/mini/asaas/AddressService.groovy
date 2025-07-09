@@ -3,6 +3,7 @@ package mini.asaas
 import mini.asaas.adapters.AddressAdapter
 import mini.asaas.repositorys.AddressRepository
 import mini.asaas.utils.DomainUtils
+import mini.asaas.utils.StringUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
@@ -78,7 +79,7 @@ class AddressService {
         address.address = addressAdapter.address
         address.addressNumber = addressAdapter.addressNumber
         address.city = City.get(addressAdapter.cityId)
-        address.zipCode = addressAdapter.zipCode
+        address.zipCode = StringUtils.removeNonNumeric(addressAdapter.zipCode)
         address.province = addressAdapter.province
         address.complement = addressAdapter.complement
     }

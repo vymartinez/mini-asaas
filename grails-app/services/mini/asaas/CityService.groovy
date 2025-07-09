@@ -1,9 +1,10 @@
 package mini.asaas
 
 import mini.asaas.enums.State
+import mini.asaas.repositorys.CityRepository
+
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.Transactional
-import mini.asaas.repositorys.CityRepository
 
 @Transactional
 @GrailsCompileStatic
