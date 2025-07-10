@@ -1,2 +1,1 @@
-//= require payment/PaymentsSearchController
-//= require payment/PaymentSearchInputController
+//= require payment/PaymentsFilterController
