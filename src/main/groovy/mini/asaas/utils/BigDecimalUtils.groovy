@@ -14,4 +14,8 @@ abstract class BigDecimalUtils {
 
         return value.setScale(scale, roundingMode)
     }
+
+    public static BigDecimal roundDefault(BigDecimal value) {
+        return round(value, 2, RoundingMode.HALF_UP)
+    }
 }
