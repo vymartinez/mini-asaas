@@ -24,7 +24,7 @@ class SavePaymentAdapter {
     public SavePaymentAdapter(Map params) {
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)
-        this.value = BigDecimalUtils.arrendondarPadrao(params.value as BigDecimal)
+        this.value = BigDecimalUtils.roundDefault(params.value as BigDecimal)
 
         if (params.dueDate) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")

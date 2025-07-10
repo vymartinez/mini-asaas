@@ -19,9 +19,9 @@ class OverduePaymentsJob {
         try {
             log.info "OverduePaymentsJob.execute >>> Iniciando OverduePaymentsJob em ${new Date()}"
             paymentService.notifyOverduePayments()
-            log.info "OverduePaymentsJob concluído com sucesso"
+            log.info "OverduePaymentsJob.execute >>> Concluído com sucesso"
         } catch (Exception exception) {
-            log.error "Erro ao executar OverduePaymentsJob", exception
+            log.error "OverduePaymentsJob.execute >>> Erro ao executar OverduePaymentsJob", exception
         }
     }
 }

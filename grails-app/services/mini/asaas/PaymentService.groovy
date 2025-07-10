@@ -15,7 +15,6 @@ import mini.asaas.notification.NotificationService
 import mini.asaas.payment.Payment
 import mini.asaas.repositorys.PaymentRepository
 import mini.asaas.utils.BigDecimalUtils
-import mini.asaas.utils.DateRangeUtils
 import mini.asaas.utils.DomainUtils
 
 
@@ -66,14 +65,9 @@ class PaymentService {
         payment.save(failOnError: true)
 
         if (payment.status == PaymentStatus.RECEIVED) {
-            notificationService.create(
-                    [payment.id] as Object[],
-                    [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
-                    payment.payer.customer,
-                    NotificationType.PAYMENT_PAID
-            )
+            notificationService.notifyPaymentPaid(payment)
         } else {
-            notificationService.notifyUpdated(payment)
+            notificationService.notifyPaymentUpdated(payment)
         }
 
         return payment
@@ -85,7 +79,7 @@ class PaymentService {
         payment.deleted = true
         payment.status = PaymentStatus.CANCELED
         payment.save(failOnError: true)
-        notificationService.notifyDeleted(payment)
+        notificationService.notifyPaymentDeleted(payment)
     }
 
     public void restore(Long paymentId, Long customerId) {
@@ -94,16 +88,15 @@ class PaymentService {
         payment.deleted = false
         payment.status = PaymentStatus.PENDING
         payment.save(failOnError: true)
-        notificationService.notifyRestored(payment)
+        notificationService.notifyPaymentRestored(payment)
     }
 
     public void notifyOverduePayments() {
-        Map<String, Date> range = DateRangeUtils.getRangeUntilToday(1)
 
         List<Payment> overduePayments = paymentRepository
                 .query([
                         status: PaymentStatus.PENDING,
-                        "dueDate[between]": [range.start, range.end]
+                        "dueDate[lt]": new Date()
                 ])
                 .list()
 
@@ -111,11 +104,11 @@ class PaymentService {
             try {
                 it.status = PaymentStatus.OVERDUE
                 it.save(failOnError: true)
-                notificationService.notifyExpired(it)
+                notificationService.notifyPaymentExpired(it)
             } catch (org.hibernate.StaleObjectStateException | org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException exception) {
-                log.warn "Pagamento ${it.id} foi modificado por outra transação. Ignorando..."
+                log.warn "OverduePaymentsJob.execute >>> Pagamento ${it.id} foi modificado por outra transação. Ignorando..."
             } catch (Exception exception) {
-                log.error "Erro ao processar pagamento ${it.id}: ${exception.message}", exception
+                log.error "OverduePaymentsJob.execute >>> Erro ao processar pagamento ${it.id}: ${exception.message}", exception
             }
         }
     }
@@ -140,7 +133,7 @@ class PaymentService {
 
         payment.status = PaymentStatus.RECEIVED
         payment.save(failOnError: true)
-        notificationService.notifyConfirmedInCash(payment)
+        notificationService.notifyPaymentConfirmedInCash(payment)
 
         return payment
     }

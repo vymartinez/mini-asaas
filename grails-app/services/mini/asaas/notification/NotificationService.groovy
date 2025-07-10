@@ -32,46 +32,55 @@ class NotificationService {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
-    public void notifyUpdated(Payment payment) {
+    public void notifyPaymentPaid(Payment payment) {
         create(
                 [payment.id] as Object[],
-                [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_PAID
+        )
+    }
+
+    public void notifyPaymentUpdated(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
                 payment.payer.customer,
                 NotificationType.PAYMENT_UPDATED
         )
     }
 
-    public void notifyDeleted(Payment payment) {
+    public void notifyPaymentDeleted(Payment payment) {
         create(
                 [payment.id] as Object[],
-                [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
                 payment.payer.customer,
                 NotificationType.PAYMENT_DELETED
         )
     }
 
-    public void notifyRestored(Payment payment) {
+    public void notifyPaymentRestored(Payment payment) {
         create(
                 [payment.id] as Object[],
-                [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
                 payment.payer.customer,
                 NotificationType.PAYMENT_RESTORED
         )
     }
 
-    public void notifyConfirmedInCash(Payment payment) {
+    public void notifyPaymentConfirmedInCash(Payment payment) {
         create(
                 [payment.id] as Object[],
-                [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
                 payment.payer.customer,
                 NotificationType.PAYMENT_CONFIRMEDINCASH
         )
     }
 
-    public void notifyExpired(Payment payment) {
+    public void notifyPaymentExpired(Payment payment) {
         create(
                 [payment.id] as Object[],
-                [BigDecimalUtils.arrendondarPadrao(payment.value).toString(), payment.payer.name] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
                 payment.payer.customer,
                 NotificationType.PAYMENT_EXPIRED
         )
