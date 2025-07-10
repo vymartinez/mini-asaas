@@ -4,6 +4,9 @@ import mini.asaas.Notification
 import grails.compiler.GrailsCompileStatic
 import grails.plugins.mail.MailService
 import grails.gorm.transactions.Transactional
+import mini.asaas.payment.Payment
+import org.springframework.context.MessageSource
+import mini.asaas.utils.BigDecimalUtils
 
 @GrailsCompileStatic
 @Transactional

@@ -8,7 +8,10 @@ enum NotificationType {
     PAYMENT_CREATED,
     PAYMENT_PAID,
     PAYMENT_EXPIRED,
-    PAYMENT_DELETED
+    PAYMENT_DELETED,
+    PAYMENT_RESTORED,
+    PAYMENT_CONFIRMEDINCASH,
+    PAYMENT_UPDATED
 
     static NotificationType convert(String notificationType) {
         try {

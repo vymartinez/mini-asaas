@@ -84,6 +84,20 @@ class PayerController extends BaseController {
         }
     }
 
+    def selectOptions(Long selectedId) {
+        Long customerId = getCurrentCustomerId()
+        List<Payer> payers = payerService.listAll(customerId)
+
+        render(template: "/payer/atlasOptions", model: [payers: payers, selectedId: selectedId])
+    }
+
+    def selectOptions(Long selectedId) {
+        Long customerId = getCurrentCustomerId()
+        List<Payer> payers = payerService.listAll(customerId)
+
+        render(template: "/payer/atlasOptions", model: [payers: payers, selectedId: selectedId])
+    }
+
     def disable() {
         try {
             Long payerId = params.payerId as Long

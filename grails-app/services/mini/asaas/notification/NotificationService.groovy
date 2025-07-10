@@ -3,7 +3,9 @@ package mini.asaas.notification
 import mini.asaas.Customer
 import mini.asaas.Notification
 import mini.asaas.enums.NotificationType
+import mini.asaas.payment.Payment
 import mini.asaas.repositorys.NotificationRepository
+import mini.asaas.utils.BigDecimalUtils
 
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.PagedResultList
@@ -29,6 +31,69 @@ class NotificationService {
 
     public PagedResultList<Notification> list(Long customerId, Integer max, Integer offset) {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
+    }
+
+    public notifyPaymentCreated(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_CREATED
+        )
+    }
+
+    public void notifyPaymentPaid(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_PAID
+        )
+    }
+
+    public void notifyPaymentUpdated(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_UPDATED
+        )
+    }
+
+    public void notifyPaymentDeleted(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_DELETED
+        )
+    }
+
+    public void notifyPaymentRestored(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_RESTORED
+        )
+    }
+
+    public void notifyPaymentConfirmedInCash(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_CONFIRMEDINCASH
+        )
+    }
+
+    public void notifyPaymentExpired(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_EXPIRED
+        )
     }
 
     private Notification buildNotification(Object[] subjectArgs, Object[] bodyArgs, Customer customer, NotificationType type) {

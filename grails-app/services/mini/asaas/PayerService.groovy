@@ -64,6 +64,14 @@ class PayerService {
         return payer
     }
 
+    public List<Payer> listAll(Long customerId) {
+        Map filters = [customerId: customerId]
+        return PayerRepository.query(filters)
+                .sort('name', 'asc')
+                .readOnly()
+                .list()
+    }
+
     public void disable(Long payerId, Long customerId) {
         Payer payer = findById(payerId, customerId)
 
@@ -80,6 +88,7 @@ class PayerService {
 
         payer.deleted = false
         payer.save(failOnError: true)
+
     }
 
     private Payer validate(SavePayerAdapter savePayerAdapter) {
