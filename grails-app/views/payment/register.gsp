@@ -67,6 +67,6 @@
     </atlas-layout>
 </atlas-panel>
 
-<asset:javascript src="payment/payment-create.js"/>
+<asset:javascript src="payment-create.js"/>
 </body>
 </html>

@@ -46,6 +46,6 @@
     <g:render template="/templates/pagination" model="[totalCount: totalCount, max: max]" />
 </atlas-panel>
 
-<asset:javascript src="payment/payments-list.js"/>
+<asset:javascript src="payments-list.js"/>
 </body>
 </html>

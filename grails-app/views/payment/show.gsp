@@ -82,6 +82,6 @@
     </atlas-form>
 </atlas-panel>
 
-<asset:javascript src="payment/payment-show.js"/>
+<asset:javascript src="payment-show.js"/>
 </body>
 </html>
