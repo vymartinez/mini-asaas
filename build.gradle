@@ -80,6 +80,7 @@ dependencies {
     implementation "org.grails.plugins:mail:3.0.0"
     implementation "org.grails.plugins:spring-security-core:4.0.3"
     implementation "org.grails.plugins:quartz:3.0.0"
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
 }
 
 bootRun {
