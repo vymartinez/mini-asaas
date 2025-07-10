@@ -18,6 +18,9 @@ class PaymentRepository implements Repository<Payment, PaymentRepository> {
     @Override
     public void buildCriteria() {
         addCriteria {
+            createAlias("payer", "payer")
+            createAlias("payer.customer", "customer")
+
             if (search.containsKey('payerId')) {
                 eq('payer.id', search.payerId as Long)
             }
@@ -31,16 +34,13 @@ class PaymentRepository implements Repository<Payment, PaymentRepository> {
                 le('dueDate', search.dueDate as Date)
             }
 
-            if (search.containsKey('customerId')) {
-                eq('payer.customer.id', search.customerId as Long)
+            if (search.containsKey('payer.customer.id')) {
+                eq('customer.id', search['payer.customer.id'] as Long)
             }
 
             if (search.containsKey('payer.name[like]')) {
-                or {
-                    like('payer.name', "%${search['payer.name[like]']}%")
-                }
+                like('payer.name', "%${search['payer.name[like]']}%")
             }
-
         }
     }
 
