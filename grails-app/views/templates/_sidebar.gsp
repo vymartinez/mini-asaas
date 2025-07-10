@@ -1,4 +1,4 @@
-<atlas-sidebar slot="sidebar">
+<atlas-sidebar slot="sidebar" default-collapsed home-path="${createLink(controller: 'dashboard', action: 'index')}">
     <atlas-sidebar-menu slot="body">
         <atlas-sidebar-menu-item
                 icon="users"
