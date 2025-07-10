@@ -1,6 +1,6 @@
 function NotificationListController() {
     var _this = this;
-    this.reference = $(".has-atlas")
+    this.reference = $(".has-atlas");
     var notificationListReference = this.reference.find("#notification-center");
     var paginationController = new PaginationController(notificationListReference);
 
