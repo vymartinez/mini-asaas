@@ -211,22 +211,27 @@ class PaymentController extends BaseController {
         return [payment: payment, customerId: customerId]
     }
 
-    def pdf(Long id) {
+    def downloadPdf(Long id) {
         Long customerId = getCurrentCustomerId()
         Payment payment = paymentService.findById(id, customerId)
 
         if (payment.status != PaymentStatus.RECEIVED) {
-            buildFlashAlert("Apenas pagamentos RECEBIDOS podem gerar recibo em PDF.", MessageType.ERROR, false)
+            buildFlashAlert(
+                    "Apenas pagamentos RECEBIDOS podem gerar recibo em PDF.",
+                    MessageType.ERROR,
+                    false
+            )
             return redirect(action: 'list')
         }
 
-        String html = groovyPageRenderer.render(view: '/payment/receiptPdf', model: [payment: payment])
+        String html = groovyPageRenderer.render(
+                view: '/payment/receiptPdf',
+                model: [payment: payment]
+        )
 
         byte[] pdfBytes = pdfService.renderPdfFromHtml(html)
+        String fileName = "recibo_pagamento_${payment.id}.pdf"
 
-        response.contentType = 'application/pdf'
-        response.setHeader('Content-Disposition', "attachment; filename=recibo_pagamento_${payment.id}.pdf")
-        response.outputStream << pdfBytes
-        response.outputStream.flush()
+        renderFile(pdfBytes, fileName, true)
     }
 }

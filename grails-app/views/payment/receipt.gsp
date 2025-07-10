@@ -45,7 +45,7 @@
 
     <atlas-button description="Voltar" href="/payment/list" icon="arrow-left">Voltar</atlas-button>
 
-    <atlas-button description="Baixar PDF" href="/payment/pdf/${payment.id}" icon="download" variant="secondary">Baixar PDF</atlas-button>
+    <atlas-button description="Baixar PDF" href="/payment/downloadPdf/${payment.id}" icon="download" variant="secondary">Baixar PDF</atlas-button>
 </atlas-panel>
 </body>
 </html>
