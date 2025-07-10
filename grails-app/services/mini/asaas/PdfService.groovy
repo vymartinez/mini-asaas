@@ -6,7 +6,7 @@ import grails.compiler.GrailsCompileStatic
 @GrailsCompileStatic
 class PdfService {
 
-    byte[] renderPdfFromHtml(String html) {
+    public byte[] renderPdfFromHtml(String html) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         PdfRendererBuilder builder = new PdfRendererBuilder()
 
