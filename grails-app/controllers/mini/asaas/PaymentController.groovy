@@ -203,6 +203,7 @@ class PaymentController extends BaseController {
         if (payment.status != PaymentStatus.RECEIVED) {
             buildFlashAlert("Somente cobranças com status RECEBIDO podem gerar comprovante.", MessageType.ERROR, false)
             redirect(action: 'list')
+            return
         }
 
         return [payment: payment, customerId: customerId]
