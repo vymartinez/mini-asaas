@@ -39,7 +39,7 @@ class PaymentService {
         buildPayment(payment, savePaymentAdapter, payer)
 
         payment.save(failOnError: true)
-        notificationService.create([payment.id] as Object[], [payment.value, payment.payer.name] as Object[], payer.customer, NotificationType.PAYMENT_CREATED )
+        notificationService.notifyPaymentCreated(payment)
         return payment
     }
 

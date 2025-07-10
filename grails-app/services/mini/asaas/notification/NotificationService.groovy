@@ -32,6 +32,15 @@ class NotificationService {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
+    public notifyPaymentCreated(Payment payment) {
+        create(
+                [payment.id] as Object[],
+                [BigDecimalUtils.roundDefault(payment.value).toString(), payment.payer.name] as Object[],
+                payment.payer.customer,
+                NotificationType.PAYMENT_CREATED
+        )
+    }
+
     public void notifyPaymentPaid(Payment payment) {
         create(
                 [payment.id] as Object[],
