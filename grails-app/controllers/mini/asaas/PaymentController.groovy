@@ -72,8 +72,6 @@ class PaymentController extends BaseController {
             Long currentCustomerId = getCurrentCustomerId()
             Payment payment = paymentService.findById(id, currentCustomerId)
 
-
-
             return [payment: payment, customerId: currentCustomerId, billingTypes: BillingType.values(), status: PaymentStatus.values()]
         } catch (RuntimeException re) {
             buildFlashAlert(re.message, MessageType.ERROR, false)

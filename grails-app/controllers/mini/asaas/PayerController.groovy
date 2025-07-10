@@ -84,7 +84,6 @@ class PayerController extends BaseController {
         }
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def selectOptions(Long selectedId) {
         Long customerId = getCurrentCustomerId()
         List<Payer> payers = payerService.listAll(customerId)
