@@ -19,7 +19,7 @@ class BaseController {
     }
 
     protected Integer getLimitPerPage() {
-        Integer defaultLimitPerPage = (!params.itemsPerPage && !params.max) ? 10 : 50
+        Integer defaultLimitPerPage = (!params.itemsPerPage && !params.max) ? 3 : 50
 
         return getDefaultLimitPerPage(defaultLimitPerPage)
     }
