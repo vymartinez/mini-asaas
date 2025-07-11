@@ -1,6 +1,6 @@
 <% params.page = params.page  ? params.page as Integer : 1 %>
 
-<atlas-layout alignment="center" class="js-pagination" inline justify="center" gap="2">
+<atlas-layout alignment="center" class="js-pagination" inline justify="center" gap="2" mobile-inline>
     <g:if test="${ params.page > 1 }">
         <atlas-button
                 type="outlined"
