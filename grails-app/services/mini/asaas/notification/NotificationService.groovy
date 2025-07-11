@@ -8,6 +8,7 @@ import mini.asaas.repositorys.NotificationRepository
 import mini.asaas.utils.BigDecimalUtils
 
 import grails.compiler.GrailsCompileStatic
+import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import org.springframework.context.MessageSource
 
@@ -28,7 +29,7 @@ class NotificationService {
         return notification
     }
 
-    public List<Notification> list(Long customerId, Integer max, Integer offset) {
+    public PagedResultList<Notification> list(Long customerId, Integer max, Integer offset) {
          return NotificationRepository.query([customerId: customerId]).readOnly().list([max: max, offset: offset])
     }
 
