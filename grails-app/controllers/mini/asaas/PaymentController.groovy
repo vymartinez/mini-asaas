@@ -216,13 +216,14 @@ class PaymentController extends BaseController {
         Long customerId = getCurrentCustomerId()
         Payment payment = paymentService.findById(id, customerId)
 
-        if (payment.status != PaymentStatus.RECEIVED) {
+        if (!paymentService.canGenerateReceipt(payment)) {
             buildFlashAlert(
                     "Apenas pagamentos RECEBIDOS podem gerar recibo em PDF.",
                     MessageType.ERROR,
                     false
             )
-            return redirect(action: 'list')
+            redirect(action: 'list')
+            return
         }
 
         String html = groovyPageRenderer.render(

@@ -140,6 +140,10 @@ class PaymentService {
         return payment
     }
 
+    public boolean canGenerateReceipt(Payment payment) {
+        return payment.status == PaymentStatus.RECEIVED
+    }
+
     private Payment validate(SavePaymentAdapter adapter) {
 
         Payment payment = new Payment()
