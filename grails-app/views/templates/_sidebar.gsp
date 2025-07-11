@@ -10,8 +10,8 @@
                     icon="user"
                     value="payer"
                     text="Criar Pagador"
-                    href="${createLink(controller: "payer", action: 'create')}"
-                ${ controllerName == 'payer' && actionName == 'create' ? 'active' : '' }
+                    href="${createLink(controller: "payer", action: 'register')}"
+                ${ controllerName == 'payer' && actionName == 'register' ? 'active' : '' }
             ></atlas-sidebar-menu-item>
 
             <atlas-sidebar-menu-item
