@@ -1,6 +1,7 @@
 package mini.asaas
 
 import grails.gorm.PagedResultList
+import grails.gsp.PageRenderer
 import grails.validation.ValidationException
 import grails.plugin.springsecurity.annotation.Secured
 import grails.compiler.GrailsCompileStatic
@@ -17,9 +18,11 @@ import mini.asaas.enums.MessageType
 @GrailsCompileStatic
 class PaymentController extends BaseController {
 
+    PageRenderer groovyPageRenderer
     PayerService payerService
-    MessageSource messageSource
     PaymentService paymentService
+    PdfService pdfService
+    MessageSource messageSource
 
     def register() {
         return [:]
@@ -207,5 +210,24 @@ class PaymentController extends BaseController {
         }
 
         return [payment: payment, customerId: customerId]
+    }
+
+    def pdf(Long id) {
+        Long customerId = getCurrentCustomerId()
+        Payment payment = paymentService.findById(id, customerId)
+
+        if (payment.status != PaymentStatus.RECEIVED) {
+            buildFlashAlert("Apenas pagamentos RECEBIDOS podem gerar recibo em PDF.", MessageType.ERROR, false)
+            return redirect(action: 'list')
+        }
+
+        String html = groovyPageRenderer.render(view: '/payment/receiptPdf', model: [payment: payment])
+
+        byte[] pdfBytes = pdfService.renderPdfFromHtml(html)
+
+        response.contentType = 'application/pdf'
+        response.setHeader('Content-Disposition', "attachment; filename=recibo_pagamento_${payment.id}.pdf")
+        response.outputStream << pdfBytes
+        response.outputStream.flush()
     }
 }
