@@ -16,9 +16,9 @@ class ZipCodeController extends BaseController {
     def find() {
         try {
             ZipCodeInfoAdapter zipCodeInfo = zipCodeService.find(params.zipCode as String)
-            render zipCodeInfo as JSON
+            render([success: true, zipCodeInfo: zipCodeInfo] as JSON)
         } catch (Exception e) {
-            buildFlashAlert("CEP não encontrado. Tente novamente.", MessageType.ERROR, false)
+            render([success: false] as JSON)
         }
     }
 }
