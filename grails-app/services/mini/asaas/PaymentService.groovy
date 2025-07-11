@@ -7,6 +7,7 @@ import grails.gorm.transactions.Transactional
 
 import mini.asaas.adapters.SavePaymentAdapter
 import mini.asaas.adapters.UpdatePaymentAdapter
+import mini.asaas.enums.BillingType
 import mini.asaas.enums.NotificationType
 import mini.asaas.enums.PaymentStatus
 import mini.asaas.notification.EmailNotificationService
@@ -15,6 +16,7 @@ import mini.asaas.notification.NotificationService
 import mini.asaas.payment.Payment
 import mini.asaas.repositorys.PaymentRepository
 import mini.asaas.utils.BigDecimalUtils
+import mini.asaas.utils.DateRangeUtils
 import mini.asaas.utils.DomainUtils
 
 
@@ -93,12 +95,11 @@ class PaymentService {
 
     public void notifyOverduePayments() {
 
-        List<Payment> overduePayments = paymentRepository
-                .query([
-                        status: PaymentStatus.PENDING,
-                        "dueDate[lt]": new Date()
-                ])
-                .list()
+        Date todayStart = DateRangeUtils.getTodayStart()
+
+        List<Payment> overduePayments = Payment.findAllByStatusAndDueDateLessThan(
+                PaymentStatus.PENDING, todayStart
+        )
 
         overduePayments.each {
             try {
@@ -132,6 +133,7 @@ class PaymentService {
         }
 
         payment.status = PaymentStatus.RECEIVED
+        payment.billingType = BillingType.CASH
         payment.save(failOnError: true)
         notificationService.notifyPaymentConfirmedInCash(payment)
 
