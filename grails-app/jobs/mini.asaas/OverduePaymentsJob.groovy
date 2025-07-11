@@ -11,7 +11,7 @@ class OverduePaymentsJob {
     PaymentService paymentService
 
     static triggers = {
-        cron name: 'overduePaymentsTrigger', cronExpression: '0 0 0 * * ?' // */30 * * * * ?
+        cron name: 'overduePaymentsTrigger', cronExpression: '0 0 0 * * ?'
     }
 
     @Transactional
