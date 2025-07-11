@@ -37,7 +37,7 @@
 
     <g:else>
         <atlas-empty-state
-                illustration="finance-coins"
+                illustration="flow-money-coins"
                 header="Sem cobranças cadastradas"
         >
             Aqui você pode cadastrar as cobranças a serem geradas para seus clientes.
@@ -50,7 +50,7 @@
         </atlas-empty-state>
     </g:else>
 
-    <g:render template="/templates/pagination" model="[totalCount: totalCount, max: max]" />
+    <g:render template="/payment/templates/pagination" model="[totalCount: totalCount, max: max]" />
 </atlas-panel>
 
 <asset:javascript src="payments-list.js"/>

@@ -23,10 +23,6 @@ class UpdatePaymentAdapter {
 
     PaymentStatus status
 
-    static contraints = {
-        value min: 0.01
-    }
-
     public UpdatePaymentAdapter(Map params) {
         this.id = params.id?.toString()?.toLong()
         this.payerId = params.payerId?.toString()?.toLong()

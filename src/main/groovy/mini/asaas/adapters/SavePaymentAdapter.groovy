@@ -17,10 +17,6 @@ class SavePaymentAdapter {
 
     Date dueDate
 
-    static constraints = {
-        value min: 0.01
-    }
-
     public SavePaymentAdapter(Map params) {
         this.payerId = params.payerId?.toString()?.toLong()
         this.billingType = BillingType.valueOf(params.billingType as String)

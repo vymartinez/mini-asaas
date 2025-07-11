@@ -1,10 +1,10 @@
 package mini.asaas
 
-import grails.gorm.PagedResultList
 import mini.asaas.adapters.SavePayerAdapter
 import mini.asaas.enums.MessageType
 
 import grails.compiler.GrailsCompileStatic
+import grails.gorm.PagedResultList
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
@@ -47,7 +47,7 @@ class PayerController extends BaseController {
         }
     }
 
-    def list() {
+    def findAll() {
         try {
             Long currentCustomerId = getCurrentCustomerId()
             Integer max = getLimitPerPage()
@@ -55,7 +55,7 @@ class PayerController extends BaseController {
 
             PagedResultList<Payer> payers = payerService.list(params, currentCustomerId, max, offset)
 
-           return [payers: payers, totalCount: payers.totalCount, max: max]
+           render(template: '/payer/templates/search', model: [payers: payers, totalCount: payers.totalCount, max: max], params: params)
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao listar os pagadores. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
             redirect(controller: 'dashboard', action: 'index')
@@ -91,7 +91,6 @@ class PayerController extends BaseController {
         render(template: "/payer/atlasOptions", model: [payers: payers, selectedId: selectedId])
     }
 
-    @Secured(['IS_AUTHENTICATED_FULLY'])
     def disable() {
         try {
             Long payerId = params.payerId as Long
@@ -99,10 +98,10 @@ class PayerController extends BaseController {
             payerService.disable(payerId, currentCustomerId)
 
             buildFlashAlert("Pagador desativado com sucesso!", MessageType.SUCCESS, true)
-            redirect(url: '/payer/list')
+            redirect(controller: 'payer', action: 'list')
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao desativar o pagador. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
-            redirect(url: '/payer/list')
+            redirect(controller: 'payer', action: 'list')
         }
     }
 
@@ -113,12 +112,14 @@ class PayerController extends BaseController {
             payerService.restore(payerId, currentCustomerId)
 
             buildFlashAlert("Pagador reativado com sucesso!", MessageType.SUCCESS, true)
-            redirect(url: '/payer/list')
+            redirect(controller: 'payer', action: 'list')
         } catch (Exception exception) {
             buildFlashAlert("Ocorreu um erro ao reativar o pagador. Por favor, tente novamente mais tarde.", MessageType.ERROR, false)
-            redirect(url: '/payer/list')
+            redirect(controller: 'payer', action: 'list')
         }
     }
 
     def register() { }
+
+    def list() { }
 }
