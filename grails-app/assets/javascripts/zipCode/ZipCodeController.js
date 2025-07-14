@@ -22,17 +22,18 @@ function ZipCodeController(reference) {
             data: { zipCode: zipCode },
             async: true,
             success: function (data) {
-                if (!data) return;
+                if (!data.success) return _this.showError();
 
                 buttonController.enable();
-                _this.completeAddress(data)
-            },
-            error: function () {
-                feedbackReference.html(feedbackMessage);
-                feedbackReference.attr("hidden", false);
-                buttonController.enable();
+                _this.completeAddress(data.zipCodeInfo);
             }
         })
+    }
+
+    this.showError = function () {
+        feedbackReference.html(feedbackMessage);
+        feedbackReference.attr("hidden", false);
+        buttonController.enable();
     }
 
     this.completeAddress = function (data) {
