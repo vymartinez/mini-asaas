@@ -37,6 +37,8 @@ class UserService {
 
         if (user.hasErrors()) throw new ValidationException("Erro ao atualizar usuário", user.errors)
 
+        user = currentUser
+
         Customer customer = customerService.update(adapter.customer, currentUser.customer.id)
 
         buildUser(adapter, user, customer)
