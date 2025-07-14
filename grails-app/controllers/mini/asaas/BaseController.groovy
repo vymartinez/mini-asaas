@@ -34,6 +34,24 @@ class BaseController {
         return Integer.valueOf(params.offset as Integer ?: 0)
     }
 
+    protected void renderFile(def fileData, String fileName, Boolean download) {
+        try {
+            String contentType = "application/pdf"
+            contentType = contentType ?: "application/octet-stream"
+
+            if (download) {
+                fileName = fileName.replaceAll("[^\\p{ASCII}]", "")
+                fileName = fileName.replaceAll("\\s", "_")
+                render(file: fileData, fileName: fileName, contentType: contentType)
+            } else {
+                render(file: fileData, contentType: contentType)
+            }
+
+        } catch (SocketException exception) {
+            log.error("Erro ao gerar arquivo >> ${fileName}", exception)
+        }
+    }
+
     private Integer getDefaultLimitPerPage(Integer limitPerPage) {
         if (params.containsKey("itemsPerPage")) {
             String itemsPerPage = params.itemsPerPage?.toString()
